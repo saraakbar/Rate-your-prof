@@ -10,7 +10,7 @@ router.post('/register', UserController.register);
 router.post('/login', UserController.login);
 
 // Route for user profile
-//router.get('user/:username/profile',auth, UserController.profile);
+router.get('/user/:username/profile',auth, UserController.profile);
 
 //Route for delete profile
 //router.delete('user/:username/delete',auth, UserController.delete);
