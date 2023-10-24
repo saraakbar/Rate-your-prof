@@ -1,6 +1,22 @@
 const Teacher = require('../models/teacherModel')
 const Review = require('../models/reviewModel')
 
+function avg_calculation(criteria){
+  const totalRating = criteria.assessment_and_Feedback +
+                      criteria.content_Knowledge +
+                      criteria.instructional_Delivery +
+                      criteria.fair_Grading +
+                      criteria.exam_difficulty +
+                      criteria.course_Difficulty +
+                      criteria.course_Workload +
+                      criteria.course_Experience +
+                      criteria.professionalism_and_Communication;
+  
+  // Calculate the average rating for assessment_and_Feedback
+  const averageRating = totalRating / 9;
+  return averageRating;
+}
+
 const teacherController = {
     /*create: async (req, res) => {
       try {
@@ -76,7 +92,6 @@ const teacherController = {
         try {
             const averageRatings = [];
             const teacherID = req.params.ID;
-            console.log(teacherID)
             const teacher = await Teacher.findOne({ID: teacherID}).select('-__v -ID');
             if (!teacher) {
               return res.status(404).json({ message: 'Teacher not found' });
@@ -86,18 +101,7 @@ const teacherController = {
             
             for (const review of reviews) {
               const criteria = review.criteria;
-              const totalRating = criteria.assessment_and_Feedback +
-                                criteria.content_Knowledge +
-                                criteria.instructional_Delivery +
-                                criteria.fair_Grading +
-                                criteria.exam_difficulty +
-                                criteria.course_Difficulty +
-                                criteria.course_Workload +
-                                criteria.course_Experience +
-                                criteria.professionalism_and_Communication;
-              
-              // Calculate the average rating for assessment_and_Feedback
-              const averageRating = totalRating / 9;
+              const averageRating = avg_calculation(criteria);
               averageRatings.push(averageRating);
             }
 
@@ -106,10 +110,31 @@ const teacherController = {
             const AverageRating = overallAverageRating.toFixed(1);
 
             const teacherProfile = {
-                AverageRating,
-                teacher,
-                reviews,
-            };
+              AverageRating,
+              teacher,
+              reviews: reviews.map((review) => {
+                  // Calculate like and dislike counts for each review
+                  const likeCount = review.likes.length;
+                  const dislikeCount = review.dislikes.length;
+
+                  const modifiedReview = {
+                    username: review.username,
+                    course: review.course,
+                    criteria: review.criteria,
+                    comment: review.comment,
+                    date: review.date,
+                    isGradReview: review.isGradReview,
+                    likeCount,
+                    dislikeCount,
+                    avg: avg_calculation(review.criteria).toFixed(1)
+                };
+          
+                  return {
+                      modifiedReview
+                  };
+              }),
+          };
+          
             return res.json(teacherProfile);
         } catch (error) {
           console.error(error);
