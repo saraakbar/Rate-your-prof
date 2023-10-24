@@ -5,6 +5,8 @@ const auth = require('../middleware/auth');
 
 router.post('/teacher/add', teacherController.create);
 
-router.get('/teacher_profiles',auth, teacherController.getTeachers);
+router.get('/search',auth, teacherController.searchTeachers);
+
+router.get('/teacher/:ID/',auth, teacherController.profile);
 
 module.exports = router;

@@ -1,4 +1,5 @@
 const Teacher = require('../models/teacherModel')
+const Review = require('../models/reviewModel')
 
 const teacherController = {
     create: async (req, res) => {
@@ -21,7 +22,7 @@ const teacherController = {
       }
     },
   
-    getTeachers: async (req, res) => {
+    searchTeachers: async (req, res) => {
       const { query, facultyType, department, facultyName, alphabet, page } = req.query;
       const perPage = 10; // Number of teachers per page
       const skip = (page - 1) * perPage; // Calculate the number of documents to skip
@@ -59,12 +60,61 @@ const teacherController = {
         const teachers = await Teacher.find({ $and: queryConditions })
           .skip(skip)
           .limit(perPage);
-  
+
+        if (teachersCount == 0){
+            return res.status(404).send("No teachers found");
+        }
+
         res.status(200).json({ teachers, total: teachersCount });
       } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Something went wrong' });
       }
+    },
+
+    profile: async (req, res) => {
+        try {
+            const averageRatings = [];
+            const teacherID = req.params.ID;
+            console.log(teacherID)
+            const teacher = await Teacher.findOne({ID: teacherID}).select('-__v -ID');
+            if (!teacher) {
+              return res.status(404).json({ message: 'Teacher not found' });
+            }
+            const teacherId = teacher._id;
+            const reviews = await Review.find({teacher: teacherId}).populate({path:'user', select:'username -_id'}).select('-_id -__v -teacher')
+            
+            for (const review of reviews) {
+              const criteria = review.criteria;
+              const totalRating = criteria.assessment_and_Feedback +
+                                criteria.content_Knowledge +
+                                criteria.instructional_Delivery +
+                                criteria.fair_Grading +
+                                criteria.exam_difficulty +
+                                criteria.course_Difficulty +
+                                criteria.course_Workload +
+                                criteria.course_Experience +
+                                criteria.professionalism_and_Communication;
+              
+              // Calculate the average rating for assessment_and_Feedback
+              const averageRating = totalRating / 9;
+              averageRatings.push(averageRating);
+            }
+
+            const totalAverageRating = averageRatings.reduce((acc, rating) => acc + rating, 0);
+            const overallAverageRating = totalAverageRating / averageRatings.length;
+            const AverageRating = overallAverageRating.toFixed(1);
+
+            const teacherProfile = {
+                AverageRating,
+                teacher,
+                reviews,
+            };
+            return res.json(teacherProfile);
+        } catch (error) {
+          console.error(error);
+          return res.status(500).json({ message: 'Server error' });
+        }
     }
   };
   
