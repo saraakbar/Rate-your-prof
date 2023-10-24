@@ -2,7 +2,7 @@ const Teacher = require('../models/teacherModel')
 const Review = require('../models/reviewModel')
 
 const teacherController = {
-    create: async (req, res) => {
+    /*create: async (req, res) => {
       try {
         const { name, faculty_type, position, department, photo } = req.body;
   
@@ -20,7 +20,7 @@ const teacherController = {
         console.error(error);
         res.status(500).json({ message: 'Something went wrong' });
       }
-    },
+    }, */
   
     searchTeachers: async (req, res) => {
       const { query, facultyType, department, facultyName, alphabet, page } = req.query;
