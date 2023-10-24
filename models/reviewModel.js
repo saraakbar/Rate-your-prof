@@ -19,7 +19,10 @@ const reviewSchema = new mongoose.Schema({
     date: { type: Date, default: Date.now },
     isGradReview: { type: Boolean, default: false},
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    numOfLikes: { type: Number, default: 0 },
     dislikes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], 
+    numOfDislikes: {type: Number, default: 0},
+    avgRating: {type: Number, default: 0}
 })
 
 const Review = mongoose.model('Review', reviewSchema)
