@@ -41,7 +41,6 @@ const teacherController = {
             filterCriteria.name = {$regex: facultyName, $options: 'i' };
         }
   
-        // Define the query conditions for name and filters
         const queryConditions = [
           filterCriteria
         ];
@@ -56,10 +55,8 @@ const teacherController = {
         }
   
         // Construct the query
-        const sortCriteria = {}; // No sorting
         const teachersCount = await Teacher.countDocuments({ $and: queryConditions });
         const teachers = await Teacher.find({ $and: queryConditions })
-          .sort(sortCriteria)
           .skip(skip)
           .limit(perPage);
   
