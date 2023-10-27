@@ -17,7 +17,7 @@ const reviewSchema = new mongoose.Schema({
       },
     comment: { type: String, default: null },
     date: { type: Date, default: Date.now },
-    isGradReview: { type: Boolean, default: false},
+    isGradReview: { type: Boolean, default: false, required: true},
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     numOfLikes: { type: Number, default: 0 },
     dislikes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], 
