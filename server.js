@@ -8,20 +8,24 @@ const swaggerJSdoc = require('swagger-jsdoc')
 const swaggerUI = require('swagger-ui-express')
 
 const options = {
-    definition:{
-        openapi: "3.0.0",
-        info:{
-            title: "Rate My Professor API",
-            version: "1.0.0",
-            description: "Rate My Professor API Information",
-            servers: [
-                {
-                    api: "http://localhost:3000/"
-        }]
-        }
+  swaggerDefinition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Rate My Professor API",
+      version: "1.0.0",
     },
-    apis: ["./routes/*.js"]
-}
+    components: {
+      securitySchemes: {
+        BearerAuth: {
+          type: "http",
+          scheme: "bearer",
+        },
+      },
+    },
+  },
+  apis: ["./routes/*.js"], // Make sure this points to your API definition files.
+};
+
 
 const swaggerSpec = swaggerJSdoc(options)
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec))
