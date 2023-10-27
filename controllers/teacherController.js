@@ -74,42 +74,49 @@ const teacherController = {
 
     profile: async (req, res) => {
         try {
-            const averageRatings = [];
-            const teacherID = req.params.ID;
-            const teacher = await Teacher.findOne({ID: teacherID}).select('-__v -ID');
-            if (!teacher) {
-              return res.status(404).json({ message: 'Teacher not found' });
-            }
-            const teacherId = teacher._id;
-            const reviews = await Review.find({ teacher: teacherId })
+          const averageRatings = [];
+          const teacherID = req.params.ID;
+          const teacher = await Teacher.findOne({ID: teacherID}).select('-__v -ID');
+          if (!teacher) {
+            return res.status(404).json({ message: 'Teacher not found' });
+          }
+          const teacherId = teacher._id;
+
+          const filter = { teacher: teacherId };
+          if (req.query.isGradReview) {
+            // If isGradReview is specified in the query, filter by its value
+            filter.isGradReview = (req.query.isGradReview === 'true');
+          }
+          
+          const reviews = await Review.find(filter)
             .populate({ path: 'user', select: 'username -_id' })
             .select('-_id -__v -teacher -likes -dislikes')
             .sort({ likes: -1 });
                     
-            for (const review of reviews) {
-              averageRatings.push(review.avgRating);
-            }
+          for (const review of reviews) {
+            averageRatings.push(review.avgRating);
+          }
 
-            const totalAverageRating = averageRatings.reduce((acc, rating) => acc + rating, 0);
-            const overallAverageRating = totalAverageRating / averageRatings.length;
-            const AverageRating = overallAverageRating.toFixed(1);
+          const totalAverageRating = averageRatings.reduce((acc, rating) => acc + rating, 0);
+          const overallAverageRating = totalAverageRating / averageRatings.length;            
+          const AverageRating = overallAverageRating.toFixed(1);
 
-            const teacherProfile = {
-              AverageRating,
-              teacher:{
-                position: teacher.position,
-                name: teacher.name,
-                department: teacher.department,
-                faculty_type: teacher.faculty_type,
-              },
-              reviews
-            };
+          const teacherProfile = {
+            AverageRating,
+            teacher:{
+              position: teacher.position,
+              name: teacher.name,
+              department: teacher.department,                
+              faculty_type: teacher.faculty_type,
+             },
+            reviews
+          };
           
-            return res.json(teacherProfile);
-        } catch (error) {
-          console.error(error);
-          return res.status(500).json({ message: 'Server error' });
-        }
+           return res.json(teacherProfile);
+       } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Server error' });
+      }    
     }
   };
   
