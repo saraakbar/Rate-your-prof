@@ -1,7 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const UserController = require('../controllers/userController'); 
-const auth = require('../middleware/auth');
+const {auth} = require('../middleware/auth');
+
+router.post('/login', UserController.login);
+router.post('/register', UserController.register);
+router.get('/:username/profile',auth, UserController.profile);
+router.delete('/:username/delete',auth, UserController.delete);
+router.get('/settings',auth, UserController.getSettings)
+router.patch('/settings',auth, UserController.updateSettings);
+router.patch('settings/password',auth, UserController.changePassword);
+router.post('/review/:id/report',auth, UserController.reportReview)
+//router.patch('/settings/avatar',auth, UserController.changeAvatar);
+//router.post('/forgotPassword', UserController.forgotPassword);
+//router.post('/reset-password/:token', UserController.resetPassword);
+router.get('/logout',auth, UserController.logout)
 
 /**
  * @swagger
@@ -42,11 +55,6 @@ const auth = require('../middleware/auth');
  *         erp: 22967
  *         email: saraebrahim666@gmail.com
  *         password: akbarS*ra7
- */
-
-// Route for user registration
-/**
- * @swagger
  * /register:
  *   post:
  *     summary: Register a new user.
@@ -81,12 +89,6 @@ const auth = require('../middleware/auth');
  *         description: Conflict. User already exists with the provided email or username.
  *       500:
  *         description: Internal Server Error. Something went wrong.
- */
-router.post('/register', UserController.register);
-
-// Route for user login
-/**
- * @swagger
  * /login:
  *   post:
  *     summary: Log in a user.
@@ -124,13 +126,7 @@ router.post('/register', UserController.register);
  *         description: Not Found. User not found.
  *       500:
  *         description: Internal Server Error. Something went wrong.
- */
-router.post('/login', UserController.login);
-
-// Route for user profile
-/**
- * @swagger
- * /user/{username}/profile:
+ * /{username}/profile:
  *   get:
  *     summary: Get current user's profile.
  *     description: Retrieve the profile information and reviews for a logged in user.
@@ -170,12 +166,7 @@ router.post('/login', UserController.login);
  *         description: Forbidden. User can only access their own profile.
  *       500:
  *         description: Internal Server Error. Something went wrong.
- */
-router.get('/user/:username/profile',auth, UserController.profile);
-
-/**
- * @swagger
- * /user/{username}/delete:
+ * /{username}/delete:
  *   delete:
  *     summary: Delete current user's profile.
  *     description: Delete the user profile associated with the provided username.
@@ -197,10 +188,105 @@ router.get('/user/:username/profile',auth, UserController.profile);
  *         description: Forbidden. You are not authorized to delete this profile.
  *       500:
  *         description: Internal Server Error. Something went wrong.
+ * /settings:
+ *   get:
+ *     summary: Get user settings
+ *     tags:
+ *       - User
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 firstName:
+ *                   type: string
+ *                 lastName:
+ *                   type: string
+ *                 username:
+ *                   type: string
+ *                 erp:
+ *                   type: number
+ *                 email:
+ *                   type: string
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ *   patch:
+ *     summary: Update user settings
+ *     tags:
+ *       - User 
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               username:
+ *                 type: string
+ *               erp:
+ *                 type: number
+ *               email:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Update successful
+ *       500:
+ *         description: Server error
+ * /settings/password:
+ *   patch:
+ *     summary: Change user password
+ *     tags:
+ *       - User 
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               currentPassword:
+ *                 type: string
+ *               newPassword:
+ *                 type: string
+ *               confirmNewPassword:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Password changed successfully
+ *       400:
+ *         description: Bad request (e.g., password mismatch)
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ * /logout:
+ *  get:
+ *   summary: Logout the user
+ *   tags:
+ *     - User
+ *   security:
+ *     - BearerAuth: [] 
+ *   responses:
+ *     200:
+ *       description: Logout successful
+ *     401:
+ *       description: Unauthorized (if authentication fails)
+ *     500:
+ *       description: Server error
  */
-router.delete('user/:username/delete',auth, UserController.delete);
-
-//Route for update profile
-//router.patch('user/:username/update',auth, UserController.update);
 
 module.exports = router;
