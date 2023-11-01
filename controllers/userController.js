@@ -2,8 +2,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const User = require('../models/userModel')
 const Review = require('../models/reviewModel')
-//const auth = require('../middleware/auth')
-
+const Report = require('../models/reportedModel')
 
 function generateAccessToken(user) {
     return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1200s' })
@@ -12,7 +11,7 @@ function generateAccessToken(user) {
 const UserController = {
     register: async (req, res) => {
         try {
-            const { firstName, lastName, username, email, password, erp } = req.body;
+            const { firstName, lastName, username, email, password, erp} = req.body;
 
             if (!(email && password && username && firstName && lastName && erp)) {
                 return res.status(400).send("All input is required");
@@ -54,6 +53,8 @@ const UserController = {
                 return res.status(409).send("ERP already exists. Please check again");
             }
 
+            const role = 'user'
+
             const hashedPassword = await bcrypt.hash(password, 10);
             const result = await User.create({
                 firstName: firstName,
@@ -61,14 +62,15 @@ const UserController = {
                 username: username,
                 erp: erp,
                 email: email,
-                password: hashedPassword
+                password: hashedPassword,
+                role: role
             });
 
             res.status(201).send("Registration Successful. Please login");
 
         } catch (error) {
             console.log(error);
-            return res.status(500).send("Something went wrong");
+            return res.status(500).send("Server Error");
         }
     },
 
@@ -83,9 +85,10 @@ const UserController = {
             }
 
             if (await bcrypt.compare(password, existingUser.password)) {
-                const token_user = { email: existingUser.email, id: existingUser._id, username: existingUser.username };
+                const token_user = { email: existingUser.email, id: existingUser._id, username: existingUser.username, role: existingUser.role};
                 const accessToken = generateAccessToken(token_user);
-                const response = { message: "Login successful", accessToken: accessToken}
+                const response = { message: "Login successful"}
+                console.log(accessToken);
                 res.status(201).send(response)
             } else {
                 return res.status(400).send('Invalid credentials');
@@ -93,13 +96,12 @@ const UserController = {
 
         } catch (error) {
             console.log(error);
-            return res.status(500).send("Something went wrong");
+            return res.status(500).send("Server Error");
         }
     },
 
     profile: async (req, res) => {
         try {
-
             const username = req.params.username;
             const currentUser = req.user.username;
 
@@ -127,7 +129,7 @@ const UserController = {
                 //};
                 return res.status(403).json({ message: 'You are not authorized to view this profile' });
             } 
-        
+
         } catch (error) {
           console.error(error);
           return res.status(500).json({ message: 'Server error' });
@@ -141,6 +143,25 @@ const UserController = {
 
             if (username == currentUser) {
                 const userId = req.user.id;
+                await Review.deleteMany({ user: userId });
+
+                const reviewsWithActions = await Review.find({
+                    $or: [{ likes: userId }, { dislikes: userId }],
+                  });
+
+                
+                reviewsWithActions.forEach(async (review) => {
+                    if (review.likes.includes(userId)) {
+                        review.likes.pull(userId);
+                        review.numOfLikes -= 1;
+                    }
+                    if (review.dislikes.includes(userId)) {
+                        review.dislikes.pull(userId);
+                        review.numOfDislikes -= 1;
+                    }
+                    await review.save();
+                });
+
                 await User.findbyIdAndDelete({userId})
                 return res.status(200).json({ message: 'User deleted successfully' });
             }
@@ -153,6 +174,104 @@ const UserController = {
           return res.status(500).json({ message: 'Server error' });
         }
       },
+
+      getSettings: async (req, res) => {
+        const currentUser = req.user.id;
+        try{
+            const user = await User.findById(currentUser).select('-password -__v -_id');
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+              }
+            else{
+                return res.status(200).json(user);
+            }
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Server error' });
+        }
+      },
+
+      updateSettings: async (req, res) => {
+        const currentUser = req.user.id;
+        try{
+            const { firstName, lastName, username, email, erp } = req.body;
+            const result = await User.findByIdAndUpdate(currentUser, {
+                firstName: firstName,
+                lastName: lastName,
+                username: username,
+                erp: erp,
+                email: email,
+            });
+            res.status(201).send("Update Successful");
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Server error' });
+        }
+      },
+
+      changePassword: async (req, res) => {
+        const currentUser = req.user.id;
+        try {
+            const { currentPassword, newPassword, confirmNewPassword } = req.body;
+            const user = await User.findById(currentUser).select('password');
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+              }
+            else{
+                if (await bcrypt.compare(currentPassword, user.password)) {
+                    if (newPassword == confirmNewPassword) {
+                        const hashedPassword = await bcrypt.hash(newPassword, 10);
+                        const result = await User.findByIdAndUpdate(currentUser, {
+                            password: hashedPassword
+                        });
+                        res.status(201).send("Password Changed Successfully");
+                    }
+                    else{
+                        return res.status(400).send("Passwords do not match. Try Again.");
+                    }
+                }
+                else{
+                    return res.status(400).send("Your existing password is incorrect");
+                }
+            }
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Server error' });   
+        }
+      },
+
+      logout: async (res) => {
+        res.set('Authorization', 'Bearer expired-token');
+        res.status(200).json({ message: 'Logout successful' });
+      },
+
+      reportReview: async (req, res) => {
+        try{
+            const reviewId = req.params.id;
+            const reason = req.body;
+            const userId = req.user.id; 
+
+            const review = await Review.findById(reviewId).select('_id');
+            if (!review) {
+              return res.status(404).json({ message: 'Review not found' });
+            }
+        
+            const report = new Report({
+              review: reviewId,
+              user: userId,
+              reason: reason,
+            });
+        
+            await report.save();
+        
+            res.status(201).json({ message: 'Review reported successfully' });
+        
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Server error' });
+        }
+      }
+
 };
 
 
