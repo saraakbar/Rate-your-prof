@@ -47,7 +47,7 @@ const reviewController = {
   
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: 'Something went wrong' });
+            res.status(500).json({ message: 'Server Error' });
         }
     },
 
@@ -75,7 +75,7 @@ const reviewController = {
                 }
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: 'Something went wrong' });
+            res.status(500).json({ message: 'Server Error' });
         }
       
     },
@@ -104,9 +104,29 @@ const reviewController = {
             }
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: 'Something went wrong' });
+            res.status(500).json({ message: 'Server Error' });
         }  
+    },
+
+    delete: async (req, res) => {
+        try{
+            const id = req.params.id
+            const userId = req.user.id
+
+            const deletedReview = await Review.findOneAndDelete({ _id: id, user: userId });
+
+            if (!deletedReview) {
+                return res.status(404).json({ message: 'Review not found' });
+              }
+
+            res.status(200).json({ message: 'Review deleted successfully' });
+            
+        } catch (error){
+            console.error(error);
+            res.status(500).json({ message: 'Server Error' });
+        }
     }
+
 }
 
 module.exports = reviewController;
