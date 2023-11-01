@@ -1,7 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const reviewController = require('../controllers/reviewController'); 
-const auth = require('../middleware/auth');
+const {auth} = require('../middleware/auth');
+
+router.post('/create_review',auth, reviewController.create);
+router.patch('/like/:id',auth, reviewController.like);
+router.patch('/dislike/:id',auth, reviewController.dislike);
+router.delete('/delete_review/:id',auth, reviewController.delete);
 
 /**
  * @swagger
@@ -107,10 +112,6 @@ const auth = require('../middleware/auth');
  *         dislikes: []
  *         numOfDislikes: 0
  *         avgRating: 4.2
- */
-
-/**
- * @swagger
  * /create_review:
  *   post:
  *     summary: Create a review.
@@ -146,13 +147,6 @@ const auth = require('../middleware/auth');
  *         description: Bad Request. Invalid or missing fields.
  *       500:
  *         description: Internal Server Error. Something went wrong.
- */
-
-
-router.post('/create_review',auth, reviewController.create);
-
-/**
- * @swagger
  * /like/{id}:
  *   patch:
  *     summary: Like a review.
@@ -173,12 +167,6 @@ router.post('/create_review',auth, reviewController.create);
  *         description: Review liked or like removed.
  *       500:
  *         description: Internal Server Error. Something went wrong.
- */
-
-router.patch('/like/:id',auth, reviewController.like);
-
-/**
- * @swagger
  * /dislike/{id}:
  *   patch:
  *     summary: Dislike a review.
@@ -200,7 +188,5 @@ router.patch('/like/:id',auth, reviewController.like);
  *       500:
  *         description: Internal Server Error. Something went wrong.
  */
-
-router.patch('/dislike/:id',auth, reviewController.dislike);
 
 module.exports = router;
