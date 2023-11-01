@@ -11,7 +11,7 @@ const options = {
   swaggerDefinition: {
     openapi: "3.0.0",
     info: {
-      title: "Rate My Professor API",
+      title: "Rate Your Professor API",
       version: "1.0.0",
     },
     components: {
@@ -23,7 +23,7 @@ const options = {
       },
     },
   },
-  apis: ["./routes/*.js"], // Make sure this points to your API definition files.
+  apis: ["./routes/*.js"], 
 };
 
 
@@ -40,9 +40,11 @@ app.use(express.json())
 const userRoute = require('./routes/userRoute');
 const teacherRoute = require('./routes/teacherRoute');
 const reviewRoute = require('./routes/reviewRoute');
+const adminRoute = require('./routes/adminRoute');
 
 app.use(userRoute);
 app.use(teacherRoute);
 app.use(reviewRoute);
+app.use(adminRoute);
 
 app.listen(3000, () => console.log('Server Started'))
