@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const teacherController = require('../controllers/teacherController'); 
-const auth = require('../middleware/auth');
+const {auth} = require('../middleware/auth');
+
+router.get('/search',auth, teacherController.searchTeachers);
+router.get('/teacher/:ID',auth, teacherController.profile);
 
 /**
  * @swagger
@@ -37,10 +40,6 @@ const auth = require('../middleware/auth');
  *         faculty_type: Visiting Faculty
  *         department: Computer Science
  *         position: Visiting Faculty
- */
-
-/**
- * @swagger
  * /search:
  *   get:
  *     security:
@@ -82,13 +81,6 @@ const auth = require('../middleware/auth');
  *         description: No teachers found.
  *       500:
  *         description: Something went wrong.
- */
-
-router.get('/search',auth, teacherController.searchTeachers);
-
-
-/**
- * @swagger
  * /teacher/{ID}:
  *   get:
  *     security:
@@ -143,8 +135,5 @@ router.get('/search',auth, teacherController.searchTeachers);
  *       500:
  *         description: Server error.
  */
-
-
-router.get('/teacher/:ID/',auth, teacherController.profile);
 
 module.exports = router;
