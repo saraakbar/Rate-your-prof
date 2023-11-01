@@ -68,7 +68,7 @@ const teacherController = {
         res.status(200).json({ teachers, total: teachersCount });
       } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Something went wrong' });
+        res.status(500).json({ message: 'Server Error' });
       }
     },
 
