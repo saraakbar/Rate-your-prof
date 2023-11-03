@@ -74,6 +74,18 @@ const teacherController = {
 
     profile: async (req, res) => {
         try {
+          const criteriaAverages = {
+            assessment_and_Feedback: 0,
+            content_Knowledge: 0,
+            instructional_Delivery: 0,
+            fair_Grading: 0,
+            exam_difficulty: 0,
+            course_Difficulty: 0,
+            course_Workload: 0,
+            course_Experience: 0,
+            professionalism_and_Communication: 0,
+          };
+
           const averageRatings = [];
           const teacherID = req.params.ID;
           const teacher = await Teacher.findOne({ID: teacherID}).select('-__v -ID');
@@ -97,11 +109,26 @@ const teacherController = {
             averageRatings.push(review.avgRating);
           }
 
+          for (const review of reviews) {
+            for (const criterion in review.criteria) {
+              if (criteriaAverages.hasOwnProperty(criterion)) {
+                criteriaAverages[criterion] += review.criteria[criterion];
+              }
+            }
+          }
+      
+          const totalReviews = reviews.length;
+      
+          for (const criterion in criteriaAverages) {
+            criteriaAverages[criterion] = (criteriaAverages[criterion] / totalReviews).toFixed(1);
+          }
+
           const totalAverageRating = averageRatings.reduce((acc, rating) => acc + rating, 0);
           const overallAverageRating = totalAverageRating / averageRatings.length;            
           const AverageRating = overallAverageRating.toFixed(1);
 
           const teacherProfile = {
+            criteriaAverages,
             AverageRating,
             teacher:{
               position: teacher.position,
