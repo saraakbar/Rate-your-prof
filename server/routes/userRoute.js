@@ -6,16 +6,17 @@ const {auth} = require('../middleware/auth');
 router.post('/login', UserController.login);
 router.post('/register', UserController.register);
 router.get('/:username/profile',auth, UserController.profile);
-router.delete('/:username/delete',auth, UserController.delete);
+router.delete('/delete',auth, UserController.delete);
 router.get('/settings',auth, UserController.getSettings)
 router.patch('/settings',auth, UserController.updateSettings);
-router.patch('settings/password',auth, UserController.changePassword);
+router.patch('/settings/password',auth, UserController.changePassword);
 router.post('/review/:id/report',auth, UserController.reportReview)
 //router.patch('/settings/avatar',auth, UserController.changeAvatar);
 //router.post('/forgotPassword', UserController.forgotPassword);
 //router.post('/reset-password/:token', UserController.resetPassword);
 router.get('/logout',auth, UserController.logout)
 
+/*
 /**
  * @swagger
  * components:
