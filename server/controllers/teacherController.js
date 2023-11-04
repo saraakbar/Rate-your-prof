@@ -57,7 +57,7 @@ const teacherController = {
   
         // Construct the query
         const teachersCount = await Teacher.countDocuments({ $and: queryConditions });
-        const teachers = await Teacher.find({ $and: queryConditions })
+        const teachers = await Teacher.find({ $and: queryConditions }).select('-__v -ID -_id')
           .skip(skip)
           .limit(perPage);
 
