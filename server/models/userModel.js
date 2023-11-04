@@ -7,7 +7,8 @@ const userSchema = new mongoose.Schema({
     erp: {type: Number, unique: true, required: true},
     email: {type: String, unique: true, required: true},
     password: {type: String, required: true},
-    role:{ type: String, enum: ['user', 'admin'],required: true}
+    role:{ type: String, enum: ['user', 'admin'],required: true},
+    suspended: {type: Boolean, default: false},
 })
 
 const User = mongoose.model('User', userSchema);
