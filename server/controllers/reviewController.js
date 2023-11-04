@@ -22,12 +22,24 @@ const reviewController = {
         try {
             const {course, criteria, comment, isGrad} = req.body
             const {teacher} = req.query
-            owner = req.user.id
+            const owner = req.user.id
             const teach = await Teacher.findOne({ID:teacher}).select('_id')
+
+            if (!teach) {
+                return res.status(404).json({ message: 'Teacher not found' });
+            }
 
             if (!(course && criteria && isGrad)) {
                 return res.status(400).send("All input is required");
             }
+
+            const isCriteriaValid = Object.values(criteria).every(
+                (rating) => rating >= 1 && rating <= 5
+              );
+          
+              if (!isCriteriaValid) {
+                return res.status(400).send('Criteria ratings must be between 1 and 5');
+              }
 
             const average = avg_calculation(criteria).toFixed(1)
 
@@ -56,23 +68,26 @@ const reviewController = {
             const id = req.params.id
             const userId = req.user.id
             likes = await Review.findOne({_id: id}).select(' dislikes likes -_id')
-                if (likes.dislikes.includes(userId)) {
-                    await Review.findOneAndUpdate({_id: id}, { $pull: { dislikes: userId } });
-                    await Review.findOneAndUpdate({_id: id}, { $inc: { numOfDislikes: -1 } });
-                    await Review.findOneAndUpdate({_id: id }, { $push: { likes: userId } });
-                    await Review.findOneAndUpdate({_id: id}, { $inc: { numOfLikes: 1 } });
-                    res.status(200).json({message: 'dislike removed, review liked'})
+            if (!likes) {
+                return res.status(404).json({ message: 'Review not found' });
+            }
+            if (likes.dislikes.includes(userId)) {
+                await Review.findOneAndUpdate({_id: id}, { $pull: { dislikes: userId } });
+                await Review.findOneAndUpdate({_id: id}, { $inc: { numOfDislikes: -1 } });
+                await Review.findOneAndUpdate({_id: id }, { $push: { likes: userId } });
+                await Review.findOneAndUpdate({_id: id}, { $inc: { numOfLikes: 1 } });
+                res.status(200).json({message: 'dislike removed, review liked'})
                 }
-                else if (likes.likes.includes(userId)) {
-                    await Review.findOneAndUpdate({_id: id}, { $pull: { likes: userId } });
-                    await Review.findOneAndUpdate({_id: id}, { $inc: { numOfLikes: -1 } });
-                    res.status(200).json({message: 'Like removed'})
-                }
-                else{
-                    await Review.findOneAndUpdate({_id: id }, { $push: { likes: userId } });
-                    await Review.findOneAndUpdate({_id: id}, { $inc: { numOfLikes: 1 } });
-                    res.status(200).json({message: 'Review liked'})
-                }
+            else if (likes.likes.includes(userId)) {
+                await Review.findOneAndUpdate({_id: id}, { $pull: { likes: userId } });
+                await Review.findOneAndUpdate({_id: id}, { $inc: { numOfLikes: -1 } });
+                res.status(200).json({message: 'Like removed'})
+            }
+             else{
+                await Review.findOneAndUpdate({_id: id }, { $push: { likes: userId } });
+                await Review.findOneAndUpdate({_id: id}, { $inc: { numOfLikes: 1 } });
+                res.status(200).json({message: 'Review liked'})
+            }
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Server Error' });
@@ -85,6 +100,9 @@ const reviewController = {
             const id = req.params.id
             const userId = req.user.id
             likes = await Review.findOne({_id: id}).select(' dislikes likes -_id')
+            if (!likes) {
+                return res.status(404).json({ message: 'Review not found' });
+            }
             if (likes.likes.includes(userId)) {
                 await Review.findOneAndUpdate({_id: id}, { $pull: { likes: userId } });
                 await Review.findOneAndUpdate({_id: id}, { $inc: { numOfLikes: -1 } });
@@ -116,7 +134,7 @@ const reviewController = {
             const deletedReview = await Review.findOneAndDelete({ _id: id, user: userId });
 
             if (!deletedReview) {
-                return res.status(404).json({ message: 'Review not found' });
+                return res.status(404).json({ message: 'Review does not exist or you are not authorized to delete it' });
               }
 
             res.status(200).json({ message: 'Review deleted successfully' });
