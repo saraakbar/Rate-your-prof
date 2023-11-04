@@ -6,6 +6,7 @@ const {auth} = require('../middleware/auth');
 router.get('/search',auth, teacherController.searchTeachers);
 router.get('/teacher/:ID',auth, teacherController.profile);
 
+/*
 /**
  * @swagger
  * components:

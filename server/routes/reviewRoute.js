@@ -8,6 +8,7 @@ router.patch('/like/:id',auth, reviewController.like);
 router.patch('/dislike/:id',auth, reviewController.dislike);
 router.delete('/delete_review/:id',auth, reviewController.delete);
 
+/*
 /**
  * @swagger
  * components:
@@ -187,6 +188,6 @@ router.delete('/delete_review/:id',auth, reviewController.delete);
  *         description: Review disliked or dislike removed.
  *       500:
  *         description: Internal Server Error. Something went wrong.
- */
+ */ 
 
 module.exports = router;
