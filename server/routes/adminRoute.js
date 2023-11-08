@@ -5,12 +5,16 @@ const {auth,isAdmin} = require('../middleware/auth');
 
 router.post('/admin/login',AdminController.login);
 router.get('/admin/reports',auth,isAdmin, AdminController.reports);
-//router.get('/admin/search',auth,isAdmin, AdminController.searchUsers);
-//router.get('/admin/user/:username',auth,isAdmin, AdminController.getUser);
-//router.get('/admin/review/:id',auth,isAdmin, AdminController.getReview);
-//router.patch('/admin/report/:id',auth,isAdmin, AdminController.resolveReport);
-//router.patch('/admin/user/:username',auth,isAdmin, AdminController.suspendUser);
+//router.delete('/admin/user/:username',auth,isAdmin, AdminController.deleteUser);
 //router.delete('/admin/review/:id',auth,isAdmin, AdminController.deleteReview);
+//router.patch('/admin/user/:username',auth,isAdmin, AdminController.suspendUser);
+//router.patch('/admin/report/:id',auth,isAdmin, AdminController.resolveReport);
 //router.delete('/admin/cleanup',auth,isAdmin, AdminController.deleteReports);
+//router.get('/admin/users',auth,isAdmin, AdminController.getUsers);
+//router.get('/admin/reviews',auth,isAdmin, AdminController.getReviews);
+//router.get('/admin/review/:id',auth,isAdmin, AdminController.getReview);
+//router.get('/admin/user/:username',auth,isAdmin, AdminController.getUser);
+
+
 
 module.exports = router;

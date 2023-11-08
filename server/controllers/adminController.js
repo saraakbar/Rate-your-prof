@@ -49,6 +49,114 @@ const adminController = {
             return res.status(500).send("Server Error");
         }
     },
+
+    /*
+    deleteReview: async (req, res) => {
+        try{
+            const {id} = req.params;
+            await Review.findByIdAndDelete(id: id);
+            res.status(200).send("Review deleted");
+        } catch (error){
+            console.log(error);
+            return res.status(500).send("Server Error");
+        }
+    }
+
+    deleteUser: async (req, res) => {
+        try{
+            const {username} = req.params;
+            await User.findAndDelete(username: username);
+            res.status(200).send("User deleted");
+        } catch (error){
+            console.log(error);
+            return res.status(500).send("Server Error");
+        }
+    },
+
+    suspendUser: async (req, res) => {
+        try{ 
+            const {username} = req.params;
+            await User.findAndUpdate(username: username, {suspended: true});
+            res.status(200).send("User suspended");
+        } catch(error){
+            console.log(error);
+            return res.status(500).send("Server Error");
+        }
+    },
+
+    getUsers: async (req, res) => {
+        try{
+            const users = await User.find().select('-__v -password');
+            res.status(200).send(users);
+        } catch (error){
+            console.log(error);
+            return res.status(500).send("Server Error");
+        }
+    },
+
+    getUser: async (req, res) => {
+        try{
+            const {username} = req.params;
+            const user = await User.find(username: username).select('-__v -password');
+            res.status(200).send(user);
+        }catch (error){
+            console.log(error);
+            return res.status(500).send("Server Error");
+        }
+    },
+
+    getReviews: async (req, res) => {
+        try{
+            {teacherName} = req.query;
+            const reviews = await Review.find({teacherName: teacherName})
+            .populate({path: 'user',select:'username'})
+            .select('-__v')
+            res.status(200).send(reviews);
+        } catch (error){
+            console.log(error);
+            return res.status(500).send("Server Error");
+        }
+    },
+
+    getReview: async (req, res) => {
+        try{
+            const {id} = req.params;
+            const review = await Review.find(id: id)
+            .populate({path: 'user',select:'username'})
+            .select('-__v -id')
+            res.status(200).send(review);
+        }catch (error){
+            console.log(error);
+            return res.status(500).send("Server Error");
+        }
+    }
+
+    resolveReport: async (req, res) => {
+        try{
+            const {id} = req.params;
+            const report = await Report.findById(id);
+            if (!report) return res.status(400).send("Report does not exist");
+            report.resolved = true;
+            await report.save();
+            res.status(200).send("Report resolved");
+        } catch (error){
+            console.log(error);
+            return res.status(500).send("Server Error");
+        }
+    },
+
+    deleteReports: async (req, res) => {
+        try{
+            await Report.deleteMany({resolved: true,date: {$gte: 30}});
+            res.status(200).send("Reports deleted");
+        } catch (error){
+            console.log(error);
+            return res.status(500).send("Server Error");
+        }
+    }
+
+    */
+
 }
 
 module.exports = adminController
