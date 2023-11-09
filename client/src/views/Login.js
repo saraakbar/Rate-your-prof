@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useNavigate, NavLink } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 const Login = ({ setUserState }) => {
   const navigate = useNavigate();
@@ -64,20 +65,21 @@ const Login = ({ setUserState }) => {
   }, [formErrors]);
   return (
     <>
+      <Navbar transparent />
       <main>
-        <section className="absolute w-full h-full">
+      <section className="min-h-screen bg-gray-700 relative">
           <div
-            className="absolute top-0 w-full h-full bg-gray-700"
+            className="absolute top-0 w-full h-full"
             style={{
               backgroundImage:
-                "url(/bg_5.jpg)",
-              backgroundSize: "100%",
+                "url(/register_bg_2.png)",
+              backgroundSize: "cover",
               backgroundRepeat: "no-repeat"
             }}
           ></div>
-          <div className="container mx-auto px-4 h-full">
-            <div className="flex content-center items-center justify-center h-full">
-              <div className="w-full lg:w-4/12 px-4">
+          <div className="container mx-auto px-4 h-min">
+            <div className="flex content-center items-center justify-center min-h screen mt-8">
+              <div className="w-full lg:w-4/12 px-4 mt-24 mb-8">
                 <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-200 border-0">
                   <div className="rounded-t mb-0 px-6 py-6">
                     <div className="text-center mb-3">
@@ -127,7 +129,6 @@ const Login = ({ setUserState }) => {
                             value={user.password}
                             style={{ transition: "all .15s ease" }}
                           />
-                          <p className={basestyle.error}>{formErrors.password}</p>
                           <button
                                 type="button"
                                 onClick={togglePasswordVisibility}
@@ -135,7 +136,8 @@ const Login = ({ setUserState }) => {
                              >
                              <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
                              </button>
-                        </div>       
+                        </div> 
+                        <p className={basestyle.error}>{formErrors.password}</p>      
                       </div>
                       <div>
                         <label className="inline-flex items-center cursor-pointer">
