@@ -117,24 +117,27 @@ const Register = () => {
   }, [formErrors]);
   return (
     <>
-    <Navbar transparent />
+      <Navbar transparent />
       <main>
       <section className="min-h-screen bg-gray-700 relative">
           <div
             className="absolute top-0 w-full h-full"
             style={{
-              backgroundImage: "url(/register_bg_2.png)",
-              backgroundSize: "cover",
-              backgroundRepeat: "no-repeat"
+              backgroundImage:
+                "url(/register_bg_2.png)",
+              backgroundSize: "contain",
+              backgroundRepeat: "no-repeat",
             }}
           ></div>
           <div className="container mx-auto px-4 h-min">
-            <div className="flex content-center items-center justify-center min-h-screen mt-8">
-              <div className="w-full lg:w-4/12 px-4 mt-24 mb-8">
+            <div className="flex content-center items-center justify-center min-h screen mt-8">
+              <div className="w-full lg:w-6/12 px-4 mt-24 mb-8">
                 <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-200 border-0">
                   <div className="rounded-t mb-0 px-6 py-6">
                     <div className="text-center mb-3">
-                      <h6 className="text-gray-600 text-sm font-bold">Sign up with</h6>
+                      <h6 className="text-gray-600 text-sm font-bold">
+                        Sign up with
+                      </h6>
                     </div>
                     <hr className="mt-6 border-b-1 border-gray-400" />
                   </div>
