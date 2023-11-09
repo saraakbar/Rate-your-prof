@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import basestyle from "../Base.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useNavigate, NavLink } from "react-router-dom";
 
@@ -11,6 +13,11 @@ const Login = ({ setUserState }) => {
     email: "",
     password: "",
   });
+  
+  const [showPassword, setShowPassword] = useState(false);
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword); }
 
   
   const changeHandler = (e) => {
@@ -63,7 +70,7 @@ const Login = ({ setUserState }) => {
             className="absolute top-0 w-full h-full bg-gray-700"
             style={{
               backgroundImage:
-                "url(/register_bg_2.png)",
+                "url(/bg_5.jpg)",
               backgroundSize: "100%",
               backgroundRepeat: "no-repeat"
             }}
@@ -71,7 +78,7 @@ const Login = ({ setUserState }) => {
           <div className="container mx-auto px-4 h-full">
             <div className="flex content-center items-center justify-center h-full">
               <div className="w-full lg:w-4/12 px-4">
-                <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-300 border-0">
+                <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-200 border-0">
                   <div className="rounded-t mb-0 px-6 py-6">
                     <div className="text-center mb-3">
                       <h6 className="text-gray-600 text-sm font-bold">
@@ -105,21 +112,30 @@ const Login = ({ setUserState }) => {
                       <div className="relative w-full mb-3">
                         <label
                           className="block uppercase text-gray-700 text-xs font-bold mb-2"
-                          htmlFor="grid-password"
+                          htmlFor="password"
                         >
                           Password
                         </label>
-                        <input
-                          type="password"
-                          className="border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-                          placeholder="Password"
-                          name="password"
-                          id="password"
-                          onChange={changeHandler}
-                          value={user.password}
-                          style={{ transition: "all .15s ease" }}
-                        />
-                        <p className={basestyle.error}>{formErrors.password}</p>
+                        <div className="flex items-center">
+                          <input
+                            type={showPassword ? "text" : "password"}
+                            className="border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
+                            placeholder="Password"
+                            name="password"
+                            id="password"
+                            onChange={changeHandler}
+                            value={user.password}
+                            style={{ transition: "all .15s ease" }}
+                          />
+                          <p className={basestyle.error}>{formErrors.password}</p>
+                          <button
+                                type="button"
+                                onClick={togglePasswordVisibility}
+                                className="absolute right-0 mr-3 top-4 text-gray-600 cursor-pointer"
+                             >
+                             <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                             </button>
+                        </div>       
                       </div>
                       <div>
                         <label className="inline-flex items-center cursor-pointer">

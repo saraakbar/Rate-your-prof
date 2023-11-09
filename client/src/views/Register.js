@@ -16,7 +16,7 @@ export default function Register() {
           <div
             className="absolute top-0 w-full h-full bg-gray-700"
             style={{
-              backgroundImage: "url(/register_bg_2.png)",
+              backgroundImage: "url(/bg_5.jpg)",
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat"
             }}
@@ -24,7 +24,7 @@ export default function Register() {
           <div className="container mx-auto px-4">
             <div className="flex content-center items-center justify-center">
               <div className="w-full lg:w-4/12 px-4 mt-8">
-                <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-300 border-0">
+                <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-200 border-0">
                   <div className="rounded-t mb-0 px-6 py-6">
                     <div className="text-center mb-3">
                       <h6 className="text-gray-600 text-sm font-bold">Sign up with</h6>
@@ -114,7 +114,7 @@ export default function Register() {
                                 onClick={togglePasswordVisibility}
                                 className="absolute right-0 mr-3 top-4 text-gray-600 cursor-pointer"
                              >
-                             <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
+                             <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
                              </button>
                          </div>
                     </div>
