@@ -5,65 +5,95 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useNavigate, NavLink } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const Login = ({ setUserState }) => {
-  const navigate = useNavigate();
-  const [formErrors, setFormErrors] = useState({});
-  const [isSubmit, setIsSubmit] = useState(false);
-  const [user, setUserDetails] = useState({
+const Login = ({ }) => {
+  const [user, setUser] = useState({
     email: "",
-    password: "",
+    password: ""
   });
-  
+
+  const [formErrors, setFormErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
 
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword); }
+  //const navigate = useNavigate();
 
-  
-  const changeHandler = (e) => {
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const onChange = (e) => {
     const { name, value } = e.target;
-    setUserDetails({
+    setUser({
       ...user,
-      [name]: value,
+      [name]: value
     });
   };
 
   const validateForm = (values) => {
-    const error = {};
+    const errors = {};
     const regex = /^[^\s+@]+@[^\s@]+\.[^\s@]{2,}$/i;
+    
     if (!values.email) {
-      error.email = "Email is required";
+      errors.email = "Email is required";
     } else if (!regex.test(values.email)) {
-      error.email = "Please enter a valid email address";
+      errors.email = "Please enter a valid email address";
     }
+
     if (!values.password) {
-      error.password = "Password is required";
+      errors.password = "Password is required";
     }
-    return error;
+
+    return errors;
   };
 
   const loginHandler = (e) => {
     e.preventDefault();
     setFormErrors(validateForm(user));
     setIsSubmit(true);
-    // if (!formErrors) {
-
-    // }
   };
+    useEffect(() => {
+      
+      const loginSuccess = () => {
+        toast.success("Login Successful!", {
+          position: toast.POSITION.TOP_RIGHT,
+          theme: "dark",
+        });
+      }
 
+      const loginError = (message) => {
+        toast.error(message, {
+          position: toast.POSITION.TOP_RIGHT,
+          theme: "dark",
+        })
+      }
 
-  useEffect(() => {
-    if (Object.keys(formErrors).length === 0 && isSubmit) {
-      console.log(user);
-      axios.post("http://localhost:8000/login", user).then((res) => {
-        alert(res.data.message);
-        setUserState(res.data.user);
-        navigate("/", { replace: true });
-      });
-    }
-  }, [formErrors]);
-  return (
+      if (Object.keys(formErrors).length === 0 && isSubmit) {
+        axios
+          .post("http://localhost:8000/login", user)
+          .then((res) => {
+            if (res.status === 201) {
+              loginSuccess();
+              localStorage.setItem("token", JSON.stringify(res.data.accessToken));
+              // navigate to home page
+            }
+          })
+          .catch((error) => {
+            if (error.response.status === 404) {
+              loginError("User not found.");
+            } else if (error.response.status === 400) {
+              loginError("Invalid credentials.");
+            } else if (error.response.status === 403) {
+              loginError("Your account was suspended.");
+            } else {
+              loginError("Server Error.");
+            }
+          });
+      }
+    }, [formErrors]);
+    return (
     <>
       <Navbar transparent />
       <main>
@@ -104,7 +134,7 @@ const Login = ({ setUserState }) => {
                           id="email"
                           className="border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
                           placeholder="Email"
-                          onChange={changeHandler}
+                          onChange={onChange}
                           value={user.email}
                           style={{ transition: "all .15s ease" }}
                         />
@@ -125,7 +155,7 @@ const Login = ({ setUserState }) => {
                             placeholder="Password"
                             name="password"
                             id="password"
-                            onChange={changeHandler}
+                            onChange={onChange}
                             value={user.password}
                             style={{ transition: "all .15s ease" }}
                           />
