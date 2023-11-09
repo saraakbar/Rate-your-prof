@@ -92,8 +92,8 @@ const UserController = {
             if (await bcrypt.compare(password, existingUser.password)) {
                 const token_user = { email: existingUser.email, id: existingUser._id, username: existingUser.username, role: existingUser.role};
                 const accessToken = generateAccessToken(token_user);
-                const response = { message: "Login successful"}
-                console.log(accessToken);
+                const response = {message: "Login successful", accessToken: accessToken}
+                //console.log(accessToken)
                 res.status(201).send(response)
             } else {
                 return res.status(400).send('Invalid credentials');
