@@ -14,7 +14,7 @@ export default function LandingPage() {
     try {
       axios.get("http://localhost:8000/").then((res) => {
         setResponseFromServer(res.data.message);
-      }, 2000); // Simulate a 2-second delay for the server response
+      }, 2000); 
     } catch (err) {
       console.log(err);
     }
