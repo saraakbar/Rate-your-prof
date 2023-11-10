@@ -5,6 +5,7 @@ const {auth,isAdmin} = require('../middleware/auth');
 
 router.post('/admin/login',AdminController.login);
 router.get('/admin/reports',auth,isAdmin, AdminController.reports);
+//router.post('admin/createModerator',auth,isAdmin, AdminController.createModerator);
 //router.delete('/admin/user/:username',auth,isAdmin, AdminController.deleteUser);
 //router.delete('/admin/review/:id',auth,isAdmin, AdminController.deleteReview);
 //router.patch('/admin/user/:username',auth,isAdmin, AdminController.suspendUser);

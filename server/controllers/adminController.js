@@ -51,6 +51,21 @@ const adminController = {
     },
 
     /*
+    createModerator: async (req, res) => {
+        try{
+            const {username, password} = req.body;
+            if (!username || !password) return res.status(400).send("Please enter all fields");
+            if (password.length < 8 || !/[a-z]/.test(password) ||!/[A-Z]/.test(password) ||!/[0-9]/.test(password) ) 
+            {
+                return res.status(400).send("Password must be at least 6 characters");
+            }
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const user = await User.create({username: username, password: hashedPassword, role: 'admin'});
+            res.status(200).send(user);
+        } catch (error){
+            console.log(error);
+            return res.status(500).send("Server Error");
+    }
     deleteReview: async (req, res) => {
         try{
             const {id} = req.params;
