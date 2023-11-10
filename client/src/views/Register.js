@@ -62,6 +62,8 @@ const Register = () => {
       error.erp = "ERP is required";
     } else if (values.erp.length !== 5) {
       error.erp = "Invalid ERP";
+    } else if (!/^[0-9]+$/.test(values.erp)) {
+      error.erp = "Invalid ERP";
     }
 
     const usernameRegex = /^(?=.{4})[a-z][a-z\d]*_?[a-z\d]+$/i;
@@ -125,7 +127,7 @@ const Register = () => {
             style={{
               backgroundImage:
                 "url(/register_bg_2.png)",
-              backgroundSize: "contain",
+              backgroundSize: "cover",
               backgroundRepeat: "no-repeat",
             }}
           ></div>
@@ -143,9 +145,10 @@ const Register = () => {
                   </div>
                   <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
                     <form>
-                      <div className="relative w-full mb-3">
+                      <div className="flex flex-wrap">
+                      <div className="relative w-1/2 md:w-1/2 pr-2 mb-3">
                         <label className="block uppercase text-gray-700 text-xs font-bold mb-2" htmlFor="first-name">
-                          First Name
+                           Name
                         </label>
                         <input
                           name="firstName"
@@ -159,9 +162,8 @@ const Register = () => {
                         <p className={basestyle.error}>{formErrors.firstName}</p>      
                       </div>
 
-                      <div className="relative w-full mb-3">
+                      <div className="relative  w-1/2 md:w-1/2 pl-2 mt-4 mb-3">
                         <label className="block uppercase text-gray-700 text-xs font-bold mb-2" htmlFor="last-name">
-                          Last Name
                         </label>
                         <input
                           name="lastName"
@@ -174,8 +176,9 @@ const Register = () => {
                         />
                         <p className={basestyle.error}>{formErrors.lastName}</p>      
                       </div>
-
-                      <div className="relative w-full mb-3">
+                      </div>
+                      <div className="flex flex-wrap">
+                      <div className="relative w-1/2 md:w-1/2 pr-2 mb-3">
                         <label className="block uppercase text-gray-700 text-xs font-bold mb-2" htmlFor="username">
                           Username
                         </label>
@@ -191,7 +194,7 @@ const Register = () => {
                         <p className={basestyle.error}>{formErrors.username}</p>
                       </div>
 
-                      <div className="relative w-full mb-3">
+                      <div className="relative w-1/2 md:w-1/2 pl-2 mb-3">
                         <label className="block uppercase text-gray-700 text-xs font-bold mb-2" htmlFor="erp">
                           ERP
                         </label>
@@ -205,6 +208,7 @@ const Register = () => {
                           style={{ transition: "all .15s ease" }}
                         />
                         <p className={basestyle.error}>{formErrors.erp}</p>
+                      </div>
                       </div>
 
                       <div className="relative w-full mb-3">
