@@ -18,7 +18,7 @@ const Login = ({ }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmit, setIsSubmit] = useState(false);
 
-  //const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -57,7 +57,7 @@ const Login = ({ }) => {
     useEffect(() => {
       
       const loginSuccess = () => {
-        toast.success("Login Successful!", {
+        toast.success("Login Successful! Loading Profile.", {
           position: toast.POSITION.TOP_RIGHT,
           theme: "dark",
         });
@@ -77,7 +77,9 @@ const Login = ({ }) => {
             if (res.status === 201) {
               loginSuccess();
               localStorage.setItem("token", JSON.stringify(res.data.accessToken));
-              // navigate to home page
+              localStorage.setItem("username", res.data.username);
+              const username = res.data.username;
+              navigate("/"+username+"/profile", { replace: true });
             }
           })
           .catch((error) => {

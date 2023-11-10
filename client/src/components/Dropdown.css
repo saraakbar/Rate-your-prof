@@ -1,0 +1,24 @@
+/* Dropdown CSS */
+.dropdown-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown-container:hover .dropdown-content {
+    display: block;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #86efac;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    min-width: 130px;
+    border: 1px solid #86efac; 
+    border-radius: 8px; 
+  }
+  
+  .button-container:hover .text-white {
+    background-color: #10b981;
+    border-radius: 8px;
+  }
