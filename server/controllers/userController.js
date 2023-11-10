@@ -92,7 +92,7 @@ const UserController = {
             if (await bcrypt.compare(password, existingUser.password)) {
                 const token_user = { email: existingUser.email, id: existingUser._id, username: existingUser.username, role: existingUser.role};
                 const accessToken = generateAccessToken(token_user);
-                const response = {message: "Login successful", accessToken: accessToken}
+                const response = {message: "Login successful", accessToken: accessToken,username: existingUser.username}
                 //console.log(accessToken)
                 res.status(201).send(response)
             } else {
