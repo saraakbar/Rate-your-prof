@@ -69,19 +69,6 @@ const Profile = () => {
     position: "relative", // Add position relative to the avatar container
   };
 
-  const editButtonStyle = {
-    position: "absolute",
-    height: "33px",
-    width: "33px",
-    top: 0,
-    right: 0,
-    background: "#334155",
-    padding: "0.5rem",
-    borderRadius: "100%",
-    cursor: "pointer",
-    margin: "15px",
-  };
-  
 
   const customStyle2 = {
     width: "325px",
@@ -101,7 +88,7 @@ const Profile = () => {
 
   return (
     <>
-      <Navbar transparent />
+      <Navbar transparent fName={profile.firstName}/>
       <main>
         <section className="relative block h-500-px" style={bodyStyle}>
           <div className="profile-page flex flex-row space-x-4 items-start">
@@ -117,9 +104,31 @@ const Profile = () => {
                     src="/avatar.png"
                     alt="Bonnie image"
                   />
-                  <div className="flex border border-white items-center" style={editButtonStyle}>
-                    <FontAwesomeIcon icon={faPencilAlt} className="text-white"/>
-                  </div>
+                  <div
+  className="flex border border-white items-center"
+  style={{
+    position: "absolute",
+    height: "33px",
+    width: "33px",
+    top: 0,
+    right: 0,
+    background: "#334155",
+    padding: "0.5rem",
+    borderRadius: "100%",
+    cursor: "pointer",
+    margin: "15px",
+    transition: "background-color 0.3s ease", // Add transition for a smooth effect
+  }}
+  onMouseOver={(e) => {
+    e.currentTarget.style.backgroundColor = "#10b981";
+  }}
+  onMouseOut={(e) => {
+    e.currentTarget.style.backgroundColor = "#334155"; // Reset to the original color
+  }}
+>
+  <FontAwesomeIcon icon={faPencilAlt} className="text-white" />
+</div>
+
                 </div>
                 <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
                   {`${profile.firstName} ${profile.lastName}`}

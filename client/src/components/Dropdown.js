@@ -1,29 +1,27 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFaceKissWinkHeart, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 import "./Dropdown.css";
 import { useNavigate, NavLink } from "react-router-dom";
+import { faSignOutAlt,faGear } from "@fortawesome/free-solid-svg-icons";
 
-const UserMenuDropdown = ({ color }) => {
-
+const UserMenuDropdown = ({fName}) => {
   const navigate = useNavigate();
   return (
     <div className="dropdown-container">
         <div className="button-container">
-      <button
-        className={`text-white font-bold uppercase text-sm px-4 rounded outline-none focus:outline-none ease-linear transition-all duration-150 ${
-          color === "white" ? "bg-blueGray-700" : "bg-" + color + "-500"
-        }`}
-      >
-        <FontAwesomeIcon icon={faUser} className="mr-2" />
-        Username
-      </button>
+        <button
+  className={` text-white font-bold uppercase text-sm px-4 rounded outline-none focus:outline-none ease-linear transition-all duration-150`}
+>
+  <FontAwesomeIcon icon={faUser} className="mr-2" />
+  {fName}
+</button>
 
       <div
-        className={`dropdown-content text-base bg-white text-blueGray-700 rounded-lg shadow-lg py-2 px-4`}
-      >
+className={`dropdown-content text-base bg-white rounded-lg shadow-lg py-2 px-4`}
+style={{ marginLeft: "24px" }}      >
         <button
-          className="text-left text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent hover:bg-gray-200"
+          className="hover:text-white text-left text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent"
           onClick={(e) => {
             e.preventDefault();
             const username = localStorage.getItem("username");
@@ -32,20 +30,22 @@ const UserMenuDropdown = ({ color }) => {
             }
           }}
         >
+          <FontAwesomeIcon icon={faUser} className="mr-2" />
           Profile
         </button>
         <button
-          className="text-left text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent hover:bg-gray-200"
+          className="hover:text-white text-left text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent hover:bg-gray-200"
           onClick={(e) => {
             e.preventDefault();
             // Handle settings action
           }}
         >
+          <FontAwesomeIcon icon={faGear} className="mr-2" />
           Settings
         </button>
-        <div className="h-0 my-2 border border-solid border-t-0 border-blueGray-800 opacity-25" />
+        <div className="h-0 my-2 border border-solid border-t-0 border-gray-700 opacity-25" />
         <button
-          className="text-left text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent hover:bg-gray-200"
+          className="hover:text-white text-left text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent hover:bg-gray-200"
           onClick={(e) => {
             e.preventDefault();
             localStorage.removeItem("token");
@@ -53,6 +53,7 @@ const UserMenuDropdown = ({ color }) => {
             navigate("/login",{replace:true});
           }}
         >
+          <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
           Logout
         </button>
       </div>
@@ -61,6 +62,4 @@ const UserMenuDropdown = ({ color }) => {
   );
 };
 
-export default function DropdownRender() {
-  return <UserMenuDropdown color="green-400" />;
-}
+export default UserMenuDropdown;
