@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
     password: {type: String, required: true},
     role:{ type: String, enum: ['user', 'admin'],required: true},
     suspended: {type: Boolean, default: false},
+    img: {type: String, default: null},
 })
 
 const User = mongoose.model('User', userSchema);

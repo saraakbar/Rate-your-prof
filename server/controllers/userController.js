@@ -114,7 +114,7 @@ const UserController = {
                 const userInfo = await User.findOne({username}).select('-suspended -password -__v -_id -role');
 
                 const userId = req.user.id;
-                const reviews = await Review.find({user: userId}).populate({path:'teacher', select:'name -_id'}).select('-_id -__v -user -likes -dislikes')
+                const reviews = await Review.find({user: userId}).populate({path:'teacher', select:'name ID -_id'}).select('-__v -user -likes -dislikes')
 
                 const userProfile = {
                     userInfo,
@@ -305,9 +305,35 @@ const UserController = {
             console.error(error);
             return res.status(500).json({ message: 'Server error' });
         }
-      }
+      },
 
-};
+     uploadAvatar: async (req, res) => {
+        try {
+            const username = req.params.username;
+            const userid = await User.find({username: username}).select('_id');
+            if (!userid){
+                return res.status(404).json({ message: 'User not found' });
+            }
+            if (!req.file) {
+              return res.status(400).send('No file uploaded');
+            }
+
+            const fileName = req.file.filename;
+            //const filePath = `${fileName}`;
+            const filePath = `/uploads/${fileName}`;
+
+            const result = await User.findByIdAndUpdate(userid, { img: filePath });
+
+            res.status(201).send('File uploaded successfully');
+
+     } catch(error)
+        {
+            console.log(error);
+            return res.status(500).send("Server Error");
+        }
+
+    }
+}
 
 
 module.exports = UserController;

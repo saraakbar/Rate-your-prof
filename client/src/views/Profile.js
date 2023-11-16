@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar2";
+import ReviewCard from "../components/ReviewCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
@@ -7,11 +8,14 @@ import { useNavigate, NavLink } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Modal from 'react-modal';
+import FileInput from '../components/FileInput'
 
 const Profile = () => {
 
   const navigate = useNavigate();
   const {username} = useParams();
+  const [image, setImage] = useState(null);
   const [profile, setProfile] = useState({
     email: "",
     firstName: "",
@@ -20,6 +24,16 @@ const Profile = () => {
     erp: "",
     reviews: [],
   });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -49,11 +63,37 @@ const Profile = () => {
         const email = response.data.userInfo.email
         const erp = response.data.userInfo.erp
         const reviews = response.data.reviews
-        setProfile({ firstName, lastName, userName, email, erp, reviews });
+        const img = response.data.userInfo.img
+
+        if (img !== null && img !== '') {
+          const imageResponse = await axios.get(`http://localhost:8000${img}`, {
+            responseType: 'arraybuffer',
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+    
+          // Convert the binary image data to a base64-encoded string
+          const base64Data = btoa(
+            new Uint8Array(imageResponse.data).reduce(
+              (data, byte) => data + String.fromCharCode(byte),
+              ''
+            )
+          );
+    
+          // Set the base64 data as the image source
+          setImage(`data:image/jpeg;base64,${base64Data}`);
+        } else {
+          // Set image to null when img is empty or null
+          setImage(null);
+        }
+    
+          
+        setProfile({ firstName, lastName, userName, email, erp, reviews});
         setIsLoading(false);
       } catch (error) {
-        registerError("Server Error.")
         console.error(error);
+        return registerError(error.response.data.message);
         // Handle error, e.g., redirect to an error page
       }
     };
@@ -61,14 +101,27 @@ const Profile = () => {
     fetchProfile()
   }, []);
 
- 
-
   const customImageStyle = {
     width: "150px",
     height: "150px",
     position: "relative", // Add position relative to the avatar container
   };
 
+  const modalStyles = {
+    content: {
+      backgroundColor:'#e5e7eb',
+      position:'relative',
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+      maxWidth: '500px',
+      borderRadius: '10px',
+      padding: '0px',      
+    },
+  };
 
   const customStyle2 = {
     width: "325px",
@@ -101,8 +154,8 @@ const Profile = () => {
                   <img
                     className="mb-3 rounded-full"
                     style={customImageStyle}
-                    src="/avatar.png"
-                    alt="Bonnie image"
+                    src={image || '/avatar.png'}                    
+                    alt="avatar"
                   />
                   <div
   className="flex border border-white items-center"
@@ -125,6 +178,7 @@ const Profile = () => {
   onMouseOut={(e) => {
     e.currentTarget.style.backgroundColor = "#334155"; // Reset to the original color
   }}
+  onClick={openModal}
 >
   <FontAwesomeIcon icon={faPencilAlt} className="text-white" />
 </div>
@@ -154,16 +208,23 @@ const Profile = () => {
               className="mt-24 mb-4 bg-gray-200 w-full mr-4 bg-white border border-gray-200 rounded-lg shadow"
               style={customStyle3}
             >
-              <div className="py-4 px-4">
+              <div className="py-4 px-4" style={{ overflowY: 'auto', maxHeight: '500px' }}>
                 <h2 className="text-2xl font-semibold mb-4">Reviews</h2>
-                {/* Add your review content here */}
-                {/* Example: */}
-                <p>No reviews yet.</p>
+                {profile.reviews.map((review) => (
+                  <ReviewCard key={review._id} review={review} />
+                ))}
               </div>
             </div>
           </div>
         </section>
       </main>
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        style={modalStyles}
+      >
+        <FileInput onClose={closeModal} />
+      </Modal>
     </>
   );
 }
