@@ -23,10 +23,17 @@ const FileUpload = ({onClose}) => {
     });
   };
 
+  const loginError = (message) => {
+    toast.error(message, {
+      position: toast.POSITION.TOP_RIGHT,
+      theme: "dark",
+    })
+  }
+
   const handleUpload = async () => {
     try {
       if (!file) {
-        console.error('No file selected');
+        loginError("No file selected");
         return;
       }
 
