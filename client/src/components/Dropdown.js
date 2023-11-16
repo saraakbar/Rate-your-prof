@@ -18,8 +18,7 @@ const UserMenuDropdown = ({fName}) => {
 </button>
 
       <div
-className={`dropdown-content text-base bg-white rounded-lg shadow-lg py-2 px-4`}
-style={{ marginLeft: "24px" }}      >
+className={`dropdown-content text-base bg-white rounded-lg shadow-lg py-2 px-4`}    >
         <button
           className="hover:text-white text-left text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent"
           onClick={(e) => {

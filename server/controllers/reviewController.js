@@ -76,17 +76,26 @@ const reviewController = {
                 await Review.findOneAndUpdate({_id: id}, { $inc: { numOfDislikes: -1 } });
                 await Review.findOneAndUpdate({_id: id }, { $push: { likes: userId } });
                 await Review.findOneAndUpdate({_id: id}, { $inc: { numOfLikes: 1 } });
-                res.status(200).json({message: 'dislike removed, review liked'})
+                const info = await Review.find({_id: id}).select('numOfLikes numOfDislikes -_id')
+                const message = 'dislike removed, review liked'
+                const response = {info,message}
+                res.status(200).json(response)
                 }
             else if (likes.likes.includes(userId)) {
                 await Review.findOneAndUpdate({_id: id}, { $pull: { likes: userId } });
                 await Review.findOneAndUpdate({_id: id}, { $inc: { numOfLikes: -1 } });
-                res.status(200).json({message: 'Like removed'})
+                const info = await Review.find({_id: id}).select('numOfLikes numOfDislikes -_id')
+                const message =  'Like removed'
+                const response = {info,message}
+                res.status(200).json(response)
             }
              else{
                 await Review.findOneAndUpdate({_id: id }, { $push: { likes: userId } });
                 await Review.findOneAndUpdate({_id: id}, { $inc: { numOfLikes: 1 } });
-                res.status(200).json({message: 'Review liked'})
+                const info = await Review.find({_id: id}).select('numOfLikes numOfDislikes -_id')
+                const message = 'Review liked'
+                const response = {info,message}
+                res.status(200).json(response)
             }
         } catch (error) {
             console.error(error);
@@ -108,17 +117,26 @@ const reviewController = {
                 await Review.findOneAndUpdate({_id: id}, { $inc: { numOfLikes: -1 } });
                 await Review.findOneAndUpdate({_id: id }, { $push: { dislikes: userId } });
                 await Review.findOneAndUpdate({_id: id}, { $inc: { numOfDislikes: 1 } });
-                res.status(200).json({message: 'like removed, review disliked'})
+                const info = await Review.find({_id: id}).select('numOfLikes numOfDislikes -_id')
+                const message = 'like removed, review disliked'
+                const response = {info, message}
+                res.status(200).json(response)
             }
             else if (likes.dislikes.includes(userId)) {
                 await Review.findOneAndUpdate({_id: id}, { $pull: { dislikes: userId } });
                 await Review.findOneAndUpdate({_id: id}, { $inc: { numOfDislikes: -1 } });
-                res.status(200).json({message: 'dislike removed'})
+                const info = await Review.find({_id: id}).select('numOfLikes numOfDislikes -_id')
+                const message = 'dislike removed'
+                const response = {info,message}
+                res.status(200).json(response)
             }
             else{
                 await Review.findOneAndUpdate({_id: id }, { $push: { dislikes: userId } });
                 await Review.findOneAndUpdate({_id: id}, { $inc: { numOfDislikes: 1 } });
-                res.status(200).json({message: 'Review disliked'})
+                const info = await Review.find({_id: id}).select('numOfLikes numOfDislikes -_id')
+                const message = 'Review disliked'
+                const response = {info,message}
+                res.status(200).json(response)
             }
         } catch (error) {
             console.error(error);

@@ -6,7 +6,7 @@
 
 .button-container {
   position: relative;
-  width: 200px;
+  width:120px;
   text-align: center;
 }
 
@@ -14,7 +14,7 @@
   background-color: #cbd5e1;
   color: #475569;
   border-radius: 8px;
-  width: 150px;
+  width: 120px;
 }
 
 .dropdown-container .dropdown-content {
@@ -23,7 +23,7 @@
   background-color: #cbd5e1;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
-  width: 150px;
+  width: 120px;
   }
 
 .dropdown-container:hover .dropdown-content {
