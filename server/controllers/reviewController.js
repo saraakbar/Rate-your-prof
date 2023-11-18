@@ -21,7 +21,7 @@ const reviewController = {
     create: async (req, res) => {
         try {
             const {course, criteria, comment, isGrad} = req.body
-            const {teacher} = req.query
+            const teacher = req.params.teacherid
             const owner = req.user.id
             const teach = await Teacher.findOne({ID:teacher}).select('_id')
 

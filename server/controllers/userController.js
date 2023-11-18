@@ -5,7 +5,7 @@ const Review = require('../models/reviewModel')
 const Report = require('../models/reportedModel')
 
 function generateAccessToken(user) {
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1200s' })
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '3600s' })
 }
 
 const UserController = {
