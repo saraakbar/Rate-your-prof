@@ -318,6 +318,13 @@ const UserController = {
               return res.status(400).send('No file uploaded');
             }
 
+            const prevImg = await User.find({username: username}).select('img -_id');
+            if (prevImg != null) {
+                const prevImgPath = prevImg[0].img;
+                const fs = require('fs');
+                fs.unlinkSync(`.${prevImgPath}`);
+            }
+
             const fileName = req.file.filename;
             //const filePath = `${fileName}`;
             const filePath = `/uploads/${fileName}`;

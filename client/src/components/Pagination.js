@@ -1,4 +1,7 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faAngleRight, faAngleLeft} from '@fortawesome/free-solid-svg-icons';
+import {faAngleDoubleLeft, faAngleDoubleRight} from '@fortawesome/free-solid-svg-icons';
 
 const Pagination = ({ totalPages, currentPage, onPageChange }) => {
   const displayPages = 5; // Number of pages to display at once
@@ -21,7 +24,7 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
             currentPage === 1 ? 'bg-gray-300 text-gray-700 cursor-not-allowed' : 'bg-gray-700 text-white'
         }`}
       >
-        &#171;
+        <FontAwesomeIcon icon={faAngleDoubleLeft} />
       </button>
 
       <button
@@ -31,7 +34,7 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
         }`}
         disabled={currentPage === 1}
       >
-        &lt;
+        <FontAwesomeIcon icon={faAngleLeft} />
       </button>
 
       {pagesToShow.map((page) => (
@@ -51,7 +54,7 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
         }`}
         disabled={currentPage === totalPages}
       >
-         &gt;
+         <FontAwesomeIcon icon={faAngleRight} />
       </button>
 
       <button
@@ -60,7 +63,7 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
             currentPage === totalPages ? 'bg-gray-300 text-gray-700 cursor-not-allowed' : 'bg-gray-700 text-white'
         }`}
       >
-        &#187;
+        <FontAwesomeIcon icon={faAngleDoubleRight} />
       </button>
     </div>
   );

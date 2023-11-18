@@ -14,8 +14,18 @@ const storage = multer.diskStorage({
     cb(null, `${uniqueSuffix}.${fileExtension}`);
   },
 });
+
+const fileFilter = (req, file, cb) => {
+  const allowedFileTypes = ['image/jpeg', 'image/png'];
+
+  if (allowedFileTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
   
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage, fileFilter: fileFilter });
 
 router.post('/login', UserController.login);
 router.post('/register', UserController.register);

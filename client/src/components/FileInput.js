@@ -53,6 +53,7 @@ const FileUpload = ({onClose}) => {
       onClose();
 
     } catch (error) {
+      loginError("Invalid file type. Please try again.");
       console.error('Error uploading file:', error);
     }
   };
