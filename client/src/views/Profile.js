@@ -88,7 +88,7 @@ const Profile = () => {
           setImage(null);
         }
     
-          
+        localStorage.setItem("firstName", firstName);
         setProfile({ firstName, lastName, userName, email, erp, reviews});
         setIsLoading(false);
       } catch (error) {

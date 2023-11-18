@@ -80,7 +80,7 @@ const FileUpload = ({onClose}) => {
             />
           </svg>
           <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-            <span className="font-semibold">Click to upload</span>
+            <span className="font-semibold">Choose file to upload</span>
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400">PNG or JPG (PREFERABLE. 512x512px)</p>
         </div>
