@@ -34,8 +34,9 @@ const FileUpload = ({onClose}) => {
     try {
       if (!file) {
         loginError("No file selected");
-        return;
       }
+
+      else {
 
       const formData = new FormData();
       formData.append('avatar', file);
@@ -47,13 +48,14 @@ const FileUpload = ({onClose}) => {
         },
       });
 
-      console.log(response.data);
       loginSuccess();
       setFile(null); // Reset file state after successful upload
       onClose();
+    }
 
     } catch (error) {
       loginError("Invalid file type. Please try again.");
+
       console.error('Error uploading file:', error);
     }
   };

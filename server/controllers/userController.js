@@ -319,11 +319,12 @@ const UserController = {
             }
 
             const prevImg = await User.find({username: username}).select('img -_id');
-            if (prevImg != null) {
+            if (Array.isArray(prevImg) && prevImg.length > 0 && prevImg[0].img) {
                 const prevImgPath = prevImg[0].img;
                 const fs = require('fs');
                 fs.unlinkSync(`.${prevImgPath}`);
-            }
+              }
+              
 
             const fileName = req.file.filename;
             //const filePath = `${fileName}`;
