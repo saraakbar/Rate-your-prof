@@ -8,7 +8,7 @@ import { faSignOutAlt,faGear } from "@fortawesome/free-solid-svg-icons";
 const UserMenuDropdown = ({fName}) => {
   const navigate = useNavigate();
   return (
-    <div className="dropdown-container">
+    <div className="mr-2 dropdown-container">
         <div className="button-container">
         <button
   className={` text-white font-bold uppercase text-sm px-4 rounded outline-none focus:outline-none ease-linear transition-all duration-150`}

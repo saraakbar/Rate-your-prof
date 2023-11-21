@@ -47,6 +47,7 @@ export default function Navbar2({transparent, fName}) {
                 navigate('/teachers',{replace:true})
               }}
               >Teachers</button>
+
             <div className=" flex w-full sm:w-7/12 md:w-5/12 px-4 lg:ml-auto">
        
                 <span className="font-normal leading-snug flex text-center white-space-no-wrap border border-solid border-emerald-600 rounded-full text-sm bg-emerald-100 items-center rounded-r-none pl-2 py-1 text-green-800 border-r-0 placeholder-emerald-300">

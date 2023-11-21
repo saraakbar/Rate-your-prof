@@ -1,67 +1,52 @@
 const Review = require('../models/reviewModel')
 const Teacher = require('../models/teacherModel')
 
-function avg_calculation(criteria){
-    const totalRating = criteria.assessment_and_Feedback +
-                        criteria.content_Knowledge +
-                        criteria.instructional_Delivery +
-                        criteria.fair_Grading +
-                        criteria.exam_difficulty +
-                        criteria.course_Difficulty +
-                        criteria.course_Workload +
-                        criteria.course_Experience +
-                        criteria.professionalism_and_Communication;
-    
-    // Calculate the average rating for assessment_and_Feedback
-    const averageRating = totalRating / 9;
-    return averageRating;
-  }
-
 const reviewController = {
     create: async (req, res) => {
         try {
-            const {course, criteria, comment, isGrad} = req.body
-            const teacher = req.params.teacherid
-            const owner = req.user.id
-            const teach = await Teacher.findOne({ID:teacher}).select('_id')
+          const { course, criteria, isGrad } = req.body;
+          const teacherId = req.params.teacherid;
+          const ownerId = req.user.id;
+    
+          const teacher = await Teacher.findOne({ ID: teacherId }).select('_id');
+    
+          if (!teacher) {
+            return res.status(404).json({ message: 'Teacher not found' });
+          }
+    
+          if (!(course && criteria && isGrad !== undefined && isGrad !== null)) {
+            return res.status(400).send('All input is required');
+          }
+    
+          const isCriteriaValid = criteria.every(
+            (criterion) => criterion.rating >= 1 && criterion.rating <= 5
+          );
+    
+          if (!isCriteriaValid) {
+            return res.status(400).send('Criteria ratings must be between 1 and 5');
+          }
+    
+          // Calculate the average rating for all criteria
+          const totalRating = criteria.reduce((total, criterion) => total + Number(criterion.rating), 0);
+          const average = (totalRating / criteria.length).toFixed(1);
 
-            if (!teach) {
-                return res.status(404).json({ message: 'Teacher not found' });
-            }
-
-            if (!(course && criteria && isGrad)) {
-                return res.status(400).send("All input is required");
-            }
-
-            const isCriteriaValid = Object.values(criteria).every(
-                (rating) => rating >= 1 && rating <= 5
-              );
-          
-              if (!isCriteriaValid) {
-                return res.status(400).send('Criteria ratings must be between 1 and 5');
-              }
-
-            const average = avg_calculation(criteria).toFixed(1)
-
-            const result = await Review.create({
-                user: owner,
-                teacher: teach,
-                course: course,
-                criteria: criteria,
-                comment: comment,
-                isGradReview: isGrad,
-                likes: [],
-                dislikes: [],
-                avgRating: average
-            })
-
-            res.status(200).json({ message: 'Review added successfully' });
-  
+          const result = await Review.create({
+            user: ownerId,
+            teacher: teacher,
+            course: course,
+            criteria: criteria,
+            isGradReview: isGrad,
+            likes: [],
+            dislikes: [],
+            avgRating: average,
+          });
+    
+          res.status(200).json({ message: 'Review added successfully' });
         } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: 'Server Error' });
+          console.error(error);
+          res.status(500).json({ message: 'Server Error' });
         }
-    },
+      },
 
     like: async (req, res) => {
         try{

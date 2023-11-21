@@ -22,6 +22,7 @@ const userRoute = require('./routes/userRoute');
 const teacherRoute = require('./routes/teacherRoute');
 const reviewRoute = require('./routes/reviewRoute');
 const adminRoute = require('./routes/adminRoute');
+const criteriaRoute = require('./routes/criteriaRoute');
 
 app.get("/", (req, res) => {
   const response = "Welcome to Rate Your Professor";
@@ -32,5 +33,6 @@ app.use(userRoute);
 app.use(teacherRoute);
 app.use(reviewRoute);
 app.use(adminRoute);
+app.use(criteriaRoute);
 
 app.listen(8000, () => console.log('Server Started'))

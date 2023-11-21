@@ -1,12 +1,12 @@
-// Review.js
+// ReviewCard.js
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faThumbsUp, faThumbsDown, faFlag} from '@fortawesome/free-solid-svg-icons';
+import { faThumbsUp, faThumbsDown, faFlag } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import '../components/ReviewCard.css';
 
-const Review = ({ review }) => {
+const ReviewCard = ({ review }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
   const [likeCount, setLikeCount] = useState(review.numOfLikes);
@@ -14,18 +14,22 @@ const Review = ({ review }) => {
 
   const navigate = useNavigate();
 
-  const token = JSON.parse(localStorage.getItem("token"));
+  const token = JSON.parse(localStorage.getItem('token'));
   if (!token) {
-    navigate("/login", { replace: true });
+    navigate('/login', { replace: true });
   }
 
   const handleLike = async (reviewId) => {
     try {
-      const response = await axios.patch(`http://localhost:8000/like/${reviewId}`, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.patch(
+        `http://localhost:8000/like/${reviewId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.data.message === 'dislike removed, review liked') {
         setIsLiked(true);
@@ -39,7 +43,6 @@ const Review = ({ review }) => {
       }
       setLikeCount(response.data.info[0]?.numOfLikes);
       setDislikeCount(response.data.info[0]?.numOfDislikes);
-
     } catch (error) {
       console.error('Error liking review:', error);
     }
@@ -47,11 +50,15 @@ const Review = ({ review }) => {
 
   const handleDislike = async (reviewId) => {
     try {
-      const response = await axios.patch(`http://localhost:8000/dislike/${reviewId}`, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.patch(
+        `http://localhost:8000/dislike/${reviewId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.data.message === 'like removed, review disliked') {
         setIsLiked(false);
@@ -89,8 +96,10 @@ const Review = ({ review }) => {
       <div className="mt-4">
         <p className="text-lg font-semibold">Criteria:</p>
         <ul className="list-disc pl-5 mt-2">
-          {Object.entries(review.criteria).map(([key, value]) => (
-            <li key={key}>{key.replace(/_/g, ' ')}: {value}</li>
+          {review.criteria.map((criterion) => (
+            <li key={criterion._id}>
+              {criterion.criterion.name}: {criterion.rating} - {criterion.comment}
+            </li>
           ))}
         </ul>
       </div>
@@ -120,4 +129,4 @@ const Review = ({ review }) => {
   );
 };
 
-export default Review;
+export default ReviewCard;

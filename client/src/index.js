@@ -9,6 +9,7 @@ import Register from "./views/Register.js";
 import LandingPage from "./views/LandingPage.js";
 import Profile from "./views/Profile.js";
 import Teachers from "./views/Teachers.js";
+import CreateReview from "./views/CreateReview.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -20,6 +21,7 @@ root.render(
         <Route path="/" element={<LandingPage />} />
         <Route path="/:username/profile" element={<Profile />} />
         <Route path="/teachers" element={<Teachers />}/>
+        <Route path="/create_review/:teacherid" element={<CreateReview />}/>
     </Routes>
   </BrowserRouter>
 );

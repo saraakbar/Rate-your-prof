@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 
 const TeacherCard = ({ teacher }) => {
-  const { name, faculty_type, department, position } = teacher;
+  const { name, faculty_type, department, position, university} = teacher;
 
   return (
     <div className="teacher-card-container">
@@ -16,7 +16,7 @@ const TeacherCard = ({ teacher }) => {
           style={{ marginRight: '15px' }}
         >
           <FontAwesomeIcon icon={faPlusCircle} className="mr-2 mt-1" />
-          <Link to={`/create-review/${teacher.ID}`} className="flex items-center">
+          <Link to={`/create_review/${teacher.ID}`} className="flex items-center">
             <span>Create Review</span>
           </Link>
         </button>
@@ -25,8 +25,9 @@ const TeacherCard = ({ teacher }) => {
         <h3 className="hoverable-name text-lg font-bold mb-2">
           <Link to={`/teacher/${teacher.ID}`}>{name}</Link>
         </h3>
+        <p className="mb-2">University: {university && university.name}</p>
         <p className="mb-2">Faculty Type: {faculty_type}</p>
-        <p className="mb-2">Department: {department}</p>
+        <p className="mb-2">Department: {department && department.name}</p>
         <p>Position: {position}</p>
       </div>
     </div>

@@ -13,11 +13,13 @@ const Teachers = () => {
   const [fName, setFirstName] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [dropdown1Options, setDropdown1Options] = useState([]);
   const [dropdown1Value, setDropdown1Value] = useState(null);
   const [dropdown2Value, setDropdown2Value] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [isPressed, setIsPressed] = useState(false);
-
+  const [dropdown3Options, setDropdown3Options] = useState([]);
+  const [dropdown3Value, setDropdown3Value] = useState(null);
 
   useEffect(() => {
     const registerError = (message) => {
@@ -34,6 +36,49 @@ const Teachers = () => {
       navigate("/login", { replace: true });
     }
 
+    const fetchDepartments = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/departments", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const departmentsWithSelectOption = [
+          { _id: 'Select Department', name: 'Select Department' },
+          ...response.data
+        ];
+    
+        setDropdown1Options(departmentsWithSelectOption);
+      } catch (error) {
+        console.error(error);
+        registerError(error.response?.data?.message || "Failed to fetch departments");
+      }
+    }
+
+    fetchDepartments();
+
+    const fetchUniversities = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/universities", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const universitiesOp = [
+          { _id: 'Select University', name: 'Select University' },
+          ...response.data
+        ];
+    
+        setDropdown3Options(universitiesOp);
+      } catch (error) {
+        console.error(error);
+        registerError(error.response?.data?.message || "Failed to fetch University");
+      }
+    }
+
+    fetchUniversities();
+
     const fetchProfile = async () => {
       try {
           setIsPressed(false);
@@ -42,9 +87,10 @@ const Teachers = () => {
               Authorization: `Bearer ${token}`,
             },
             params: {
+              university: dropdown3Value?.value === 'Select University' ? null : dropdown3Value?.value,
               page: currentPage,
-              department: dropdown1Value?.value === 'Select+Department' ? null : dropdown1Value?.value,
-              facultyType: dropdown2Value?.value === 'Select+Faculty+Type' ? null : dropdown2Value?.value,
+              department: dropdown1Value?.value === 'Select Department' ? null : dropdown1Value?.value,
+              facultyType: dropdown2Value?.value === 'Select Faculty Type' ? null : dropdown2Value?.value,
               facultyName: searchValue || null,
             },
           });
@@ -52,9 +98,6 @@ const Teachers = () => {
           setTeachers(response.data.teachers);
           setTotalPages(Math.ceil(response.data.total / 10));
 
-          console.log(teachers);
-          console.log(response);
-        
       } catch (error) {
         console.error(error);
         return registerError(error.response.data.message);
@@ -62,7 +105,7 @@ const Teachers = () => {
     };
 
     fetchProfile();
-  }, [currentPage,dropdown1Value,dropdown2Value,isPressed]);
+  }, [currentPage,dropdown1Value,dropdown2Value,dropdown3Value,isPressed]);
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
@@ -74,19 +117,6 @@ const Teachers = () => {
     minHeight: '100vh',
     backgroundColor: "#475569",
   };
-
-  // Sample data for dropdown options
-  const options = [
-    { value: 'Select Department', label: 'Select Department' },
-    { value: 'Accounting & Law', label: 'Accounting & Law' },
-    { value: 'Computer Science', label: 'Computer Science' },
-    { value: 'Economics', label: 'Economics' },
-    { value: 'Finance', label: 'Finance' },
-    { value: 'Management', label: 'Management' },
-    { value: 'Marketing', label: 'Marketing' },
-    { value: 'Mathematical Sciences', label: 'Mathematical Sciences' },
-    { value: 'Social Sciences & Liberal Arts', label: 'Social Sciences & Liberal Arts' },
-  ];
 
   const options2 = [
     { value: 'Select Faculty Type', label: 'Select Faculty Type' },
@@ -108,7 +138,16 @@ const Teachers = () => {
             <div className="flex items-center">
               {/* Dropdown 1 */}
               <Select
-                options={options}
+                options={dropdown3Options.map(university => ({ value: university._id, label: university.name }))}
+                value={dropdown3Value}
+                onChange={(selectedOption) => setDropdown3Value(selectedOption)}
+                placeholder="Select University"
+                className="mr-4" // Adjust the width as needed
+                styles={{ control: (styles) => ({ ...styles, width: '250px' }) }}
+              />
+
+              <Select
+                options={dropdown1Options.map(department => ({ value: department._id, label: department.name }))}
                 value={dropdown1Value}
                 onChange={(selectedOption) => setDropdown1Value(selectedOption)}
                 placeholder="Select Department"
@@ -144,7 +183,7 @@ const Teachers = () => {
                 Search
               </button>
             </div>
-            <div className="bg-gray-200 p-4 rounded mb-4 mt-4" style={{ overflowY: 'auto', maxHeight: '500px',width:'830px' }}>
+            <div className="bg-gray-200 p-4 rounded mb-4 mt-4" style={{ overflowY: 'auto', maxHeight: '500px',width:'1090px' }}>
             <div>
             <div className="mb-4">
             <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />

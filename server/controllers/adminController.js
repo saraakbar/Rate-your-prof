@@ -1,6 +1,8 @@
 const User = require('../models/userModel')
 const Review = require('../models/reviewModel')
 const Report = require('../models/reportedModel')
+const University = require('../models/universityModel');
+const Department = require('../models/departmentModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -49,6 +51,28 @@ const adminController = {
             return res.status(500).send("Server Error");
         }
     },
+
+    createUniversity: async (req, res) => {
+        try {
+          const { name, ID, location, logo } = req.body;
+          const university = await University.create({ name, ID, location, logo });
+          res.status(201).json("university created");
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ message: 'Internal Server Error' });
+        }
+      },
+
+      createDepartment: async (req, res) => {
+        try {
+          const { name, university } = req.body;
+          const department = await Department.create({ name, university: university});
+          res.status(201).json(department);
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ message: 'Internal Server Error' });
+        }
+      },
 
     /*
     createModerator: async (req, res) => {

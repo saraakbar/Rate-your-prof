@@ -107,39 +107,47 @@ const UserController = {
 
     profile: async (req, res) => {
         try {
-            const username = req.params.username;
-            const currentUser = req.user.username;
-
-            if (username == currentUser) {
-                const userInfo = await User.findOne({username}).select('-suspended -password -__v -_id -role');
-
-                const userId = req.user.id;
-                const reviews = await Review.find({user: userId}).populate({path:'teacher', select:'name ID -_id'}).select('-__v -user -likes -dislikes')
-
-                const userProfile = {
-                    userInfo,
-                    reviews,
-                };
-
-                return res.json(userProfile);
-            }
-            
-            //Added functionality for looking at other people's profiles
-            else if (username != currentUser) {
-                //const userId = await User.findOne({username}).select('username _id');
-                //const reviews = await Review.find({user: userId}).populate({path:'teacher', select:'name -_id'}).select('-_id -__v -user')
-
-                //const userProfile = {
-                //    reviews,
-                //};
-                return res.status(403).json({ message: 'You are not authorized to view this profile' });
-            } 
-
+          const username = req.params.username;
+          const currentUser = req.user.username;
+      
+          if (username == currentUser) {
+            const userInfo = await User.findOne({ username }).select(
+              '-suspended -password -__v -_id -role'
+            );
+      
+            const userId = req.user.id;
+            const reviews = await Review.find({ user: userId })
+              .populate({
+                path: 'teacher',
+                select: 'name ID -_id',
+              })
+              .populate({
+                path: 'criteria.criterion',
+                model: 'Criteria',
+                select: 'name description -_id',
+              })
+              .select('-__v -user -likes -dislikes');
+      
+            const userProfile = {
+              userInfo,
+              reviews,
+            };
+      
+            return res.json(userProfile);
+          }
+      
+          // Added functionality for looking at other people's profiles
+          else if (username != currentUser) {
+            return res
+              .status(403)
+              .json({ message: 'You are not authorized to view this profile' });
+          }
         } catch (error) {
           console.error(error);
           return res.status(500).json({ message: 'Server error' });
         }
       },
+      
 
       delete: async (req, res) => {
         try {

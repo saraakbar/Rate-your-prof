@@ -1,3 +1,4 @@
+// Profile.js
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar2";
 import ReviewCard from "../components/ReviewCard";
@@ -9,7 +10,7 @@ import { useParams } from "react-router-dom";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Modal from 'react-modal';
-import FileInput from '../components/FileInput'
+import FileInput from '../components/FileInput';
 
 const Profile = () => {
 
@@ -104,13 +105,13 @@ const Profile = () => {
   const customImageStyle = {
     width: "150px",
     height: "150px",
-    position: "relative", // Add position relative to the avatar container
+    position: "relative",
   };
 
   const modalStyles = {
     content: {
-      backgroundColor:'#e5e7eb',
-      position:'relative',
+      backgroundColor: '#e5e7eb',
+      position: 'relative',
       top: '50%',
       left: '50%',
       right: 'auto',
@@ -119,7 +120,7 @@ const Profile = () => {
       transform: 'translate(-50%, -50%)',
       maxWidth: '500px',
       borderRadius: '10px',
-      padding: '0px',      
+      padding: '0px',
     },
   };
 
@@ -141,7 +142,7 @@ const Profile = () => {
 
   return (
     <>
-      <Navbar transparent fName={profile.firstName}/>
+      <Navbar transparent fName={profile.firstName} />
       <main>
         <section className="relative block h-500-px" style={bodyStyle}>
           <div className="profile-page flex flex-row space-x-4 items-start">
@@ -154,35 +155,34 @@ const Profile = () => {
                   <img
                     className="mb-3 rounded-full"
                     style={customImageStyle}
-                    src={image || '/avatar.png'}                    
+                    src={image || '/avatar.png'}
                     alt="avatar"
                   />
                   <div
-  className="flex border border-white items-center"
-  style={{
-    position: "absolute",
-    height: "33px",
-    width: "33px",
-    top: 0,
-    right: 0,
-    background: "#334155",
-    padding: "0.5rem",
-    borderRadius: "100%",
-    cursor: "pointer",
-    margin: "15px",
-    transition: "background-color 0.3s ease", // Add transition for a smooth effect
-  }}
-  onMouseOver={(e) => {
-    e.currentTarget.style.backgroundColor = "#10b981";
-  }}
-  onMouseOut={(e) => {
-    e.currentTarget.style.backgroundColor = "#334155"; // Reset to the original color
-  }}
-  onClick={openModal}
->
-  <FontAwesomeIcon icon={faPencilAlt} className="text-white" />
-</div>
-
+                    className="flex border border-white items-center"
+                    style={{
+                      position: "absolute",
+                      height: "33px",
+                      width: "33px",
+                      top: 0,
+                      right: 0,
+                      background: "#334155",
+                      padding: "0.5rem",
+                      borderRadius: "100%",
+                      cursor: "pointer",
+                      margin: "15px",
+                      transition: "background-color 0.3s ease",
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.backgroundColor = "#10b981";
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.backgroundColor = "#334155";
+                    }}
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    <FontAwesomeIcon icon={faPencilAlt} className="text-white" />
+                  </div>
                 </div>
                 <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
                   {`${profile.firstName} ${profile.lastName}`}
@@ -220,13 +220,13 @@ const Profile = () => {
       </main>
       <Modal
         isOpen={isModalOpen}
-        onRequestClose={closeModal}
+        onRequestClose={() => setIsModalOpen(false)}
         style={modalStyles}
       >
-        <FileInput onClose={closeModal} />
+        <FileInput onClose={() => setIsModalOpen(false)} />
       </Modal>
     </>
   );
-}
+};
 
 export default Profile;
