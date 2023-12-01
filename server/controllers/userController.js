@@ -348,7 +348,57 @@ const UserController = {
             return res.status(500).send("Server Error");
         }
 
-    }
+    },
+
+    home: async (req, res) => {
+        const { sortBy, page, pageSize } = req.query;
+        const perPage = parseInt(pageSize, 10) || 10; // Number of reviews per page
+        const skip = (page - 1) * perPage; // Calculate the number of documents to skip
+      
+        try {
+          const userId = req.user.id;
+      
+          // Define the sorting criteria
+          let sortCriteria;
+          if (sortBy === 'likes') {
+            sortCriteria = { numOfLikes: -1 }; // Sort by likes in descending order
+          } else {
+            sortCriteria = { date: -1 }; // Default to sorting by date in descending order
+          }
+      
+                
+          // Construct the query
+          const reviewsCount = await Review.countDocuments({});
+          const reviews = await Review.find({})
+            .populate({
+              path: 'teacher',
+              select: 'name ID -_id',
+            })
+            .populate({
+              path: 'criteria.criterion',
+              model: 'Criteria',
+              select: 'name description -_id',
+            })
+            .populate({
+              path: 'user',
+              select: 'username img -_id', // Populate with just the username of the user
+            })
+            .select('-__v -likes -dislikes')
+            .sort(sortCriteria)
+            .skip(skip)
+            .limit(perPage);
+      
+          if (reviewsCount === 0) {
+            return res.status(404).json({ message: 'No reviews found' });
+          }
+      
+          res.status(200).json({ reviews, total: reviewsCount });
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ message: 'Server Error' });
+        }
+      },
+      
 }
 
 

@@ -30,6 +30,7 @@ const upload = multer({ storage: storage, fileFilter: fileFilter });
 router.post('/login', UserController.login);
 router.post('/register', UserController.register);
 router.get('/:username/profile',auth, UserController.profile);
+router.get('/home',auth, UserController.home);
 router.delete('/delete',auth, UserController.delete);
 router.get('/settings',auth, UserController.getSettings)
 router.patch('/settings',auth, UserController.updateSettings);

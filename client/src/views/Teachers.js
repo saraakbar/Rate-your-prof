@@ -91,10 +91,11 @@ const Teachers = () => {
               page: currentPage,
               department: dropdown1Value?.value === 'Select Department' ? null : dropdown1Value?.value,
               facultyType: dropdown2Value?.value === 'Select Faculty Type' ? null : dropdown2Value?.value,
-              facultyName: searchValue || null,
+              facultyName: searchValue ||null,
             },
           });
 
+          console.log(response.data.teachers)
           setTeachers(response.data.teachers);
           setTotalPages(Math.ceil(response.data.total / 10));
 

@@ -1,7 +1,7 @@
 // Profile.js
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar2";
-import ReviewCard from "../components/ReviewCard";
+import ReviewCard from "../components/profileReviewCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";

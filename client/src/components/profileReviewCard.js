@@ -12,47 +12,12 @@ const ReviewCard = ({ review }) => {
   const [isDisliked, setIsDisliked] = useState(false);
   const [likeCount, setLikeCount] = useState(review.numOfLikes);
   const [dislikeCount, setDislikeCount] = useState(review.numOfDislikes);
-  const [image,setImage] = useState(null);
   const navigate = useNavigate();
 
   const token = JSON.parse(localStorage.getItem('token'));
   if (!token) {
     navigate('/login', { replace: true });
   }
-
-  useEffect(() => {
-    const fetchUserImage = async () => {
-      try {
-        if (review.user.img) {
-          const imageResponse = await axios.get(`http://localhost:8000${review.user.img}`, {
-            responseType: 'arraybuffer',
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-
-          // Convert the binary image data to a base64-encoded string
-          const base64Data = btoa(
-            new Uint8Array(imageResponse.data).reduce(
-              (data, byte) => data + String.fromCharCode(byte),
-              ''
-            )
-          );
-
-          // Set the base64 data as the image source
-          setImage(`data:image/jpeg;base64,${base64Data}`);
-        } else {
-          // Set image to null when img is empty or null
-          setImage(null);
-        }
-      } catch (error) {
-        console.error('Error fetching user image:', error);
-      }
-    };
-
-    // Call the async function immediately
-    fetchUserImage();
-  }, []);
   const handleLike = async (reviewId) => {
     try {
       const response = await axios.patch(
@@ -122,18 +87,6 @@ const ReviewCard = ({ review }) => {
 
   return (
     <div className="text-white bg-gray-700 mb-8 p-6 border rounded-lg shadow">
-      <div className="flex items-center mb-3">
-        {/* User Image */}
-        <img
-          className="mr-3 rounded-full"
-          style={customImageStyle}
-          src={image || '/avatar.png'}
-          alt="user avatar"
-        />
-
-        {/* Username */}
-        <p className="text-sm font-bold text-white">{review.user.username}</p>
-      </div>
       <h3 className="hoverable-name text-2xl font-semibold mb-2 cursor-pointer">
         <Link to={`/teacher/${review.teacher.ID}`}>{review.teacher.name}</Link>
       </h3>

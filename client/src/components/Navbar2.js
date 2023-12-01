@@ -1,23 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import DropdownRender from "./Dropdown";
 import { useNavigate } from "react-router-dom";
 
-export default function Navbar2({transparent, fName}) {
+export default function Navbar2({ transparent, fName }) {
   const [searchValue, setSearchValue] = useState("");
-  const [isPressed, setIsPressed] = useState(false);
-  const handleSearch = () => {
-    setIsPressed(true);
-  };
+  const navigate = useNavigate();
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      handleSearch();
+      navigate(`/teachers/search/${searchValue}`);
     }
   };
 
-  const navigate = useNavigate();
   return (
     <>
       <nav
@@ -40,11 +36,16 @@ export default function Navbar2({transparent, fName}) {
 
           <div className="inline-flex items-center">
           <DropdownRender fName={fName}/>
-              <button className="mr-2  hover:text-gray-600 text-white font-bold uppercase text-sm  px-4 rounded-lg">Home</button>
+              <button className="mr-2  hover:text-gray-600 text-white font-bold uppercase text-sm  px-4 rounded-lg"
+                onClick ={(e)=>{
+                  e.preventDefault()
+                  navigate('/home')
+                }}
+                >Home </button>
               <button className="ml-2  hover:text-gray-600 text-white font-bold uppercase text-sm  px-4 rounded-lg" 
               onClick ={(e)=>{
                 e.preventDefault()
-                navigate('/teachers',{replace:true})
+                navigate('/teachers')
               }}
               >Teachers</button>
 
