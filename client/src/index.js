@@ -12,6 +12,7 @@ import Teachers from "./views/Teachers.js";
 import CreateReview from "./views/CreateReview.js";
 import Home from "./views/Home.js";
 import SearchTeacher from "./views/SearchTeacher.js";
+import TeacherProfile from "./views/TeacherProfile.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -26,6 +27,7 @@ root.render(
         <Route path="/create_review/:teacherid" element={<CreateReview />}/>
         <Route path="/home" element={< Home/>} />
         <Route path="/teachers/search/:searchValue" element={<SearchTeacher />}/>
+        <Route path="/teacher/:ID" element={<TeacherProfile />}/>
     </Routes>
   </BrowserRouter>
 );

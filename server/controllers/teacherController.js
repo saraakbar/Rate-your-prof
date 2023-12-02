@@ -89,21 +89,9 @@ const teacherController = {
 
     profile: async (req, res) => {
       try {
-        const criteriaAverages = {
-          assessment_and_Feedback: { average: 0, description: '' },
-          content_Knowledge: { average: 0, description: '' },
-          instructional_Delivery: { average: 0, description: '' },
-          fair_Grading: { average: 0, description: '' },
-          exam_difficulty: { average: 0, description: '' },
-          course_Difficulty: { average: 0, description: '' },
-          course_Workload: { average: 0, description: '' },
-          course_Experience: { average: 0, description: '' },
-          professionalism_and_Communication: { average: 0, description: '' },
-        };
-    
         const averageRatings = [];
         const teacherID = req.params.ID;
-        const teacher = await Teacher.findOne({ ID: teacherID }).select('-__v -ID');
+        const teacher = await Teacher.findOne({ ID: teacherID }).select('-__v -ID').populate('department', 'name -_id').populate('university', 'name -_id');
         if (!teacher) {
           return res.status(404).json({ message: 'Teacher not found' });
         }
@@ -116,33 +104,55 @@ const teacherController = {
         }
     
         const reviews = await Review.find(filter)
-          .populate({ path: 'user', select: 'username -_id' })
-          .populate('criteria.criterion', 'name description -_id')
-          .select('-_id -__v -teacher -likes -dislikes')
-          .sort({ likes: -1 });
-    
+        .populate({
+          path: 'teacher',
+          select: 'name ID -_id',
+        })
+        .populate({
+          path: 'criteria.criterion',
+          model: 'Criteria',
+          select: 'name description -_id',
+        })
+        .populate({
+          path: 'user',
+          select: 'username img -_id', // Populate with just the username of the user
+        })
+        .select('-__v -likes -dislikes')
+        .sort({ likes: -1 });
+
+        const criteriaAverages = {};
+
+for (const review of reviews) {
+  for (const criterionObj of review.criteria) {
+    const { criterion, rating } = criterionObj;
+
+    // Check if the criterion is already in the criteriaAverages object
+    if (criteriaAverages.hasOwnProperty(criterion.name)) {
+      criteriaAverages[criterion.name] += rating;
+    } else {
+      criteriaAverages[criterion.name] = rating;
+    }
+  }
+} 
+
+const totalReviews = reviews.length;
+
+// Initialize an object to store the trimmed and averaged criteria
+const trimmedCriteriaAverages = {};
+
+for (const criterionName in criteriaAverages) {
+  // Trim the criterion name and calculate the average rating
+  const trimmedName = criterionName.trim();
+  const averageRating = (criteriaAverages[criterionName] / totalReviews).toFixed(1);
+
+  // Add the trimmed name and rating to the result object
+  trimmedCriteriaAverages[trimmedName] = averageRating;
+}
+
+
         for (const review of reviews) {
           averageRatings.push(review.avgRating);
-        }
-    
-        for (const review of reviews) {
-          for (const { criterion } of review.criteria) {
-            const criterionName = criterion.name.replace(/ /g, '_');
-            if (criteriaAverages.hasOwnProperty(criterionName)) {
-              criteriaAverages[criterionName].average += criterion.rating;
-              criteriaAverages[criterionName].description = criterion.description;
-            }
-          }
-        }
-    
-        const totalReviews = reviews.length;
-    
-        for (const criterion in criteriaAverages) {
-          const averageRating =
-            criteriaAverages[criterion].average / totalReviews;
-          criteriaAverages[criterion].average = averageRating.toFixed(1);
-        }
-    
+        }    
         const totalAverageRating = averageRatings.reduce(
           (acc, rating) => acc + rating,
           0
@@ -152,17 +162,19 @@ const teacherController = {
         const AverageRating = overallAverageRating.toFixed(1);
     
         const teacherProfile = {
-          criteriaAverages,
+          criteriaAverages: trimmedCriteriaAverages,
           AverageRating,
           teacher: {
             position: teacher.position,
             name: teacher.name,
+            uni: teacher.university,
             department: teacher.department,
             faculty_type: teacher.faculty_type,
           },
           reviews,
         };
-    
+        
+        console.log(teacherProfile)
         return res.json(teacherProfile);
       } catch (error) {
         console.error(error);

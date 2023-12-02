@@ -90,8 +90,8 @@ const Profile = () => {
         }
     
         localStorage.setItem("firstName", firstName);
-        setProfile({ firstName, lastName, userName, email, erp, reviews});
         setIsLoading(false);
+        setProfile({ firstName, lastName, userName, email, erp, reviews});
       } catch (error) {
         console.error(error);
         return registerError(error.response.data.message);
@@ -101,6 +101,8 @@ const Profile = () => {
 
     fetchProfile()
   }, []);
+
+  
 
   const customImageStyle = {
     width: "150px",

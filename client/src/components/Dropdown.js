@@ -49,6 +49,7 @@ className={`dropdown-content text-base bg-white rounded-lg shadow-lg py-2 px-4`}
             e.preventDefault();
             localStorage.removeItem("token");
             localStorage.removeItem("username");
+            localStorage.removeItem("firstName")
             navigate("/login",{replace:true});
           }}
         >
