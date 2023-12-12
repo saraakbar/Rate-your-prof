@@ -12,7 +12,7 @@ const ReviewCard = ({ review }) => {
   const [isDisliked, setIsDisliked] = useState(false);
   const [likeCount, setLikeCount] = useState(review.numOfLikes);
   const [dislikeCount, setDislikeCount] = useState(review.numOfDislikes);
-  const [image,setImage] = useState(null);
+  const [image, setImage] = useState(null);
   const navigate = useNavigate();
 
   const token = JSON.parse(localStorage.getItem('token'));

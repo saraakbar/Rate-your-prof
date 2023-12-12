@@ -35,7 +35,7 @@ const Login = ({ }) => {
   const validateForm = (values) => {
     const errors = {};
     const regex = /^[^\s+@]+@[^\s@]+\.[^\s@]{2,}$/i;
-    
+
     if (!values.email) {
       errors.email = "Email is required";
     } else if (!regex.test(values.email)) {
@@ -54,52 +54,52 @@ const Login = ({ }) => {
     setFormErrors(validateForm(user));
     setIsSubmit(true);
   };
-    useEffect(() => {
-      
-      const loginSuccess = () => {
-        toast.success("Login Successful! Loading Profile.", {
-          position: toast.POSITION.TOP_RIGHT,
-          theme: "dark",
-        });
-      }
+  useEffect(() => {
 
-      const loginError = (message) => {
-        toast.error(message, {
-          position: toast.POSITION.TOP_RIGHT,
-          theme: "dark",
+    const loginSuccess = () => {
+      toast.success("Login Successful! Loading Profile.", {
+        position: toast.POSITION.TOP_RIGHT,
+        theme: "dark",
+      });
+    }
+
+    const loginError = (message) => {
+      toast.error(message, {
+        position: toast.POSITION.TOP_RIGHT,
+        theme: "dark",
+      })
+    }
+
+    if (Object.keys(formErrors).length === 0 && isSubmit) {
+      axios
+        .post("http://localhost:8000/login", user)
+        .then((res) => {
+          if (res.status === 201) {
+            loginSuccess();
+            localStorage.setItem("token", JSON.stringify(res.data.accessToken));
+            localStorage.setItem("username", res.data.username);
+            const username = res.data.username;
+            navigate("/" + username + "/profile", { replace: true });
+          }
         })
-      }
-
-      if (Object.keys(formErrors).length === 0 && isSubmit) {
-        axios
-          .post("http://localhost:8000/login", user)
-          .then((res) => {
-            if (res.status === 201) {
-              loginSuccess();
-              localStorage.setItem("token", JSON.stringify(res.data.accessToken));
-              localStorage.setItem("username", res.data.username);
-              const username = res.data.username;
-              navigate("/"+username+"/profile", { replace: true });
-            }
-          })
-          .catch((error) => {
-            if (error.response.status === 404) {
-              loginError("User not found.");
-            } else if (error.response.status === 400) {
-              loginError("Invalid credentials.");
-            } else if (error.response.status === 403) {
-              loginError("Your account was suspended.");
-            } else {
-              loginError("Server Error.");
-            }
-          });
-      }
-    }, [formErrors]);
-    return (
+        .catch((error) => {
+          if (error.response.status === 404) {
+            loginError("User not found.");
+          } else if (error.response.status === 400) {
+            loginError("Invalid credentials.");
+          } else if (error.response.status === 403) {
+            loginError("Your account was suspended.");
+          } else {
+            loginError("Server Error.");
+          }
+        });
+    }
+  }, [formErrors]);
+  return (
     <>
       <Navbar transparent />
       <main>
-      <section className="min-h-screen bg-gray-700 relative">
+        <section className="min-h-screen bg-gray-700 relative">
           <div
             className="absolute top-0 w-full h-full"
             style={{
@@ -162,14 +162,14 @@ const Login = ({ }) => {
                             style={{ transition: "all .15s ease" }}
                           />
                           <button
-                                type="button"
-                                onClick={togglePasswordVisibility}
-                                className="absolute right-0 mr-3 top-4 text-gray-600 cursor-pointer"
-                             >
-                             <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
-                             </button>
-                        </div> 
-                        <p className={basestyle.error}>{formErrors.password}</p>      
+                            type="button"
+                            onClick={togglePasswordVisibility}
+                            className="absolute right-0 mr-3 top-4 text-gray-600 cursor-pointer"
+                          >
+                            <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                          </button>
+                        </div>
+                        <p className={basestyle.error}>{formErrors.password}</p>
                       </div>
                       <div>
                         <label className="inline-flex items-center cursor-pointer">
@@ -181,17 +181,17 @@ const Login = ({ }) => {
                           />
                           <span className="ml-2 text-sm font-semibold text-gray-700">
                             Remember me
-                            </span>
+                          </span>
                         </label>
                         <div className="float-right">
-                        <NavLink
-                          to="/forgot-password"
-                          className="text-gray-300"
-                          style={{ color: "blue" }}
-                        >
-                          <small>Forgot password?</small>
-                        </NavLink>
-                      </div>
+                          <NavLink
+                            to="/forgot-password"
+                            className="text-gray-300"
+                            style={{ color: "blue" }}
+                          >
+                            <small>Forgot password?</small>
+                          </NavLink>
+                        </div>
                       </div>
                     </form>
                     <div className="text-center mt-6">
@@ -204,21 +204,21 @@ const Login = ({ }) => {
                         Sign In
                       </button>
                     </div>
-                      <div className="w-1/4 text-center">
+                    <div className="w-1/4 text-center">
                       <body
-                          className="text-gray-600 text-sm font-bold"
-                          style={{ margin: "0"}}
-                        >
-                            Not a member?
+                        className="text-gray-600 text-sm font-bold"
+                        style={{ margin: "0" }}
+                      >
+                        Not a member?
                         <NavLink
                           to="/register"
                           className="text-gray-600 text-sm font-bold"
-                          style={{ color: "green", margin: "10px"}}   
+                          style={{ color: "green", margin: "10px" }}
                         >
-                            Register
+                          Register
                         </NavLink>
-                        </body>
-                  </div>
+                      </body>
+                    </div>
                   </div>
                 </div>
               </div>

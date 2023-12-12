@@ -1,7 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faAngleRight, faAngleLeft} from '@fortawesome/free-solid-svg-icons';
-import {faAngleDoubleLeft, faAngleDoubleRight} from '@fortawesome/free-solid-svg-icons';
+import { faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDoubleLeft, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 
 const Pagination = ({ totalPages, currentPage, onPageChange }) => {
   const displayPages = 5; // Number of pages to display at once
@@ -20,18 +20,16 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
     <div className="flex justify-center mt-4">
       <button
         onClick={() => handlePageChange(1)}
-        className={`mr-2 mx-2 px-3 py-1 rounded ${
-            currentPage === 1 ? 'bg-gray-300 text-gray-700 cursor-not-allowed' : 'bg-gray-700 text-white'
-        }`}
+        className={`mr-2 mx-2 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-300 text-gray-700 cursor-not-allowed' : 'bg-gray-700 text-white'
+          }`}
       >
         <FontAwesomeIcon icon={faAngleDoubleLeft} />
       </button>
 
       <button
         onClick={() => handlePageChange(currentPage - 1)}
-        className={`mr-2 mx-2 px-3 py-1 rounded ${
-          currentPage === 1 ? 'bg-gray-300 text-gray-700 cursor-not-allowed' : 'bg-gray-700 text-white'
-        }`}
+        className={`mr-2 mx-2 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-300 text-gray-700 cursor-not-allowed' : 'bg-gray-700 text-white'
+          }`}
         disabled={currentPage === 1}
       >
         <FontAwesomeIcon icon={faAngleLeft} />
@@ -49,19 +47,17 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
 
       <button
         onClick={() => handlePageChange(currentPage + 1)}
-        className={`mx-2 px-3 py-1 rounded ${
-          currentPage === totalPages ? 'bg-gray-300 text-gray-700 cursor-not-allowed' : 'bg-gray-700 text-white'
-        }`}
+        className={`mx-2 px-3 py-1 rounded ${currentPage === totalPages ? 'bg-gray-300 text-gray-700 cursor-not-allowed' : 'bg-gray-700 text-white'
+          }`}
         disabled={currentPage === totalPages}
       >
-         <FontAwesomeIcon icon={faAngleRight} />
+        <FontAwesomeIcon icon={faAngleRight} />
       </button>
 
       <button
         onClick={() => handlePageChange(totalPages)}
-        className={`ml-2 mx-2 px-3 py-1 rounded ${
-            currentPage === totalPages ? 'bg-gray-300 text-gray-700 cursor-not-allowed' : 'bg-gray-700 text-white'
-        }`}
+        className={`ml-2 mx-2 px-3 py-1 rounded ${currentPage === totalPages ? 'bg-gray-300 text-gray-700 cursor-not-allowed' : 'bg-gray-700 text-white'
+          }`}
       >
         <FontAwesomeIcon icon={faAngleDoubleRight} />
       </button>

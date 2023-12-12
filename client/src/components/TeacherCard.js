@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 
 const TeacherCard = ({ teacher }) => {
-  const { name, faculty_type, department, position, university} = teacher;
+  const { name, faculty_type, department, position, university } = teacher;
 
   return (
     <div className="teacher-card-container">

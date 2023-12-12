@@ -15,7 +15,7 @@ import FileInput from '../components/FileInput';
 const Profile = () => {
 
   const navigate = useNavigate();
-  const {username} = useParams();
+  const { username } = useParams();
   const [image, setImage] = useState(null);
   const [profile, setProfile] = useState({
     email: "",
@@ -73,7 +73,7 @@ const Profile = () => {
               Authorization: `Bearer ${token}`,
             },
           });
-    
+
           // Convert the binary image data to a base64-encoded string
           const base64Data = btoa(
             new Uint8Array(imageResponse.data).reduce(
@@ -81,17 +81,17 @@ const Profile = () => {
               ''
             )
           );
-    
+
           // Set the base64 data as the image source
           setImage(`data:image/jpeg;base64,${base64Data}`);
         } else {
           // Set image to null when img is empty or null
           setImage(null);
         }
-    
+
         localStorage.setItem("firstName", firstName);
         setIsLoading(false);
-        setProfile({ firstName, lastName, userName, email, erp, reviews});
+        setProfile({ firstName, lastName, userName, email, erp, reviews });
       } catch (error) {
         console.error(error);
         return registerError(error.response.data.message);
@@ -102,7 +102,7 @@ const Profile = () => {
     fetchProfile()
   }, []);
 
-  
+
 
   const customImageStyle = {
     width: "150px",

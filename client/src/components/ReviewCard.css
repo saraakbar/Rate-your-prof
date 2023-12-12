@@ -1,8 +1,7 @@
   .hoverable-name:hover {
-    color: #7dd3fc;/* Change color on hover */
+    color: #7dd3fc;
   }
 
   .teacher-card-container {
     width: 1040px;
   }
-  

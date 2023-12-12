@@ -47,7 +47,7 @@ const Teachers = () => {
           { _id: 'Select Department', name: 'Select Department' },
           ...response.data
         ];
-    
+
         setDropdown1Options(departmentsWithSelectOption);
       } catch (error) {
         console.error(error);
@@ -69,7 +69,7 @@ const Teachers = () => {
           { _id: 'Select University', name: 'Select University' },
           ...response.data
         ];
-    
+
         setDropdown3Options(universitiesOp);
       } catch (error) {
         console.error(error);
@@ -81,23 +81,23 @@ const Teachers = () => {
 
     const fetchProfile = async () => {
       try {
-          setIsPressed(false);
-          const response = await axios.get(`http://localhost:8000/teachers`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            params: {
-              university: dropdown3Value?.value === 'Select University' ? null : dropdown3Value?.value,
-              page: currentPage,
-              department: dropdown1Value?.value === 'Select Department' ? null : dropdown1Value?.value,
-              facultyType: dropdown2Value?.value === 'Select Faculty Type' ? null : dropdown2Value?.value,
-              facultyName: searchValue ||null,
-            },
-          });
+        setIsPressed(false);
+        const response = await axios.get(`http://localhost:8000/teachers`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            university: dropdown3Value?.value === 'Select University' ? null : dropdown3Value?.value,
+            page: currentPage,
+            department: dropdown1Value?.value === 'Select Department' ? null : dropdown1Value?.value,
+            facultyType: dropdown2Value?.value === 'Select Faculty Type' ? null : dropdown2Value?.value,
+            facultyName: searchValue || null,
+          },
+        });
 
-          console.log(response.data.teachers)
-          setTeachers(response.data.teachers);
-          setTotalPages(Math.ceil(response.data.total / 10));
+        console.log(response.data.teachers)
+        setTeachers(response.data.teachers);
+        setTotalPages(Math.ceil(response.data.total / 10));
 
       } catch (error) {
         console.error(error);
@@ -106,7 +106,7 @@ const Teachers = () => {
     };
 
     fetchProfile();
-  }, [currentPage,dropdown1Value,dropdown2Value,dropdown3Value,isPressed]);
+  }, [currentPage, dropdown1Value, dropdown2Value, dropdown3Value, isPressed]);
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
@@ -184,19 +184,19 @@ const Teachers = () => {
                 Search
               </button>
             </div>
-            <div className="bg-gray-200 p-4 rounded mb-4 mt-4" style={{ overflowY: 'auto', maxHeight: '500px',width:'1090px' }}>
-            <div>
-            <div className="mb-4">
-            <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
+            <div className="bg-gray-200 p-4 rounded mb-4 mt-4" style={{ overflowY: 'auto', maxHeight: '500px', width: '1090px' }}>
+              <div>
+                <div className="mb-4">
+                  <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
+                </div>
+
+                {teachers.map((teacher) => (
+                  <TeacherCard key={teacher._id} teacher={teacher} />
+                ))}
+              </div>
+              {/* Pagination */}
+              <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
             </div>
-            
-              {teachers.map((teacher) => (
-                <TeacherCard key={teacher._id} teacher={teacher} />
-              ))}
-            </div>
-            {/* Pagination */}
-            <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
-          </div>
           </div>
         </section>
       </main>

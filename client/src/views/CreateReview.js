@@ -18,30 +18,30 @@ const CreateReview = () => {
   const [course, setCourse] = useState(''); // New state for course
   const [isGrad, setIsGrad] = useState(false); // New state for graduate status
   const [isLoading, setIsLoading] = useState(true);
-  const [teacherName,setTeacherName] = useState('');
+  const [teacherName, setTeacherName] = useState('');
   const { teacherid } = useParams();
   const token = JSON.parse(localStorage.getItem('token'));
   const fName = localStorage.getItem('firstName');
- 
+
   // Fetch criteria on component mount
   useEffect(() => {
 
     if (!token) {
       navigate('/login', { replace: true });
     }
-    
+
     const fetchName = async () => {
-        try {
-            const response = await axios.get(`http://localhost:8000/name/${teacherid}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            setTeacherName(response.data.name);
-        } catch (error) {
-            console.error(error);
-            // Handle error
-        }
+      try {
+        const response = await axios.get(`http://localhost:8000/name/${teacherid}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setTeacherName(response.data.name);
+      } catch (error) {
+        console.error(error);
+        // Handle error
+      }
     };
     fetchName();
 
@@ -88,18 +88,18 @@ const CreateReview = () => {
 
     // Make a post request to create the review
     try {
-       await axios.post(`http://localhost:8000/create_review/${teacherid}`, reviewData, {
+      await axios.post(`http://localhost:8000/create_review/${teacherid}`, reviewData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-     
-        toast.success("Review Created!", {
-          position: toast.POSITION.TOP_RIGHT,
-          theme: "dark",
-        });
 
-        navigate(`/teachers`, { replace: true });
+      toast.success("Review Created!", {
+        position: toast.POSITION.TOP_RIGHT,
+        theme: "dark",
+      });
+
+      navigate(`/teachers`, { replace: true });
       // Handle success (e.g., redirect to review details page)
     } catch (error) {
       console.error(error);
@@ -155,7 +155,7 @@ const CreateReview = () => {
                 {/* Criteria Ratings and Comments */}
                 <div className="ml-8 mr-4 grid grid-cols-2">
                   {criteria.map((criterion, index) => (
-                    <div key={criterion._id} className="mb-6" style={{ gridColumn: index % 2 === 0 ? '1' : '2'}}>
+                    <div key={criterion._id} className="mb-6" style={{ gridColumn: index % 2 === 0 ? '1' : '2' }}>
                       <label className="block uppercase text-gray-700 text-base font-bold mb-4">
                         {criterion.name}
                       </label>
@@ -165,12 +165,12 @@ const CreateReview = () => {
                           Rating:
                         </label>
                         <ReactRating
-                            id={`rating_${criterion._id}`}
-                            initialRating={ratings[criterion._id] || 0} 
-                            onChange={(value) => handleRatingChange(criterion._id, value)} 
-                            emptySymbol={<FontAwesomeIcon icon={faStar} className="fa-2x text-gray-300" />}
-                            fullSymbol={<FontAwesomeIcon icon={faStar} className="fa-2x text-blue-400" />}
-                            fractions={2}
+                          id={`rating_${criterion._id}`}
+                          initialRating={ratings[criterion._id] || 0}
+                          onChange={(value) => handleRatingChange(criterion._id, value)}
+                          emptySymbol={<FontAwesomeIcon icon={faStar} className="fa-2x text-gray-300" />}
+                          fullSymbol={<FontAwesomeIcon icon={faStar} className="fa-2x text-blue-400" />}
+                          fractions={2}
                         />
                       </div>
 
@@ -191,13 +191,13 @@ const CreateReview = () => {
 
                 {/* Submit button */}
                 <div className="flex justify-center mt-2">
-                <button
-                  type="button"
-                  onClick={handleSubmit}
-                  className="bg-blue-400 text-white px-4 py-2 rounded"
-                >
-                  Submit Review
-                </button>
+                  <button
+                    type="button"
+                    onClick={handleSubmit}
+                    className="bg-blue-400 text-white px-4 py-2 rounded"
+                  >
+                    Submit Review
+                  </button>
                 </div>
               </form>
             </div>

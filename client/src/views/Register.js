@@ -37,7 +37,7 @@ const Register = () => {
   const validateForm = (values) => {
     const error = {};
     const emailRegex = /^[^\s+@]+@[^\s@]+\.[^\s@]{2,}$/i;
-    
+
     if (!values.firstName) {
       error.firstName = "First Name is required";
     }
@@ -48,14 +48,13 @@ const Register = () => {
       error.email = "Email is required";
     } else if (!emailRegex.test(values.email)) {
       error.email = "Invalid email";
-    } 
+    }
     if (!values.password) {
       error.password = "Password is required";
     } else if (values.password.length < 8 ||              // Minimum length of 8 characters
-              !/[a-z]/.test(values.password) ||         // At least one lowercase letter
-              !/[A-Z]/.test(values.password) ||         // At least one uppercase letter
-              !/[0-9]/.test(values.password) ) 
-    {
+      !/[a-z]/.test(values.password) ||         // At least one lowercase letter
+      !/[A-Z]/.test(values.password) ||         // At least one uppercase letter
+      !/[0-9]/.test(values.password)) {
       error.password = "Password should be atleast 8 characters long and must contain atleast one uppercase, one lowercase and one number";
     }
     if (!values.erp) {
@@ -104,24 +103,24 @@ const Register = () => {
           navigate("/login", { replace: true });
         }
       })
-      .catch((error) => {
-        if (error.response.status === 409 && error.response.data === "Username taken.") {
-          registerError("Username taken. Please try another.");
-        } else if (error.response.status === 409 && error.response.data === "User already exists. Please login") {
-          registerError("Email already registered. Please Login.");
-        } else if (error.response.status === 409 && error.response.data === "ERP already exists. Please check again") {
-          registerError("ERP already registered. Please Login.");
-        } else {
-          registerError("Server Error.");
-        }
-      })
+        .catch((error) => {
+          if (error.response.status === 409 && error.response.data === "Username taken.") {
+            registerError("Username taken. Please try another.");
+          } else if (error.response.status === 409 && error.response.data === "User already exists. Please login") {
+            registerError("Email already registered. Please Login.");
+          } else if (error.response.status === 409 && error.response.data === "ERP already exists. Please check again") {
+            registerError("ERP already registered. Please Login.");
+          } else {
+            registerError("Server Error.");
+          }
+        })
     }
   }, [formErrors]);
   return (
     <>
       <Navbar transparent />
       <main>
-      <section className="min-h-screen bg-gray-700 relative">
+        <section className="min-h-screen bg-gray-700 relative">
           <div
             className="absolute top-0 w-full h-full"
             style={{
@@ -146,69 +145,69 @@ const Register = () => {
                   <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
                     <form>
                       <div className="flex flex-wrap">
-                      <div className="relative w-1/2 md:w-1/2 pr-2 mb-3">
-                        <label className="block uppercase text-gray-700 text-xs font-bold mb-2" htmlFor="first-name">
-                           Name
-                        </label>
-                        <input
-                          name="firstName"
-                          onChange={changeHandler}
-                          type="text"
-                          id="first-name"
-                          className="border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-                          placeholder="First Name"
-                          style={{ transition: "all .15s ease" }}
-                        />
-                        <p className={basestyle.error}>{formErrors.firstName}</p>      
-                      </div>
+                        <div className="relative w-1/2 md:w-1/2 pr-2 mb-3">
+                          <label className="block uppercase text-gray-700 text-xs font-bold mb-2" htmlFor="first-name">
+                            Name
+                          </label>
+                          <input
+                            name="firstName"
+                            onChange={changeHandler}
+                            type="text"
+                            id="first-name"
+                            className="border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
+                            placeholder="First Name"
+                            style={{ transition: "all .15s ease" }}
+                          />
+                          <p className={basestyle.error}>{formErrors.firstName}</p>
+                        </div>
 
-                      <div className="relative  w-1/2 md:w-1/2 pl-2 mt-4 mb-3">
-                        <label className="block uppercase text-gray-700 text-xs font-bold mb-2" htmlFor="last-name">
-                        </label>
-                        <input
-                          name="lastName"
-                          onChange={changeHandler}
-                          type="text"
-                          id="last-name"
-                          className="border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-                          placeholder="Last Name"
-                          style={{ transition: "all .15s ease" }}
-                        />
-                        <p className={basestyle.error}>{formErrors.lastName}</p>      
-                      </div>
+                        <div className="relative  w-1/2 md:w-1/2 pl-2 mt-4 mb-3">
+                          <label className="block uppercase text-gray-700 text-xs font-bold mb-2" htmlFor="last-name">
+                          </label>
+                          <input
+                            name="lastName"
+                            onChange={changeHandler}
+                            type="text"
+                            id="last-name"
+                            className="border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
+                            placeholder="Last Name"
+                            style={{ transition: "all .15s ease" }}
+                          />
+                          <p className={basestyle.error}>{formErrors.lastName}</p>
+                        </div>
                       </div>
                       <div className="flex flex-wrap">
-                      <div className="relative w-1/2 md:w-1/2 pr-2 mb-3">
-                        <label className="block uppercase text-gray-700 text-xs font-bold mb-2" htmlFor="username">
-                          Username
-                        </label>
-                        <input
-                          name="username"
-                          onChange={changeHandler}
-                          type="text"
-                          id="username"
-                          className="border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-                          placeholder="Username"
-                          style={{ transition: "all .15s ease" }}
-                        />
-                        <p className={basestyle.error}>{formErrors.username}</p>
-                      </div>
+                        <div className="relative w-1/2 md:w-1/2 pr-2 mb-3">
+                          <label className="block uppercase text-gray-700 text-xs font-bold mb-2" htmlFor="username">
+                            Username
+                          </label>
+                          <input
+                            name="username"
+                            onChange={changeHandler}
+                            type="text"
+                            id="username"
+                            className="border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
+                            placeholder="Username"
+                            style={{ transition: "all .15s ease" }}
+                          />
+                          <p className={basestyle.error}>{formErrors.username}</p>
+                        </div>
 
-                      <div className="relative w-1/2 md:w-1/2 pl-2 mb-3">
-                        <label className="block uppercase text-gray-700 text-xs font-bold mb-2" htmlFor="erp">
-                          ERP
-                        </label>
-                        <input
-                          type="text"
-                          name="erp"
-                          onChange={changeHandler}
-                          id="erp"
-                          className="border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-                          placeholder="ERP"
-                          style={{ transition: "all .15s ease" }}
-                        />
-                        <p className={basestyle.error}>{formErrors.erp}</p>
-                      </div>
+                        <div className="relative w-1/2 md:w-1/2 pl-2 mb-3">
+                          <label className="block uppercase text-gray-700 text-xs font-bold mb-2" htmlFor="erp">
+                            ERP
+                          </label>
+                          <input
+                            type="text"
+                            name="erp"
+                            onChange={changeHandler}
+                            id="erp"
+                            className="border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
+                            placeholder="ERP"
+                            style={{ transition: "all .15s ease" }}
+                          />
+                          <p className={basestyle.error}>{formErrors.erp}</p>
+                        </div>
                       </div>
 
                       <div className="relative w-full mb-3">
@@ -228,28 +227,28 @@ const Register = () => {
                       </div>
                       <div className="relative w-full mb-3">
                         <label className="block uppercase text-gray-700 text-xs font-bold mb-2" htmlFor="password">
-                            Password
-                         </label>
-                         <div className="flex items-center">
-                            <input
-                                name="password"
-                                onChange={changeHandler}
-                                type={showPassword ? "text" : "password"}
-                                id="password"
-                                className="border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-                                placeholder="Password"
-                                style={{ transition: "all .15s ease" }}
-                            />
-                            <button
-                                type="button"
-                                onClick={togglePasswordVisibility}
-                                className="absolute right-0 mr-3 top-4 text-gray-600 cursor-pointer"
-                             >
-                             <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
-                             </button>
-                         </div>
-                          <p className={basestyle.error}>{formErrors.password}</p>
-                    </div>
+                          Password
+                        </label>
+                        <div className="flex items-center">
+                          <input
+                            name="password"
+                            onChange={changeHandler}
+                            type={showPassword ? "text" : "password"}
+                            id="password"
+                            className="border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
+                            placeholder="Password"
+                            style={{ transition: "all .15s ease" }}
+                          />
+                          <button
+                            type="button"
+                            onClick={togglePasswordVisibility}
+                            className="absolute right-0 mr-3 top-4 text-gray-600 cursor-pointer"
+                          >
+                            <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                          </button>
+                        </div>
+                        <p className={basestyle.error}>{formErrors.password}</p>
+                      </div>
                     </form>
                     <div className="text-center mt-6">
                       <button
@@ -265,9 +264,9 @@ const Register = () => {
                     </div>
                     <div className="w-1/4 text-center">
                       <body className="text-gray-600 text-sm font-bold" style={{ margin: "0" }}>Already a member?
-                      <NavLink to="/login" className="text-gray-600 text-sm font-bold" style={{ color: "green", margin: "10px" }}>
-                        Login
-                      </NavLink>
+                        <NavLink to="/login" className="text-gray-600 text-sm font-bold" style={{ color: "green", margin: "10px" }}>
+                          Login
+                        </NavLink>
                       </body>
                     </div>
                   </div>

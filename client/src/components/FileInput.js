@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const FileUpload = ({onClose}) => {
+const FileUpload = ({ onClose }) => {
   const username = localStorage.getItem("username");
   const token = JSON.parse(localStorage.getItem("token"));
   const [file, setFile] = useState(null);
@@ -38,20 +38,20 @@ const FileUpload = ({onClose}) => {
 
       else {
 
-      const formData = new FormData();
-      formData.append('avatar', file);
+        const formData = new FormData();
+        formData.append('avatar', file);
 
-      const response = await axios.post(`http://localhost:8000/${username}/upload`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`,
-        },
-      });
+        const response = await axios.post(`http://localhost:8000/${username}/upload`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-      loginSuccess();
-      setFile(null); // Reset file state after successful upload
-      onClose();
-    }
+        loginSuccess();
+        setFile(null); // Reset file state after successful upload
+        onClose();
+      }
 
     } catch (error) {
       loginError("Invalid file type. Please try again.");

@@ -10,7 +10,12 @@ export default function Navbar2({ transparent, fName }) {
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      navigate(`/teachers/search/${searchValue}`);
+      if (!searchValue) {
+        navigate("/teachers", { replace: true });
+      }
+      else {
+        navigate(`/teachers/search/${searchValue}`);
+      }
     }
   };
 
@@ -31,29 +36,29 @@ export default function Navbar2({ transparent, fName }) {
             >
               RATE YOUR PROFESSOR
             </p>
-            
+
           </div>
 
           <div className="inline-flex items-center">
-          <DropdownRender fName={fName}/>
-              <button className="mr-2  hover:text-gray-600 text-white font-bold uppercase text-sm  px-4 rounded-lg"
-                onClick ={(e)=>{
-                  e.preventDefault()
-                  navigate('/home')
-                }}
-                >Home </button>
-              <button className="ml-2  hover:text-gray-600 text-white font-bold uppercase text-sm  px-4 rounded-lg" 
-              onClick ={(e)=>{
+            <DropdownRender fName={fName} />
+            <button className="mr-2  hover:text-gray-600 text-white font-bold uppercase text-sm  px-4 rounded-lg"
+              onClick={(e) => {
+                e.preventDefault()
+                navigate('/home')
+              }}
+            >Home </button>
+            <button className="ml-2  hover:text-gray-600 text-white font-bold uppercase text-sm  px-4 rounded-lg"
+              onClick={(e) => {
                 e.preventDefault()
                 navigate('/teachers')
               }}
-              >Teachers</button>
+            >Teachers</button>
 
             <div className=" flex w-full sm:w-7/12 md:w-5/12 px-4 lg:ml-auto">
-       
-                <span className="font-normal leading-snug flex text-center white-space-no-wrap border border-solid border-emerald-600 rounded-full text-sm bg-emerald-100 items-center rounded-r-none pl-2 py-1 text-green-800 border-r-0 placeholder-emerald-300">
-                  <FontAwesomeIcon icon={faSearch} className="mr-2" />
-                </span>
+
+              <span className="font-normal leading-snug flex text-center white-space-no-wrap border border-solid border-emerald-600 rounded-full text-sm bg-emerald-100 items-center rounded-r-none pl-2 py-1 text-green-800 border-r-0 placeholder-emerald-300">
+                <FontAwesomeIcon icon={faSearch} className="mr-2" />
+              </span>
               <input
                 type="text"
                 className="px-2 py-1 h-8 border border-solid border-emerald-600 rounded-full text-sm leading-snug text-emerald-500 bg-emerald-100 shadow-none outline-none focus:outline-none w-2/3 font-normal rounded-l-none flex-1 border-l-0 placeholder-gray-900"
