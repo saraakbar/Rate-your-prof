@@ -1,10 +1,10 @@
 // ReviewCard.js
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp, faThumbsDown, faFlag } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-import '../components/ReviewCard.css';
+import '../styles/ReviewCard.css';
 
 const ReviewCard = ({ review }) => {
 

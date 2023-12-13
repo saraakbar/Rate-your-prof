@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import basestyle from "../Base.module.css";
+import basestyle from "../styles/Base.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
@@ -104,9 +104,9 @@ const Login = ({ }) => {
             className="absolute top-0 w-full h-full"
             style={{
               backgroundImage:
-                "url(/register_bg_2.png)",
-              backgroundSize: "cover",
-              backgroundRepeat: "no-repeat"
+                "url(/bg2e.png)",
+              backgroundSize: "contain",
+              
             }}
           ></div>
           <div className="container mx-auto px-4 h-min">

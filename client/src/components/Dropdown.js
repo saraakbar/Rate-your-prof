@@ -1,9 +1,9 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
-import "./Dropdown.css";
-import { useNavigate, NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { faSignOutAlt, faGear } from "@fortawesome/free-solid-svg-icons";
+import "../styles/Dropdown.css"
 
 const UserMenuDropdown = ({ fName }) => {
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ const UserMenuDropdown = ({ fName }) => {
             className="hover:text-white text-left text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent hover:bg-gray-200"
             onClick={(e) => {
               e.preventDefault();
-              // Handle settings action
+              navigate('/settings')
             }}
           >
             <FontAwesomeIcon icon={faGear} className="mr-2" />

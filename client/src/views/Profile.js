@@ -136,10 +136,9 @@ const Profile = () => {
   };
 
   const bodyStyle = {
-    backgroundImage: 'url("/register_bg_2.png")',
-    backgroundSize: 'cover',
-    minHeight: '100vh',
-    backgroundColor: "#475569",
+    backgroundImage: 'url("/bg2e.png")',
+    backgroundSize: 'contain',
+    backgroundColor: "#374151",
   };
 
   return (
@@ -197,7 +196,7 @@ const Profile = () => {
                 </span>
                 <div className="flex mt-4 md:mt-6">
                   <a
-                    href="#"
+                    href="/settings"
                     className="hover:bg-emerald-500 hover:text-white inline-flex items-center mr-4 ml-4 mr-2 px-4 py-2 text-sm font-medium text-center text-white bg-gray-700 rounded-lg"
                   >
                     <FontAwesomeIcon icon={faPencilAlt} className="mr-2" />

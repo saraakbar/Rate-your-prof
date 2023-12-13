@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import basestyle from "../Base.module.css";
+import basestyle from "../styles/Base.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
@@ -7,6 +7,8 @@ import { useNavigate, NavLink } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
+import { Tooltip } from 'react-tooltip';
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -125,9 +127,8 @@ const Register = () => {
             className="absolute top-0 w-full h-full"
             style={{
               backgroundImage:
-                "url(/register_bg_2.png)",
-              backgroundSize: "cover",
-              backgroundRepeat: "no-repeat",
+                "url(/bg2e.png)",
+              backgroundSize: "contain",
             }}
           ></div>
           <div className="container mx-auto px-4 h-min">
@@ -180,6 +181,10 @@ const Register = () => {
                         <div className="relative w-1/2 md:w-1/2 pr-2 mb-3">
                           <label className="block uppercase text-gray-700 text-xs font-bold mb-2" htmlFor="username">
                             Username
+                            <a data-tooltip-id="my-tooltip" data-tooltip-content="Username is visible to others" data-tooltip-place="top">
+                              <FontAwesomeIcon icon={faCircleInfo} className="ml-2" />
+                            </a>
+                            <Tooltip id="my-tooltip" />
                           </label>
                           <input
                             name="username"

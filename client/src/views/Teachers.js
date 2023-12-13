@@ -81,7 +81,6 @@ const Teachers = () => {
 
     const fetchProfile = async () => {
       try {
-        setIsPressed(false);
         const response = await axios.get(`http://localhost:8000/teachers`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -113,10 +112,11 @@ const Teachers = () => {
   };
 
   const bodyStyle = {
-    backgroundImage: 'url("/register_bg_2.png")',
-    backgroundSize: 'cover',
-    minHeight: '100vh',
-    backgroundColor: "#475569",
+    backgroundImage: 'url("/bg2e.png")',
+    backgroundSize: 'contain',
+    backgroundColor: "#374151",
+    minHeight: '100vh',  
+
   };
 
   const options2 = [
@@ -126,7 +126,7 @@ const Teachers = () => {
   ];
 
   const handleSearch = () => {
-    setIsPressed(true);
+    setIsPressed(!isPressed);
   };
   return (
     <>

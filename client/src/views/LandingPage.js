@@ -28,9 +28,9 @@ export default function LandingPage() {
           <div
             className="absolute top-0 w-full h-full"
             style={{
-              backgroundImage: "url(/register_bg_2.png)",
-              backgroundSize: "cover",
-              backgroundRepeat: "no-repeat",
+              backgroundImage: "url(/bg2e.png)",
+              backgroundSize: "contain",
+          
             }}
           ></div>
           <div className="container mx-auto px-4 h-min" style={containerStyle}>

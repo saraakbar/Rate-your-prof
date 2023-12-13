@@ -174,7 +174,6 @@ for (const criterionName in criteriaAverages) {
           reviews,
         };
         
-        console.log(teacherProfile)
         return res.json(teacherProfile);
       } catch (error) {
         console.error(error);

@@ -76,6 +76,13 @@ const CreateReview = () => {
 
   // Handle form submission
   const handleSubmit = async () => {
+    if (criteria.length !== Object.keys(ratings).length) {
+      toast.error("Please provide ratings for all criterias", {
+        position: toast.POSITION.TOP_RIGHT,
+        theme: "dark",
+      });
+      return; // Do not proceed with submission if any criterion is missing a rating
+    }
     const reviewData = {
       course,
       isGrad,
@@ -86,7 +93,6 @@ const CreateReview = () => {
       })),
     };
 
-    // Make a post request to create the review
     try {
       await axios.post(`http://localhost:8000/create_review/${teacherid}`, reviewData, {
         headers: {
@@ -101,18 +107,24 @@ const CreateReview = () => {
 
       navigate(`/teachers`, { replace: true });
       // Handle success (e.g., redirect to review details page)
-    } catch (error) {
+    }
+    catch (error) {
       console.error(error);
-      // Handle error
+      console.log(error.response)
+      toast.error(error.response.data || "Failed to create review", {
+        position: toast.POSITION.TOP_RIGHT,
+        theme: "dark",
+      });
     }
   };
 
   const bodyStyle = {
-    backgroundImage: 'url("/register_bg_2.png")',
-    backgroundSize: 'cover',
+    backgroundImage: 'url("/bg2e.png")',
+    backgroundSize: 'contain',
+    backgroundColor: "#374151",
     minHeight: '100vh',
-    backgroundColor: "#475569",
   };
+
 
   return (
     <>
@@ -194,7 +206,7 @@ const CreateReview = () => {
                   <button
                     type="button"
                     onClick={handleSubmit}
-                    className="bg-blue-400 text-white px-4 py-2 rounded"
+                    className="hover:bg-emerald-500 hover:text-white bg-gray-700 text-white px-4 py-2 rounded"
                   >
                     Submit Review
                   </button>

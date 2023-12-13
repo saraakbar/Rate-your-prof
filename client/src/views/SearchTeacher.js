@@ -68,11 +68,12 @@ const SearchTeacher = () => {
   };
 
   const bodyStyle = {
-    backgroundImage: 'url("/register_bg_2.png")',
-    backgroundSize: 'cover',
-    minHeight: '100vh',
-    backgroundColor: "#475569",
+    backgroundImage: 'url("/bg2e.png")',
+    backgroundSize: 'contain',
+    backgroundColor: "#374151",
+    minHeight: '100vh',  
   };
+
   return (
     <>
       <Navbar transparent fName={fName} />

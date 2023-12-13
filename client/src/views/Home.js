@@ -61,11 +61,13 @@ const Home = () => {
   };
 
   const bodyStyle = {
-    backgroundImage: 'url("/register_bg_2.png")',
+    backgroundImage: 'url("/bg2e.png")',
     backgroundSize: 'contain',
-    minHeight: '100vh',
-    backgroundColor: "#475569",
+    backgroundColor: "#374151",
+    minHeight: '100vh',  
+
   };
+
 
   return (
     <>
