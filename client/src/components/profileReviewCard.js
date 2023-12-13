@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp, faThumbsDown, faFlag } from '@fortawesome/free-solid-svg-icons';
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import '../styles/ReviewCard.css';
@@ -85,8 +86,30 @@ const ReviewCard = ({ review }) => {
     border: '1px solid #fff', // Add a white border  
   };
 
+  const handleDelete = async (reviewId) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:8000/delete_review/${reviewId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error deleting review:', error);
+    }
+    };
+
   return (
-    <div className="text-white bg-gray-700 mb-8 p-6 border rounded-lg shadow">
+    <div className="text-white bg-gray-700 mb-8 p-6 border rounded-lg shadow relative">
+    <button
+      onClick={() => handleDelete(review._id)}  // Add a delete function similar to handleLike and handleDislike
+      className="absolute bottom-0 right-0 p-4 text-gray-500 hover:text-white cursor-pointer"
+    >
+      <FontAwesomeIcon icon={faTrashCan} />
+    </button>
       <h3 className="hoverable-name text-2xl font-semibold mb-2 cursor-pointer">
         <Link to={`/teacher/${review.teacher.ID}`}>{review.teacher.name}</Link>
       </h3>
