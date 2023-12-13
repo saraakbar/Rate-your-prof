@@ -1,0 +1,47 @@
+.nav-border {
+  border-bottom: 0.5px solid #374151;
+  /* emerald-500 */
+}
+
+.nav-active {
+  border-bottom: 2px solid #10B981;
+  /* emerald-500 */
+  color: #10B981;
+  /* emerald-500 */
+}
+
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #374151;
+  padding: 30px;
+  border-radius: 8px;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  text-align: center;
+}
+
+.delete-button {
+  background-color: #ef4444;
+  color: white;
+  padding: 10px;
+  margin-top: 20px;
+  border: none;
+  cursor: pointer;
+  border-radius:8px;
+}
