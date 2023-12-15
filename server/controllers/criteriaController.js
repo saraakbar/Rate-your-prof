@@ -7,6 +7,9 @@ const criteriaController = {
   createCriteria: async (req, res) => {
     try {
       const { name, description } = req.body;
+      if (!name || !description) {
+        return res.status(400).json({ message: 'Please enter all fields' });
+      }
       const criteria = await Criteria.create({ name, description });
       res.status(201).json(criteria);
     } catch (error) {
@@ -18,8 +21,35 @@ const criteriaController = {
   // Get all criteria
   getCriteria: async (req, res) => {
     try {
-      const criteria = await Criteria.find();
-      res.status(200).json(criteria);
+      const criteria = await Criteria.find().select('-__v -description');
+      const criteriaKeys = criteria.length > 0 ? Object.keys(criteria[0].toObject()) : [];
+      const excludedKeys = [];
+      const columns = criteriaKeys.filter(key => !excludedKeys.includes(key));
+      res.status(200).json({ columns, criteria });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  },
+
+  // Get criteria by department id
+  getCriteriaByDept: async (req, res) => {
+    const { department } = req.params;
+    try {
+      const criteria = await Department.findOne({ _id: department })
+        .select('-__v -name -university -_id')
+        .populate({
+          path: 'criteria',
+          select: '-__v -description',
+        });
+      const criteriaData = criteria.criteria || [];
+      const criteriaKeys = criteriaData.length > 0
+        ? Object.keys(criteriaData[0].toObject())
+        : [];
+      const excludedKeys = [];
+      const columns = criteriaKeys.filter(key => !excludedKeys.includes(key));
+
+      res.status(200).json({ columns, criteria: criteriaData });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Internal Server Error' });
@@ -45,13 +75,13 @@ const criteriaController = {
 
       const criteria = departmentDetails ? departmentDetails.criteria : [];
       res.status(200).json(criteria);
-      
+
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Internal Server Error' });
     }
-},
-  
+  },
+
 
   // Edit criteria details
   editCriteria: async (req, res) => {
@@ -86,7 +116,7 @@ const criteriaController = {
       res.status(500).json({ message: 'Internal Server Error' });
     }
   },
-  
+
 
   // Remove criteria from a department
   unassignCriteria: async (req, res) => {
@@ -104,7 +134,7 @@ const criteriaController = {
       res.status(500).json({ message: 'Internal Server Error' });
     }
   },
-  
+
 
   // Delete criteria
   deleteCriteria: async (req, res) => {

@@ -49,7 +49,7 @@ function Tables() {
     Cell: ({ row }) => (
       <MDBox pt={3} display="flex" gap={2}>
         <MDButton onClick={() => handleDelete(row.original._id)} color="error" size="small">
-          Delete
+          <Icon> delete </Icon>
         </MDButton>
         <MDButton onClick={() => handleSuspend(row.original._id, row.original.suspended)} color="warning" size="small">
           {row.original.suspended === 'true' ? 'Unsuspend' : 'Suspend'}

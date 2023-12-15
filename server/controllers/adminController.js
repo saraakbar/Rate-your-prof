@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 function generateAccessToken(user) {
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '2200s' })
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '7200s' })
 }
 
 const adminController = {
@@ -92,8 +92,7 @@ const adminController = {
 
     createDepartment: async (req, res) => {
         try {
-            const { name } = req.body;
-            const { uni_id } = req.params;
+            const { name, uni_id} = req.body;
             const department = await Department.create({ name, university: uni_id });
             res.status(201).json(department);
         } catch (error) {

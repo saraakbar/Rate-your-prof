@@ -38,7 +38,7 @@ const Teachers = () => {
 
     const fetchDepartments = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/departments", {
+        const response = await axios.get(`http://localhost:8000/departments/${dropdown3Value?.value}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

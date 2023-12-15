@@ -33,44 +33,97 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from 'react-router-dom';
 
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+
 function Tables() {
     const navigate = useNavigate();
     const [dept, setDept] = useState([]);
+    const [newName, setNewName] = useState('');
     const [columns, setColumns] = useState([]);
     const [refresh, setRefresh] = useState(false);
-    const { uni_id } = useParams();           
+    const { uni_id } = useParams();
+    const token = JSON.parse(localStorage.getItem("token"));
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const onChange = (e) => {
+        setNewName(e.target.value);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     const actionsColumn = {
         Header: 'Actions',
-        accessor: 'actionsColumn',   
+        accessor: 'actionsColumn',
         Cell: ({ row }) => (
-            <MDButton onClick={() => handleCriterias(row.original._id)} color="primary" size="small">
-                View Criteria
-            </MDButton>
+            <MDBox pt={3} display="flex" gap={2}>
+                <MDButton onClick={() => handleCriterias(row.original._id)} color="primary" size="small">
+                    View Criteria
+                </MDButton>
+                <MDButton onClick={() => handleCreateTeacher(row.original._id)} color="warning" size="small">
+                    Add Teacher
+                </MDButton>
+                <MDButton color="error" size="small" onClick={() => handleDelet(row.original_id)}>
+                    <Icon>delete</Icon>
+                </MDButton>
+            </MDBox>
         ),
     };
 
-    const handleCriterias = (dept_id) => {
+
+    const handleDelet = (dept_id) => {
+        const confirm = window.confirm("Are you sure you want to delete this department?")
+        if (confirm){
+            console.log(dept_id)
+        } 
+    }
+
+    const handleCreateTeacher = (dept_id) => {
         console.log(dept_id)
     }
 
+    const handleCriterias = (department) => {
+        navigate(`/admin/criteria/dept/${department}`);
+    }
 
     const handleRefresh = () => {
         setRefresh(!refresh);
     }
 
-    const handleAddDept = (uni_id) => {
-        console.log("add dept to uni: ", uni_id)
+    const handleAddDept = async (uni_dept) => {
+        try {
+            const response = await axios.post(
+                `http://localhost:8000/admin/create_department`,
+                { name: newName, uni_id: uni_dept }, // Pass the department name in the request payload
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+        } catch (error) {
+            console.error("Error adding department:", error);
+        }
+
+        handleClose()
     }
 
     useEffect(() => {
-        const token = JSON.parse(localStorage.getItem("token"));
         if (!token) {
             navigate("/admin/login", { replace: true });
         }
 
         const fetchDepts = async () => {
-             try {
+            try {
                 const response = await axios.get(`http://localhost:8000/admin/departments/${uni_id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -86,6 +139,7 @@ function Tables() {
 
         fetchDepts();
     }, [refresh]);
+
 
     return (
         <DashboardLayout>
@@ -107,17 +161,37 @@ function Tables() {
                             alignItems="center"
                         >
                             <MDTypography variant="h6" color="white">
-                                Universities
+                                Departments
                             </MDTypography>
                             <MDBox display="flex" alignItems="center" gap={2}>
+                                <React.Fragment>
+                                    <MDButton
+                                        onClick={handleClickOpen}
+                                        color="inherit"
+                                    >
+                                        <Icon>add</Icon>
+                                    </MDButton>
+                                    <Dialog open={open} onClose={handleClose}>
+                                        <DialogTitle>Create Department</DialogTitle>
+                                        <DialogContent>
+                                            <TextField
+                                                autoFocus
+                                                margin="dense"
+                                                id="name"
+                                                label="Department Name"
+                                                type="name"
+                                                fullWidth
+                                                variant="standard"
+                                                onChange={onChange}
+                                            />
+                                        </DialogContent>
+                                        <DialogActions style={{ justifyContent: 'center' }}>
+                                            <MDButton onClick={() => handleAddDept(uni_id)} color="info">Add</MDButton>
+                                        </DialogActions>
+                                    </Dialog>
+                                </React.Fragment>
                                 <MDButton
-                                    onClick={handleAddDept(uni_id)}
-                                    color="inherit"
-                                >
-                                    <Icon>add</Icon>
-                                </MDButton>
-                                <MDButton
-                                    onClick={handleRefresh} // Add the function to handle the refresh action
+                                    onClick={handleRefresh}
                                     color="inherit"
                                 >
                                     <Icon>refresh</Icon>

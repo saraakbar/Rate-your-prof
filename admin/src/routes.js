@@ -44,6 +44,8 @@ import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import Departments from "layouts/tables/departments";
+import Criterias from "layouts/tables/criterias";
+import DeptCriterias from "layouts/tables/deptCriteria";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -57,6 +59,14 @@ const routes = [
     route: "/dashboard",
     component: <Dashboard />,
     displayInSidenav: true, 
+  },
+  {
+    type: "collapse",
+    name: "DeptCriterias",
+    key: "deptCriterias",
+    icon: <Icon fontSize="small">fact_check</Icon>,
+    route: "/admin/criteria/dept/:department",
+    component: <DeptCriterias />,
   },
   {
     type: "collapse",
@@ -82,6 +92,15 @@ const routes = [
     icon: <Icon fontSize="small">school</Icon>,
     route: "/admin/universities",
     component: <Universities />,
+    displayInSidenav: true,
+  },
+  {
+    type: "collapse",
+    name: "Criterias",
+    key: "criterias",
+    icon: <Icon fontSize="small">fact_check</Icon>,
+    route: "/admin/criterias",
+    component: <Criterias />,
     displayInSidenav: true,
   },
   {

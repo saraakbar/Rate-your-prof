@@ -12,6 +12,8 @@ router.get('/admin/criteria', auth, isAdmin, criteriaController.getCriteria);
 // Get criteria for a specific department
 router.get('/create_review/:teacherid', auth, criteriaController.getCriteriaByDepartment);
 
+router.get('/admin/criteria/dept/:department', auth, criteriaController.getCriteriaByDept);
+
 // Edit criteria details (Admin only)
 router.put('/admin/criteria/:criteriaId', auth, isAdmin, criteriaController.editCriteria);
 

@@ -35,50 +35,58 @@ import { useNavigate } from "react-router-dom";
 
 function Tables() {
     const navigate = useNavigate();
-    const [university, setUniversity] = useState([]);
+    const [criteria, setCriteria] = useState([]);
     const [columns, setColumns] = useState([]);
     const [refresh, setRefresh] = useState(false);
-
-    const actionsColumn = {
-        Header: 'Actions',
-        accessor: 'actionsColumn', // Use a unique identifier for the accessor    
-        Cell: ({ row }) => (
-            <MDButton onClick={() => handleDepartments(row.original._id)} color="primary" size="small">
-                View Departments
-            </MDButton>
-        ),
-    };
-
-    const handleDepartments = (uni_id) => {
-        navigate(`/admin/departments/${uni_id}`);
-    }
 
     const handleRefresh = () => {
         setRefresh(!refresh);
     }
 
+    const actionsColumn = {
+        Header: 'Actions',
+        accessor: 'actionsColumn', // Use a unique identifier for the accessor    
+        Cell: ({ row }) => (
+            <MDButton onClick={() => handleDelete(row.original._id)} color="error" size="small">
+                <Icon> delete </Icon>
+            </MDButton>
+        ),
+    };
+
+    const handleDelete = async (criteriaId) => {
+        const confirm = window.confirm('Are you sure you want to delete this criteria?');
+
+        if (confirm) {
+            console.log(criteriaId)
+        }
+    };
+
+    const handleAddCriteria = async (criteriaId) => {
+        console.log(criteriaId)
+    }
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem("token"));
         if (!token) {
             navigate("/admin/login", { replace: true });
         }
 
-        const fetchUniversity = async () => {
+        const fetchCriteria = async () => {
             try {
-                const response = await axios.get(`http://localhost:8000/admin/universities`, {
+                const response = await axios.get(`http://localhost:8000/admin/criteria`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
 
                 setColumns(response.data.columns);
-                setUniversity(response.data.universities);
+                setCriteria(response.data.criteria);
+
             } catch (error) {
-                console.error("Error fetching universities:", error);
+                console.error("Error fetching users:", error);
             }
         };
 
-        fetchUniversity();
+        fetchCriteria();
     }, [refresh]);
 
     return (
@@ -101,15 +109,19 @@ function Tables() {
                             alignItems="center"
                         >
                             <MDTypography variant="h6" color="white">
-                                Universities
+                                Criterias
                             </MDTypography>
-                            <MDBox display="flex" alignItems="center">
-                                {/* Add the refresh button */}
+                            <MDBox display="flex" alignItems="center" gap={2}>
                                 <MDButton
                                     onClick={handleRefresh} // Add the function to handle the refresh action
                                     color="inherit"
                                 >
                                     <Icon>refresh</Icon>
+                                </MDButton>
+                                <MDButton
+                                    onClick={handleAddCriteria}
+                                    color="inherit" >
+                                    <Icon>add</Icon>
                                 </MDButton>
                             </MDBox>
                         </MDBox>
@@ -124,10 +136,11 @@ function Tables() {
                                         })),
                                         actionsColumn,
                                     ],
-                                    rows: university,
+                                    rows: criteria,
                                 }}
                             />
                         </MDBox>
+
                     </Card>
                 </Grid>
             </MDBox>

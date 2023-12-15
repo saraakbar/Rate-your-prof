@@ -2,6 +2,7 @@ const Teacher = require('../models/teacherModel')
 const Review = require('../models/reviewModel')
 const Department = require('../models/departmentModel')
 const University = require('../models/universityModel')
+const mongoose = require('mongoose');
 
 const teacherController = {
     /*create: async (req, res) => {
@@ -183,13 +184,21 @@ for (const criterionName in criteriaAverages) {
 
     getDepartments: async (req, res) => {
       try {
-        const departments = await Department.find({}, 'name _id');        
-        res.status(200).json(departments);
+        const { universityId } = req.params;
+    
+        if (universityId && mongoose.Types.ObjectId.isValid(universityId)) {
+          const departments = await Department.find({ university: universityId }, 'name _id');
+          res.status(200).json(departments);
+        } else {
+          const departments = await Department.find({}, 'name _id');
+          res.status(200).json(departments);
+        }
       } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server Error' });
       }
     },
+    
 
     getUniversities: async (req, res) => {
       try {
