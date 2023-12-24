@@ -92,7 +92,7 @@ function Tables() {
     }
 
     const handleCriterias = (department) => {
-        navigate(`/admin/criteria/dept/${department}`);
+        navigate(`/universities/dept/${department}/criterias`);
     }
 
     const handleRefresh = () => {

@@ -18,6 +18,27 @@ const criteriaController = {
     }
   },
 
+  filteredCriteria: async (req, res) => {
+    const { department } = req.params;
+    try{
+      const departmentCriteria = await Department.findOne({ _id: department })
+      .select('criteria')
+
+      if (!departmentCriteria || !departmentCriteria.criteria) {
+        return res.status(200).json([]);
+      }
+
+      const criteriaFiltered = await Criteria.find({
+        _id: { $nin: departmentCriteria.criteria.map(String) } // Convert criteria in the department to an array of strings
+      }).select('-description -__v');
+
+      res.status(200).json(criteriaFiltered);
+    }catch(error){
+      console.error(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  },
+
   // Get all criteria
   getCriteria: async (req, res) => {
     try {
@@ -56,7 +77,7 @@ const criteriaController = {
     }
   },
 
-  // Get criteria for a specific department
+  // Get criteria for a specific department by teacher id
   getCriteriaByDepartment: async (req, res) => {
     const teach = req.params.teacherid;
 
@@ -121,7 +142,7 @@ const criteriaController = {
   // Remove criteria from a department
   unassignCriteria: async (req, res) => {
     const { department } = req.params;
-    const { criteriaId } = req.body;
+    const { criteriaId } = req.params;
     try {
       const departmentDetails = await Department.findOneAndUpdate(
         { _id: department },

@@ -1,18 +1,21 @@
-/**
- * =========================================================
- * Material Dashboard 2 React - v2.2.0
- * =========================================================
- * Product Page: https://www.creative-tim.com/product/material-dashboard-react
- * Copyright 2023 Creative Tim (https://www.creative-tim.com)
- * Coded by www.creative-tim.com
- * =========================================================
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- */
-
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Checkbox,
+  ListItemText,
+  OutlinedInput,
+} from "@mui/material";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -29,6 +32,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from 'react-router-dom';
 
+
 function Tables() {
   const navigate = useNavigate();
   const [dept, setDept] = useState([]);
@@ -36,6 +40,20 @@ function Tables() {
   const [refresh, setRefresh] = useState(false);
   const { department } = useParams();
   const token = JSON.parse(localStorage.getItem("token"));
+  const [criteriaList, setCriteriaList] = useState([]);
+  const [selectedCriteria, setSelectedCriteria] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
 
   const actionsColumn = {
     Header: 'Actions',
@@ -47,10 +65,19 @@ function Tables() {
     ),
   };
 
-  const handleDelete = (criteria_id) => {
+  const handleDelete = async (criteria_id) => {
     const confirm = window.confirm("Are you sure you want to delete this criteria?");
     if (confirm) {
-      console.log(criteria_id);
+      try {
+        await axios.delete(`http://localhost:8000/admin/criteria/unassign/${department}/${criteria_id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -58,8 +85,28 @@ function Tables() {
     setRefresh(!refresh);
   };
 
-  const handleAddCriteria = async (uni_dept) => {
-    // Your logic for adding criteria goes here
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedCriteria([]);
+  };
+
+
+
+  const handleAddCriteria = async () => {
+    try {
+      await axios.post(`http://localhost:8000/admin/criteria/assign/${department}`, { criteriaIds: selectedCriteria }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+    }
+    handleCloseModal();
   };
 
   useEffect(() => {
@@ -67,9 +114,22 @@ function Tables() {
       navigate("/admin/login", { replace: true });
     }
 
+    const fetchAllCriteria = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/admin/criteria/${department}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setCriteriaList(response.data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
     const fetchCriteria = async () => {
       try {
-        console.log("Department ID:", department);
         const response = await axios.get(`http://localhost:8000/admin/criteria/dept/${department}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -93,6 +153,7 @@ function Tables() {
     };
 
     fetchCriteria();
+    fetchAllCriteria();
   }, [refresh]);
 
   return (
@@ -118,7 +179,7 @@ function Tables() {
                 Criterias
               </MDTypography>
               <MDBox display="flex" alignItems="center" gap={2}>
-                <MDButton onClick={handleAddCriteria} color="inherit">
+                <MDButton onClick={handleOpenModal} color="inherit">
                   <Icon>add</Icon>
                 </MDButton>
                 <MDButton onClick={handleRefresh} color="inherit">
@@ -140,6 +201,34 @@ function Tables() {
           </Card>
         </Grid>
       </MDBox>
+
+      <Dialog open={isModalOpen} onClose={handleCloseModal}>
+        <DialogTitle >Select Criteria</DialogTitle>
+        <DialogContent>
+          <FormControl sx={{ m: 1, width: 300 }}>
+            <InputLabel>Criteria</InputLabel>
+            <Select
+              input={<OutlinedInput label="Criteria" />}
+              multiple
+              value={selectedCriteria}
+              onChange={(e) => setSelectedCriteria(e.target.value)}
+              renderValue={(selected) => selected.map(id => criteriaList.find(c => c._id === id)?.name).join(", ")}
+              style={{ minWidth: "200px", minHeight: "45px" }}
+            >
+              {criteriaList.map((criteria) => (
+                <MenuItem key={criteria._id} value={criteria._id}>
+                  <Checkbox checked={selectedCriteria.includes(criteria._id)} />
+                  <ListItemText primary={criteria.name} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal}>Cancel</Button>
+          <Button onClick={handleAddCriteria}>Add</Button>
+        </DialogActions>
+      </Dialog>
     </DashboardLayout>
   );
 }

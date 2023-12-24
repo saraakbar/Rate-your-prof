@@ -9,6 +9,8 @@ router.post('/admin/criteria', auth, isAdmin, criteriaController.createCriteria)
 // Get all criteria (Admin only)
 router.get('/admin/criteria', auth, isAdmin, criteriaController.getCriteria);
 
+router.get('/admin/criteria/:department', auth, isAdmin, criteriaController.filteredCriteria);
+
 // Get criteria for a specific department
 router.get('/create_review/:teacherid', auth, criteriaController.getCriteriaByDepartment);
 

@@ -50,7 +50,7 @@ function Tables() {
     };
 
     const handleDepartments = (uni_id) => {
-        navigate(`/admin/departments/${uni_id}`);
+        navigate(`/universities/${uni_id}/dept`);
     }
 
     const handleRefresh = () => {
