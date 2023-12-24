@@ -107,6 +107,8 @@ const Teachers = () => {
     fetchProfile();
   }, [currentPage, dropdown1Value, dropdown2Value, dropdown3Value, isPressed]);
 
+
+
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
@@ -127,6 +129,7 @@ const Teachers = () => {
 
   const handleSearch = () => {
     setIsPressed(!isPressed);
+    setCurrentPage(1);
   };
   return (
     <>

@@ -5,6 +5,7 @@ import { faThumbsUp, faThumbsDown, faFlag } from '@fortawesome/free-solid-svg-ic
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import '../styles/ReviewCard.css';
+import ReportModal from './ReportModal'; // assuming the correct filename for the modal
 
 const ReviewCard = ({ review }) => {
 
@@ -14,6 +15,15 @@ const ReviewCard = ({ review }) => {
   const [dislikeCount, setDislikeCount] = useState(review.numOfDislikes);
   const [image, setImage] = useState(null);
   const navigate = useNavigate();
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+
+  const handleReport = () => {
+    setIsReportModalOpen(true);
+  };
+
+  const handleCloseReportModal = () => {
+    setIsReportModalOpen(false);
+  };
 
   const token = JSON.parse(localStorage.getItem('token'));
   if (!token) {
@@ -81,6 +91,7 @@ const ReviewCard = ({ review }) => {
       console.error('Error liking review:', error);
     }
   };
+
 
   const handleDislike = async (reviewId) => {
     try {
@@ -173,13 +184,21 @@ const ReviewCard = ({ review }) => {
         </button>
         <span>{dislikeCount}</span>
         <button
-          //onClick={() => handleReport(review._id)}
+          onClick={() => handleReport()}
           className="ml-4 text-gray-500 hover:text-white cursor-pointer"
         >
           <FontAwesomeIcon icon={faFlag} />
         </button>
+        {isReportModalOpen && (
+        <ReportModal
+            isOpen={isReportModalOpen}
+            onClose={handleCloseReportModal}
+            reviewId={review._id} // Pass the reviewId as a prop
+        />
+    )}
       </div>
     </div>
+
   );
 };
 

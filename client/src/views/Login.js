@@ -56,6 +56,12 @@ const Login = ({ }) => {
   };
   useEffect(() => {
 
+    const token = JSON.parse(localStorage.getItem("token"));
+    const uname = localStorage.getItem("username");
+    if (token) {
+      navigate("/" + uname + "/profile")
+      return
+    }
     const loginSuccess = () => {
       toast.success("Login Successful! Loading Profile.", {
         position: toast.POSITION.TOP_RIGHT,
@@ -79,7 +85,8 @@ const Login = ({ }) => {
             localStorage.setItem("token", JSON.stringify(res.data.accessToken));
             localStorage.setItem("username", res.data.username);
             const username = res.data.username;
-            navigate("/" + username + "/profile", { replace: true });
+            console.log('login')
+            navigate("/" + username + "/profile")
           }
         })
         .catch((error) => {

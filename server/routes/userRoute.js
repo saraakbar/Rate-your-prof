@@ -35,7 +35,7 @@ router.delete('/delete',auth, UserController.delete);
 router.get('/settings',auth, UserController.getSettings)
 router.patch('/settings',auth, UserController.updateSettings);
 router.patch('/settings/password',auth, UserController.changePassword);
-router.post('/review/:id/report',auth, UserController.reportReview)
+router.post('/review/report/:id',auth, UserController.reportReview)
 //router.post('/forgotPassword', UserController.forgotPassword);
 //router.post('/reset-password/:token', UserController.resetPassword);
 router.get('/logout',auth, UserController.logout)

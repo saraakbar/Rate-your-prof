@@ -36,6 +36,19 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
 const Basic = ({ }) => {
+  const token = JSON.parse(localStorage.getItem("token"));
+  const [user, setUser] = useState({
+    username: "",
+    password: ""
+  });
+
+  const onChange = (e) => {
+    const { name, value } = e.target;
+    setUser({
+      ...user,
+      [name]: value
+    });
+  };
 
   const navigate = useNavigate();
   const [formErrors, setFormErrors] = useState({});
@@ -55,19 +68,6 @@ const Basic = ({ }) => {
     return errors;
   };
 
-  const [user, setUser] = useState({
-    username: "",
-    password: ""
-  });
-
-  const onChange = (e) => {
-    const { name, value } = e.target;
-    setUser({
-      ...user,
-      [name]: value
-    });
-  };
-
 
   const handleSignIn = (e) => {
     e.preventDefault();
@@ -76,6 +76,10 @@ const Basic = ({ }) => {
   }
 
   useEffect(() => {
+    if (token) {
+      navigate("/dashboard", { replace: true });
+      return
+    } 
     const loginSuccess = () => {
       toast.success("Login Successful!", {
         position: toast.POSITION.TOP_RIGHT,
@@ -135,11 +139,11 @@ const Basic = ({ }) => {
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={2}>
-              <MDInput type="username" name="username" label="Username" fullWidth value={user.username} onChange={onChange} />
+              <MDInput type="username" name="username" label="Username" fullWidth onChange={onChange} />
               <p className={basestyle.error}>{formErrors.username}</p>
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" name="password" label="Password" fullWidth value={user.password} onChange={onChange} />
+              <MDInput type="password" name="password" label="Password" fullWidth onChange={onChange} />
               <p className={basestyle.error}>{formErrors.password}</p>
             </MDBox>
             <MDBox mt={4} mb={1}>

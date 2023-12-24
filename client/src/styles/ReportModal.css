@@ -1,0 +1,65 @@
+/* ReportModal.css */
+
+.report-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .report-modal.open {
+    display: flex;
+  }
+  
+  .modal-content {
+    background-color: #374151;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    max-height: 80vh; /* Limit the height to 80% of the viewport height */
+    overflow-y: auto; /* Add a scrollbar if the content exceeds the height */
+    text-align: left; /* Align text to the left */
+    position: relative; /* Set position to relative for absolute positioning */
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  input[type="checkbox"] {
+    margin-right: 8px;
+    color: #000;
+  }
+  
+  /* Center the submit button */
+  .submit-container {
+    text-align: center;
+    margin-top: 20px; /* Adjust the margin as needed */
+    background-color: #10b981;
+    border-radius: 8px;
+    padding: 5px;
+    width: 100px;
+   
+  }
+  
+  /* Move the close button to top right */
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    color: #fff;
+  }
+  
+  .submit-container.disabled {
+    background-color: #9ca3af; 
+    cursor: not-allowed; 
+  }

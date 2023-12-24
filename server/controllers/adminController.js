@@ -21,7 +21,6 @@ const adminController = {
                 const token_user = { id: admin._id, username: admin.username, role: admin.role };
                 const accessToken = generateAccessToken(token_user);
                 const response = { message: "Login successful", accessToken: accessToken }
-                console.log(accessToken)
                 res.status(201).send(response)
             } else {
                 return res.status(400).send('Invalid credentials');
@@ -45,12 +44,36 @@ const adminController = {
                     }
                 })
                 .select('-__v -_id')
-            res.status(200).send(reports);
+    
+            const columns = [];
+    
+            // Flatten the nested objects into the columns array
+            const flattenObject = (obj, parentKey = '') => {
+                for (const key in obj) {
+                    const newKey = parentKey ? `${parentKey}.${key}` : key;
+                    if (typeof obj[key] === 'object' && obj[key] !== null) {
+                        flattenObject(obj[key], newKey);
+                    } else {
+                        columns.push(newKey);
+                    }
+                }
+            };
+    
+            if (reports.length > 0) {
+                flattenObject(reports[0].toObject());
+            }
+    
+            // Remove internal fields from columns
+            const sanitizedColumns = columns.filter(key => key !== '__v' && key !== '_id');
+    
+            res.status(200).json({ columns: sanitizedColumns, reports });
         } catch (error) {
-            console.log(error);
+            console.error("Error fetching reports:", error);
             return res.status(500).send("Server Error");
         }
     },
+    
+    
 
     createUniversity: async (req, res) => {
         try {
@@ -69,7 +92,7 @@ const adminController = {
             const universityKeys = universities.length > 0 ? Object.keys(universities[0].toObject()) : [];
             const excludedKeys = [];
             const columns = universityKeys.filter(key => !excludedKeys.includes(key));
-            res.status(200).json({ columns, universities});
+            res.status(200).json({ columns, universities });
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Internal Server Error' });
@@ -92,7 +115,7 @@ const adminController = {
 
     createDepartment: async (req, res) => {
         try {
-            const { name, uni_id} = req.body;
+            const { name, uni_id } = req.body;
             const department = await Department.create({ name, university: uni_id });
             res.status(201).json(department);
         } catch (error) {
@@ -152,7 +175,7 @@ const adminController = {
     */
     getUsers: async (req, res) => {
         try {
-            const users = await User.find({ role: 'user' }).select('-__v -password -img -role'); 
+            const users = await User.find({ role: 'user' }).select('-__v -password -img -role');
             const userKeys = users.length > 0 ? Object.keys(users[0].toObject()) : [];
             const excludedKeys = [];
             const columns = userKeys.filter(key => !excludedKeys.includes(key));

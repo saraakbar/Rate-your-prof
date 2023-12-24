@@ -1,7 +1,7 @@
 // ReviewCard.js
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faThumbsUp, faThumbsDown, faFlag } from '@fortawesome/free-solid-svg-icons';
+import { faThumbsUp, faThumbsDown} from '@fortawesome/free-solid-svg-icons';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
@@ -78,14 +78,6 @@ const ReviewCard = ({ review }) => {
     }
   };
 
-  const customImageStyle = {
-    // Add your custom image styles here
-    width: '40px',
-    height: '40px',
-    borderRadius: '50%',  // Make the image circular
-    border: '1px solid #fff', // Add a white border  
-  };
-
   const handleDelete = async (reviewId) => {
     try {
       const response = await axios.delete(
@@ -148,12 +140,6 @@ const ReviewCard = ({ review }) => {
           <FontAwesomeIcon icon={faThumbsDown} />
         </button>
         <span>{dislikeCount}</span>
-        <button
-          //onClick={() => handleReport(review._id)}
-          className="ml-4 text-gray-500 hover:text-white cursor-pointer"
-        >
-          <FontAwesomeIcon icon={faFlag} />
-        </button>
       </div>
     </div>
   );

@@ -46,11 +46,20 @@ import SignUp from "layouts/authentication/sign-up";
 import Departments from "layouts/tables/departments";
 import Criterias from "layouts/tables/criterias";
 import DeptCriterias from "layouts/tables/deptCriteria";
+import ReportedReviews from "layouts/tables/reportedReviews"
 
 // @mui icons
 import Icon from "@mui/material/Icon";
 
 const routes = [
+  {
+    type: "collapse",
+    name: "Sign In",
+    key: "sign-in",
+    icon: <Icon fontSize="small">login</Icon>,
+    route: "/admin/login",
+    component: <SignIn />,
+  },
   {
     type: "collapse",
     name: "Dashboard",
@@ -59,6 +68,15 @@ const routes = [
     route: "/dashboard",
     component: <Dashboard />,
     displayInSidenav: true, 
+  },
+  {
+    type: "collapse",
+    name: "Reported Reviews",
+    key: "reportedReviews",
+    icon: <Icon fontSize="small">report</Icon>,
+    route: "/admin/reports",
+    component: <ReportedReviews />,
+    displayInSidenav: true,
   },
   {
     type: "collapse",
@@ -120,14 +138,6 @@ const routes = [
     route: "/profile",
     component: <Profile />,
     displayInSidenav: true, 
-  },
-  {
-    type: "collapse",
-    name: "Sign In",
-    key: "sign-in",
-    icon: <Icon fontSize="small">login</Icon>,
-    route: "/admin/login",
-    component: <SignIn />,
   },
   {
     type: "collapse",
