@@ -36,17 +36,17 @@ async function sendVerificationEmail(user, req, res, verify){
         await token.save();
         
         let subject = "Reset Password";
-        let to = user.Email;
+        let to = user.email;
         let from = process.env.FROM_EMAIL;
         let html= "";
         let link= "";
     
-        //link="http://"+req.headers.host+"/auth/forgotpass/verify/"+token.token;
-        html = `<p>Hi ${user.username}<p><br><p>Please click on the following <a href="${link}">link</a> to reset your password.</p> 
+        link="http://localhost:3000/reset-password/"+token.token;
+        html = `<p>Hi ${user.username},<p><br><p>Please click on the following <a href="${link}">link</a> to reset your password.</p> 
         <br><p>If you did not request this, please ignore this email.</p>`;
         
         await sendEmail({to, from, subject, html});
-        res.status(200).json({message: 'An email has been sent to ' + user.Email + '.'});
+        res.status(200).json({message: 'An email has been sent to ' + user.email + '.'});
     }catch (error) {
         console.log(error);
         res.status(500).json({message: "Server Error"})

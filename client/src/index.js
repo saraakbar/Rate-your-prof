@@ -15,6 +15,8 @@ import SearchTeacher from "./views/SearchTeacher.js";
 import TeacherProfile from "./views/TeacherProfile.js";
 import Settings from "./views/Settings.js";
 import ChangePassword from "./views/ChangePassword.js";
+import ForgotPassword from "./views/ForgotPassword.js";
+import ResetPassword from "./views/ResetPassword.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -32,6 +34,8 @@ root.render(
       <Route path="/teacher/:ID" element={<TeacherProfile />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/change-password" element={<ChangePassword />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
     </Routes>
   </BrowserRouter>
 );
