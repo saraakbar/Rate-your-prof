@@ -44,17 +44,6 @@ function Tables() {
   const [selectedCriteria, setSelectedCriteria] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const ITEM_HEIGHT = 48;
-  const ITEM_PADDING_TOP = 8;
-  const MenuProps = {
-    PaperProps: {
-      style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250,
-      },
-    },
-  };
-
   const actionsColumn = {
     Header: 'Actions',
     accessor: 'actionsColumn',
@@ -74,6 +63,8 @@ function Tables() {
             Authorization: `Bearer ${token}`,
           },
         });
+
+        setRefresh(!refresh)
 
       } catch (error) {
         console.error(error);

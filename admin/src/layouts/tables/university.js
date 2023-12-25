@@ -43,9 +43,14 @@ function Tables() {
         Header: 'Actions',
         accessor: 'actionsColumn', // Use a unique identifier for the accessor    
         Cell: ({ row }) => (
+            <MDBox pt={3} display="flex" gap={2}>
             <MDButton onClick={() => handleDepartments(row.original._id)} color="primary" size="small">
                 View Departments
             </MDButton>
+            <MDButton onClick={() => handleDelete(row.original._id)} color="error" size="small"> 
+            <Icon> delete </Icon>
+            </MDButton>
+            </MDBox>
         ),
     };
 
@@ -53,8 +58,19 @@ function Tables() {
         navigate(`/universities/${uni_id}/dept`);
     }
 
+    const handleDelete = async (uni_id) => {
+        const confirm = window.confirm('Are you sure you want to delete this university?');
+
+        if (confirm) {
+            console.log(uni_id)
+        }
+    }
+
     const handleRefresh = () => {
         setRefresh(!refresh);
+    }
+
+    const handleAddUni = () => {
     }
 
     useEffect(() => {
@@ -103,13 +119,18 @@ function Tables() {
                             <MDTypography variant="h6" color="white">
                                 Universities
                             </MDTypography>
-                            <MDBox display="flex" alignItems="center">
+                            <MDBox display="flex" alignItems="center" gap={2}>
                                 {/* Add the refresh button */}
                                 <MDButton
                                     onClick={handleRefresh} // Add the function to handle the refresh action
                                     color="inherit"
                                 >
                                     <Icon>refresh</Icon>
+                                </MDButton>
+                                <MDButton
+                                    onClick={handleAddUni}
+                                    color="inherit" >
+                                    <Icon>add</Icon>
                                 </MDButton>
                             </MDBox>
                         </MDBox>

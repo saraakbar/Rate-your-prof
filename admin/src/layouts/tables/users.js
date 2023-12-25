@@ -38,6 +38,8 @@ function Tables() {
   const [users, setUsers] = useState([]);
   const [columns, setColumns] = useState([]);
   const [refresh, setRefresh] = useState(false);
+  const token = JSON.parse(localStorage.getItem("token"));
+
 
   const handleRefresh = () => {
     setRefresh(!refresh);
@@ -70,12 +72,27 @@ function Tables() {
     const confirm = window.confirm('Are you sure you want to ' + (suspended === 'true' ? 'unsuspend' : 'suspend') + ' this user?');
 
     if (confirm) {
-      console.log(userId, suspended)
+      try {
+        const response = await axios.patch(
+          `http://localhost:8000/admin/user/${userId}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setRefresh(!refresh);
+
+      } catch (error) {
+        console.log(error);
+      }
+
     }
   }
 
   useEffect(() => {
-    const token = JSON.parse(localStorage.getItem("token"));
     if (!token) {
       navigate("/admin/login", { replace: true });
     }
@@ -95,7 +112,7 @@ function Tables() {
 
         setColumns(response.data.columns);
         setUsers(usersWithConvertedSuspended);
-        
+
       } catch (error) {
         console.error("Error fetching users:", error);
       }

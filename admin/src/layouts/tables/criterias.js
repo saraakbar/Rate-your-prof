@@ -50,6 +50,7 @@ function Tables() {
             <MDButton onClick={() => handleDelete(row.original._id)} color="error" size="small">
                 <Icon> delete </Icon>
             </MDButton>
+            
         ),
     };
 

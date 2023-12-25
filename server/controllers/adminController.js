@@ -44,9 +44,9 @@ const adminController = {
                     }
                 })
                 .select('-__v -_id')
-    
+
             const columns = [];
-    
+
             // Flatten the nested objects into the columns array
             const flattenObject = (obj, parentKey = '') => {
                 for (const key in obj) {
@@ -58,22 +58,22 @@ const adminController = {
                     }
                 }
             };
-    
+
             if (reports.length > 0) {
                 flattenObject(reports[0].toObject());
             }
-    
+
             // Remove internal fields from columns
             const sanitizedColumns = columns.filter(key => key !== '__v' && key !== '_id');
-    
+
             res.status(200).json({ columns: sanitizedColumns, reports });
         } catch (error) {
             console.error("Error fetching reports:", error);
             return res.status(500).send("Server Error");
         }
     },
-    
-    
+
+
 
     createUniversity: async (req, res) => {
         try {
@@ -124,6 +124,28 @@ const adminController = {
         }
     },
 
+    suspendUser: async (req, res) => {
+        try {
+            const { userId} = req.params;
+            const user = await User.findOne({ _id: userId });
+
+            if (!user) {
+                return res.status(404).send("User not found");
+            }
+
+            user.suspended = !user.suspended;
+            await user.save();
+
+            res.status(200).json({
+                message: `User ${user.suspended ? 'suspended' : 'unsuspended'} successfully.`,
+            });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).send("Server Error");
+        }
+    },
+
+
     /*
     createModerator: async (req, res) => {
         try{
@@ -157,17 +179,6 @@ const adminController = {
             await User.findAndDelete(username: username);
             res.status(200).send("User deleted");
         } catch (error){
-            console.log(error);
-            return res.status(500).send("Server Error");
-        }
-    },
-
-    suspendUser: async (req, res) => {
-        try{ 
-            const {username} = req.params;
-            await User.findAndUpdate(username: username, {suspended: true});
-            res.status(200).send("User suspended");
-        } catch(error){
             console.log(error);
             return res.status(500).send("Server Error");
         }

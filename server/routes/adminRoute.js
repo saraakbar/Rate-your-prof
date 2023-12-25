@@ -10,7 +10,7 @@ router.post('/admin/create_department',auth,isAdmin, AdminController.createDepar
 //router.post('admin/createModerator',auth,isAdmin, AdminController.createModerator);
 //router.delete('/admin/user/:username',auth,isAdmin, AdminController.deleteUser);
 //router.delete('/admin/review/:id',auth,isAdmin, AdminController.deleteReview);
-//router.patch('/admin/user/:username',auth,isAdmin, AdminController.suspendUser);
+router.patch('/admin/user/:userId',auth,isAdmin, AdminController.suspendUser);
 //router.patch('/admin/report/:id',auth,isAdmin, AdminController.resolveReport);
 //router.delete('/admin/cleanup',auth,isAdmin, AdminController.deleteReports);
 router.get('/admin/users',auth,isAdmin, AdminController.getUsers);
