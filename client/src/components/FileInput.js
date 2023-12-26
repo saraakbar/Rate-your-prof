@@ -10,7 +10,6 @@ const FileUpload = ({ onClose }) => {
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
 
-    // Check if a file is selected
     if (selectedFile) {
       setFile(selectedFile);
     }
@@ -49,13 +48,12 @@ const FileUpload = ({ onClose }) => {
         });
 
         loginSuccess();
-        setFile(null); // Reset file state after successful upload
+        setFile(null);
         onClose();
       }
 
     } catch (error) {
       loginError("Invalid file type. Please try again.");
-
       console.error('Error uploading file:', error);
     }
   };

@@ -13,7 +13,6 @@ import { Link } from 'react-router-dom';
 const TeacherProfile = () => {
   const navigate = useNavigate();
   const { ID } = useParams();
-  const [isLoading, setIsLoading] = useState(true);
   const [profile, setProfile] = useState({
     criteriaAverages: {},
     AverageRating: 0,
@@ -27,7 +26,7 @@ const TeacherProfile = () => {
   const [fName, setFirstName] = useState("");
 
   useEffect(() => {
-    const registerError = (message) => {
+    const teacherError = (message) => {
       toast.error(message, {
         position: toast.POSITION.TOP_RIGHT,
         theme: "dark",
@@ -49,32 +48,38 @@ const TeacherProfile = () => {
           },
         });
 
-        const criteriaAverages = response.data.criteriaAverages;
-        const AverageRating = response.data.AverageRating;
+        const criteriaAverages = response.data.criteriaAverages; 
         const reviews = response.data.reviews;
+        const  AverageRating = response.data.AverageRating;
         const position = response.data.teacher.position;
         const tName = response.data.teacher.name;
         const department = response.data.teacher.department.name;
         const faculty_type = response.data.teacher.faculty_type;
         const university = response.data.teacher.uni.name;
 
-        setIsLoading(false);
         setProfile({ criteriaAverages, AverageRating, position, tName, department, faculty_type, university, reviews });
       } catch (error) {
         console.error(error);
-        return registerError(error.response.data.message);
+        if (error.response.status === 403) {
+          teacherError("Invalid or expired token")
+          localStorage.removeItem("token");
+          localStorage.removeItem("username");
+          localStorage.removeItem("firstName");
+          navigate("/login", { replace: true });
+        }
+        else {
+          teacherError(error.response.data.message);
+        }
       }
     };
-
     fetchTeacher();
-
   }, []);
 
   const bodyStyle = {
     backgroundImage: 'url("/bg2e.png")',
     backgroundSize: 'contain',
     backgroundColor: "#374151",
-    minHeight: '100vh',  
+    minHeight: '100vh',
 
   };
 
@@ -97,7 +102,6 @@ const TeacherProfile = () => {
               className="bg-gray-200 mt-24 flex-shrink-0 mr-4 ml-4 bg-white border border-gray-200 rounded-lg shadow"
               style={customStyle2}
             >
-              {/* Add Teacher's Profile Information Here */}
               <div className="ml-2">
                 <h2 className="text-2xl font-semibold mt-4 mb-4">{profile.tName}</h2>
                 <p className="text-lg">{`University: ${profile.university}`}</p>
@@ -115,11 +119,7 @@ const TeacherProfile = () => {
                     </Link>
                   </button>
                 </div>
-                {/* Add other relevant information */}
               </div>
-
-
-
             </div>
             <div
               className="mt-24 mb-4 bg-gray-200 w-full mr-4 bg-white border border-gray-200 rounded-lg shadow"
@@ -133,8 +133,8 @@ const TeacherProfile = () => {
                         <span className="mr-2">{criterion}:</span>
                         <Rating
                           initialRating={averageRating}
-                          emptySymbol={<span className="text-gray-400">&#9734;</span>} // Empty star
-                          fullSymbol={<span className="text-blue-400">&#9733;</span>}  // Filled star
+                          emptySymbol={<span className="text-gray-400">&#9734;</span>}
+                          fullSymbol={<span className="text-blue-400">&#9733;</span>}
                           readonly
                         />
                         <span className="ml-2 text-blue-400">{averageRating}</span>
@@ -145,7 +145,6 @@ const TeacherProfile = () => {
               </div>
               <div className="py-4 px-4">
                 <h2 className="text-2xl font-semibold mb-4">Reviews</h2>
-                {/* Render ReviewCards */}
                 {profile.reviews.map((review) => (
                   <ReviewCard key={review._id} review={review} />
                 ))}

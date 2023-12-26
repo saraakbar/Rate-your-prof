@@ -15,15 +15,14 @@ const SearchTeacher = () => {
   const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
 
+  const searchError = (message) => {
+    toast.error(message, {
+      position: toast.POSITION.TOP_RIGHT,
+      theme: "dark",
+    })
+  }
+
   useEffect(() => {
-
-    const registerError = (message) => {
-      toast.error(message, {
-        position: toast.POSITION.TOP_RIGHT,
-        theme: "dark",
-      });
-    };
-
     setFirstName(localStorage.getItem("firstName"));
 
     const token = JSON.parse(localStorage.getItem("token"));
@@ -51,7 +50,16 @@ const SearchTeacher = () => {
 
       } catch (error) {
         console.error(error);
-        return registerError(error.response.data.message);
+        if (error.response.status === 403) {
+          searchError("Invalid or expired token")
+          localStorage.removeItem("token");
+          localStorage.removeItem("username");
+          localStorage.removeItem("firstName");
+          navigate("/login", { replace: true });
+        }
+        else {
+          searchError(error.response.data.message);
+        }
       }
     };
 
@@ -71,7 +79,7 @@ const SearchTeacher = () => {
     backgroundImage: 'url("/bg2e.png")',
     backgroundSize: 'contain',
     backgroundColor: "#374151",
-    minHeight: '100vh',  
+    minHeight: '100vh',
   };
 
   return (
@@ -91,7 +99,6 @@ const SearchTeacher = () => {
                   <TeacherCard key={teacher._id} teacher={teacher} />
                 ))}
               </div>
-              {/* Pagination */}
               <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
             </div>
           </div>

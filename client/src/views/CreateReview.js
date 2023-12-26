@@ -15,15 +15,20 @@ const CreateReview = () => {
   const [criteria, setCriteria] = useState([]);
   const [ratings, setRatings] = useState({});
   const [comments, setComments] = useState({});
-  const [course, setCourse] = useState(''); // New state for course
-  const [isGrad, setIsGrad] = useState(false); // New state for graduate status
-  const [isLoading, setIsLoading] = useState(true);
+  const [course, setCourse] = useState('');
+  const [isGrad, setIsGrad] = useState(false);
   const [teacherName, setTeacherName] = useState('');
   const { teacherid } = useParams();
   const token = JSON.parse(localStorage.getItem('token'));
   const fName = localStorage.getItem('firstName');
 
-  // Fetch criteria on component mount
+  const createError = (message) => {
+    toast.error(message, {
+      position: toast.POSITION.TOP_RIGHT,
+      theme: "dark",
+    })
+  }
+
   useEffect(() => {
 
     if (!token) {
@@ -40,11 +45,19 @@ const CreateReview = () => {
         setTeacherName(response.data.name);
       } catch (error) {
         console.error(error);
-        // Handle error
+        if (error.response.status === 403) {
+          createError("Invalid or expired token")
+          localStorage.removeItem("token");
+          localStorage.removeItem("username");
+          localStorage.removeItem("firstName");
+          navigate("/login", { replace: true });
+        }
+        else {
+          createError(error.response.data.message);
+        }
       }
     };
     fetchName();
-
 
     const fetchCriteria = async () => {
       try {
@@ -54,34 +67,26 @@ const CreateReview = () => {
           },
         });
         setCriteria(response.data);
-        setIsLoading(false);
       } catch (error) {
         console.error(error);
-        // Handle error
       }
     };
 
     fetchCriteria();
   }, []);
 
-  // Handle rating change
   const handleRatingChange = (criterionId, rating) => {
     setRatings((prevRatings) => ({ ...prevRatings, [criterionId]: rating }));
   };
 
-  // Handle comment change
   const handleCommentChange = (criterionId, comment) => {
     setComments((prevComments) => ({ ...prevComments, [criterionId]: comment }));
   };
 
-  // Handle form submission
   const handleSubmit = async () => {
     if (criteria.length !== Object.keys(ratings).length) {
-      toast.error("Please provide ratings for all criterias", {
-        position: toast.POSITION.TOP_RIGHT,
-        theme: "dark",
-      });
-      return; // Do not proceed with submission if any criterion is missing a rating
+      createError("Please provide ratings for all criterias")
+      return;
     }
     const reviewData = {
       course,
@@ -104,17 +109,19 @@ const CreateReview = () => {
         position: toast.POSITION.TOP_RIGHT,
         theme: "dark",
       });
-
       navigate(`/teachers`, { replace: true });
-      // Handle success (e.g., redirect to review details page)
-    }
-    catch (error) {
+    } catch (error) {
       console.error(error);
-      console.log(error.response)
-      toast.error(error.response.data || "Failed to create review", {
-        position: toast.POSITION.TOP_RIGHT,
-        theme: "dark",
-      });
+      if (error.response.status === 403) {
+        createError("Invalid or expired token")
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+        localStorage.removeItem("firstName");
+        navigate("/login", { replace: true });
+      }
+      else {
+        createError(error.response.data.message);
+      }
     }
   };
 
@@ -135,7 +142,6 @@ const CreateReview = () => {
             <h1 className="text-white font-bold text-2xl mt-24 mb-4">Create Review for {teacherName}</h1>
             <div className="bg-gray-200 p-4 rounded mb-4 mt-4" style={{ overflowY: 'auto', maxHeight: '500px', width: '850px' }}>
               <form className='ml-8'>
-                {/* Course Name */}
                 <div className="relative w-full mb-3">
                   <label className="mt-4 block uppercase text-gray-700 text-base ml-8 font-bold mb-2">
                     Course Name
@@ -149,9 +155,7 @@ const CreateReview = () => {
                     onChange={(e) => setCourse(e.target.value)}
                   />
                 </div>
-
-                {/* Graduate Status Checkbox */}
-                <div className="mb-4 ml-8">
+                <div className="flex mb-2 ml-8">
                   <input
                     type="checkbox"
                     id="isGrad"
@@ -159,19 +163,16 @@ const CreateReview = () => {
                     onChange={() => setIsGrad(!isGrad)}
                     className="mr-2"
                   />
-                  <label htmlFor="isGrad" className="mb-4 text-sm font-bold text-gray-700">
+                  <label htmlFor="isGrad" className="mb-2 text-sm font-bold text-gray-700">
                     Graduate Course
                   </label>
                 </div>
-
-                {/* Criteria Ratings and Comments */}
                 <div className="ml-8 mr-4 grid grid-cols-2">
                   {criteria.map((criterion, index) => (
                     <div key={criterion._id} className="mb-6" style={{ gridColumn: index % 2 === 0 ? '1' : '2' }}>
                       <label className="block uppercase text-gray-700 text-base font-bold mb-4">
                         {criterion.name}
                       </label>
-                      {/* Rating */}
                       <div className="flex items-center space-x-2 mb-4">
                         <label htmlFor={`rating_${criterion._id}`} className="text-sm mr-8 text-gray-700 font-bold">
                           Rating:
@@ -185,8 +186,6 @@ const CreateReview = () => {
                           fractions={2}
                         />
                       </div>
-
-                      {/* Comment */}
                       <div className="flex items-center space-x-2 mb-4">
                         <label htmlFor={`comment_${criterion._id}`} className="text-sm mr-4 text-gray-700 font-bold">
                           Comment:
@@ -200,8 +199,6 @@ const CreateReview = () => {
                     </div>
                   ))}
                 </div>
-
-                {/* Submit button */}
                 <div className="flex justify-center mt-2">
                   <button
                     type="button"

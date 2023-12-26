@@ -10,7 +10,6 @@ const TeacherCard = ({ teacher }) => {
   return (
     <div className="teacher-card-container">
       <div className="text-white bg-gray-700 border p-4 mb-4 shadow rounded relative">
-        {/* Create Review Button */}
         <button
           className="hover:bg-emerald-500 hover:text-white absolute right-0 m-2 p-2 bg-white text-gray-700 rounded-full flex justify-center"
           style={{ marginRight: '15px' }}
@@ -20,8 +19,6 @@ const TeacherCard = ({ teacher }) => {
             <span>Create Review</span>
           </Link>
         </button>
-
-        {/* Teacher Information */}
         <h3 className="hoverable-name text-lg font-bold mb-2">
           <Link to={`/teacher/${teacher.ID}`}>{name}</Link>
         </h3>

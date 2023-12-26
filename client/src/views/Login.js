@@ -3,7 +3,7 @@ import basestyle from "../styles/Base.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import { useNavigate, NavLink } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -63,7 +63,7 @@ const Login = ({ }) => {
       return
     }
     const loginSuccess = () => {
-      toast.success("Login Successful! Loading Profile.", {
+      toast.success("Login Successful!", {
         position: toast.POSITION.TOP_RIGHT,
         theme: "dark",
       });
@@ -85,7 +85,6 @@ const Login = ({ }) => {
             localStorage.setItem("token", JSON.stringify(res.data.accessToken));
             localStorage.setItem("username", res.data.username);
             const username = res.data.username;
-            console.log('login')
             navigate("/" + username + "/profile")
           }
         })
@@ -95,7 +94,7 @@ const Login = ({ }) => {
           } else if (error.response.status === 400) {
             loginError("Invalid credentials.");
           } else if (error.response.status === 403) {
-            loginError("Your account was suspended.");
+            loginError(error.response.data.message);
           } else {
             loginError("Server Error.");
           }
@@ -113,7 +112,7 @@ const Login = ({ }) => {
               backgroundImage:
                 "url(/bg2e.png)",
               backgroundSize: "contain",
-              
+
             }}
           ></div>
           <div className="container mx-auto px-4 h-min">
@@ -183,21 +182,21 @@ const Login = ({ }) => {
                           <input
                             id="customCheckLogin"
                             type="checkbox"
-                            className="form-checkbox border-0 rounded text-gray-800 ml-1 w-5 h-5"
+                            className="form-checkbox border-0 rounded text-gray-800 w-5 h-5"
                             style={{ transition: "all .15s ease" }}
                           />
-                          <span className="ml-2 text-sm font-semibold text-gray-700">
+                          <span className="text-sm font-semibold text-gray-700">
                             Remember me
                           </span>
                         </label>
                         <div className="float-right">
-                          <NavLink
+                          <Link
                             to="/forgot-password"
                             className="text-gray-300"
                             style={{ color: "blue" }}
                           >
                             <small>Forgot password?</small>
-                          </NavLink>
+                          </Link>
                         </div>
                       </div>
                     </form>
@@ -217,13 +216,13 @@ const Login = ({ }) => {
                         style={{ margin: "0" }}
                       >
                         Not a member?
-                        <NavLink
+                        <Link
                           to="/register"
                           className="text-gray-600 text-sm font-bold"
                           style={{ color: "green", margin: "10px" }}
                         >
                           Register
-                        </NavLink>
+                        </Link>
                       </body>
                     </div>
                   </div>

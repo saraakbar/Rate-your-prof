@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 import Pagination from "../components/Pagination";
 import { useNavigate } from "react-router-dom";
 
-
 const Home = () => {
   const navigate = useNavigate();
   const [reviews, setReviews] = useState([]);
@@ -44,7 +43,23 @@ const Home = () => {
         setIsLoading(false);
       } catch (error) {
         console.error(error);
-        toast.error("Failed to fetch reviews");
+        if (error.response.status === 403) {
+          toast.error("Invalid or expired token", {
+            position: toast.POSITION.TOP_RIGHT,
+            theme: "dark",
+          });
+          localStorage.removeItem("token");
+          localStorage.removeItem("username");
+          localStorage.removeItem("firstName");
+          navigate("/login", { replace: true });
+        }
+        else {
+          toast.error(error.response.data.message, {
+            position: toast.POSITION.TOP_RIGHT,
+            theme: "dark",
+          });
+        }
+
         setIsLoading(false);
       }
     };
@@ -64,14 +79,14 @@ const Home = () => {
     backgroundImage: 'url("/bg2e.png")',
     backgroundSize: 'contain',
     backgroundColor: "#374151",
-    minHeight: '100vh',  
+    minHeight: '100vh',
 
   };
 
 
   return (
     <>
-      <Navbar transparent fName={firstName} /> {/* Assuming you have a Navbar component */}
+      <Navbar transparent fName={firstName} />
       <main>
         <section className="relative block h-500-px" style={bodyStyle}>
           <div className="flex justify-center items-center h-full flex-col">

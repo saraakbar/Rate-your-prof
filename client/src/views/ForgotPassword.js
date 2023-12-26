@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { NavLink } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -100,7 +99,6 @@ const ForgotPassword = () => {
                   <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
                     <span className="text-gray-700 text-sm">Enter your email below, and we’ll send you a message with your username and a link to reset your password. </span>
                     <div className="text-center mt-4">
-                      {/* Email Input */}
                       <input
                         type="email"
                         placeholder="Email Address"
@@ -110,12 +108,10 @@ const ForgotPassword = () => {
                       />
                       <p className={basestyle.error}>{formErrors.email}</p>
 
-                      {/* Loading animation */}
                       {isLoading && <div className="mt-2 spinner-border text-primary" role="status">
                         <span className="visually-hidden">Loading...</span>
                       </div>}
 
-                      {/* Forgot Password Button */}
                       <button
                         className="mt-6 bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none"
                         type="button"

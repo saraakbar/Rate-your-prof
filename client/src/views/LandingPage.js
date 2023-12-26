@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
 const containerStyle = {
@@ -30,7 +30,7 @@ export default function LandingPage() {
             style={{
               backgroundImage: "url(/bg2e.png)",
               backgroundSize: "contain",
-          
+
             }}
           ></div>
           <div className="container mx-auto px-4 h-min" style={containerStyle}>
@@ -47,7 +47,7 @@ export default function LandingPage() {
                   </div>
                   <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
                     <div className="text-center">
-                      <NavLink to="/login" replace={true}>
+                      <Link to="/login" replace={true}>
                         <button
                           className="bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
                           type="button"
@@ -55,8 +55,8 @@ export default function LandingPage() {
                         >
                           Login
                         </button>
-                      </NavLink>
-                      <NavLink to="/register">
+                      </Link>
+                      <Link to="/register">
                         <button
                           className="bg-gray-900 text-white active-bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mb-1"
                           type="button"
@@ -65,7 +65,7 @@ export default function LandingPage() {
                         >
                           Sign Up
                         </button>
-                      </NavLink>
+                      </Link>
                     </div>
                   </div>
                 </div>

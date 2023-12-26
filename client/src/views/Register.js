@@ -3,7 +3,7 @@ import basestyle from "../styles/Base.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import { useNavigate, NavLink } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -269,9 +269,9 @@ const Register = () => {
                     </div>
                     <div className="w-1/4 text-center">
                       <body className="text-gray-600 text-sm font-bold" style={{ margin: "0" }}>Already a member?
-                        <NavLink to="/login" className="text-gray-600 text-sm font-bold" style={{ color: "green", margin: "10px" }}>
+                        <Link to="/login" className="text-gray-600 text-sm font-bold" style={{ color: "green", margin: "10px" }}>
                           Login
-                        </NavLink>
+                        </Link>
                       </body>
                     </div>
                   </div>

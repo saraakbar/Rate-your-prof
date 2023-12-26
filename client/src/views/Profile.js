@@ -5,7 +5,7 @@ import ReviewCard from "../components/profileReviewCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import { useNavigate, NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -27,16 +27,6 @@ const Profile = () => {
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
 
@@ -90,12 +80,19 @@ const Profile = () => {
         }
 
         localStorage.setItem("firstName", firstName);
-        setIsLoading(false);
         setProfile({ firstName, lastName, userName, email, erp, reviews });
       } catch (error) {
         console.error(error);
-        return registerError(error.response.data.message);
-        // Handle error, e.g., redirect to an error page
+        if (error.response.status === 403) {
+          registerError("Invalid or expired token")
+          localStorage.removeItem("token");
+          localStorage.removeItem("username");
+          localStorage.removeItem("firstName");
+          navigate("/login", { replace: true });
+        }
+        else {
+          registerError(error.response.data.message);
+        }
       }
     };
 

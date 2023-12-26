@@ -22,12 +22,12 @@ const Teachers = () => {
   const [dropdown3Value, setDropdown3Value] = useState(null);
 
   useEffect(() => {
-    const registerError = (message) => {
+    const teacherError = (message) => {
       toast.error(message, {
         position: toast.POSITION.TOP_RIGHT,
         theme: "dark",
-      });
-    };
+      })
+    }
 
     setFirstName(localStorage.getItem("firstName"));
 
@@ -51,7 +51,16 @@ const Teachers = () => {
         setDropdown1Options(departmentsWithSelectOption);
       } catch (error) {
         console.error(error);
-        registerError(error.response?.data?.message || "Failed to fetch departments");
+        if (error.response.status === 403) {
+          teacherError("Invalid or expired token")
+          localStorage.removeItem("token");
+          localStorage.removeItem("username");
+          localStorage.removeItem("firstName");
+          navigate("/login", { replace: true });
+        }
+        else {
+          teacherError(error.response.data.message);
+        }
       }
     }
 
@@ -73,7 +82,7 @@ const Teachers = () => {
         setDropdown3Options(universitiesOp);
       } catch (error) {
         console.error(error);
-        registerError(error.response?.data?.message || "Failed to fetch University");
+        teacherError(error.response.data.message);
       }
     }
 
@@ -100,7 +109,7 @@ const Teachers = () => {
 
       } catch (error) {
         console.error(error);
-        return registerError(error.response.data.message);
+        teacherError(error.response.data.message);
       }
     };
 
@@ -117,7 +126,7 @@ const Teachers = () => {
     backgroundImage: 'url("/bg2e.png")',
     backgroundSize: 'contain',
     backgroundColor: "#374151",
-    minHeight: '100vh',  
+    minHeight: '100vh',
 
   };
 
@@ -138,9 +147,7 @@ const Teachers = () => {
         <section className="relative block h-500-px" style={bodyStyle}>
           <div className="flex justify-center items-center h-full flex-col">
             <h1 className="text-white font-bold text-2xl mt-24 mb-4">Browse Faculty</h1>
-
             <div className="flex items-center">
-              {/* Dropdown 1 */}
               <Select
                 options={dropdown3Options.map(university => ({ value: university._id, label: university.name }))}
                 value={dropdown3Value}
@@ -158,8 +165,6 @@ const Teachers = () => {
                 className="mr-4" // Adjust the width as needed
                 styles={{ control: (styles) => ({ ...styles, width: '250px' }) }}
               />
-
-              {/* Dropdown 2 */}
               <Select
                 options={options2}
                 value={dropdown2Value}
@@ -168,8 +173,6 @@ const Teachers = () => {
                 className="mr-4" // Adjust the width as needed
                 styles={{ control: (styles) => ({ ...styles, width: '250px' }) }}
               />
-
-              {/* Search Input */}
               <input
                 type="text"
                 value={searchValue}
@@ -178,8 +181,6 @@ const Teachers = () => {
                 className="mr-4 rounded"
                 style={{ width: "200px" }}
               />
-
-              {/* Search Button */}
               <button
                 onClick={handleSearch}
                 className="bg-blue-500 text-white px-4 py-2 rounded"
@@ -197,7 +198,6 @@ const Teachers = () => {
                   <TeacherCard key={teacher._id} teacher={teacher} />
                 ))}
               </div>
-              {/* Pagination */}
               <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
             </div>
           </div>

@@ -26,15 +26,15 @@ const ResetPassword = () => {
             errors.password = "Password is required";
             errors.confirmPassword = "Confirm Password is required";
         }
-        else if(!password){
+        else if (!password) {
             errors.password = "Password is required";
         }
         else if (!confirmPassword) {
             errors.confirmPassword = "Confirm Password is required";
         }
-        else if (password.length < 8 ||              // Minimum length of 8 characters
-            !/[a-z]/.test(password) ||         // At least one lowercase letter
-            !/[A-Z]/.test(password) ||         // At least one uppercase letter
+        else if (password.length < 8 ||
+            !/[a-z]/.test(password) ||
+            !/[A-Z]/.test(password) ||
             !/[0-9]/.test(password)) {
             errors.password = "Password should be atleast 8 characters long and must contain atleast one uppercase, one lowercase and one number";
         }
@@ -72,12 +72,11 @@ const ResetPassword = () => {
 
     }, []);
     useEffect(() => {
-       
+
 
         const ResetPassword = async () => {
             if (Object.keys(formErrors).length === 0 && isSubmit) {
                 try {
-                    // Make an API request to reset the password
                     const response = await axios.post("http://localhost:8000/reset-password/" + token, {
                         password: password,
                         confirmPassword: confirmPassword
@@ -126,7 +125,6 @@ const ResetPassword = () => {
                                     </div>
                                     <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
                                         <div className="text-center">
-                                            {/* Password Input */}
                                             <input
                                                 type="password"
                                                 placeholder="New Password"
@@ -135,9 +133,6 @@ const ResetPassword = () => {
                                                 onChange={(e) => setPassword(e.target.value)}
                                             />
                                             <p className={basestyle.error}>{formErrors.password}</p>
-
-
-                                            {/* Confirm Password Input */}
                                             <input
                                                 type="password"
                                                 placeholder="Confirm Password"
@@ -146,9 +141,6 @@ const ResetPassword = () => {
                                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                             />
                                             <p className={basestyle.error}>{formErrors.confirmPassword}</p>
-
-
-                                            {/* Reset Password Button */}
                                             <button
                                                 className="mt-6 bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none"
                                                 type="button"
