@@ -37,7 +37,7 @@ async function sendVerificationEmail(user, req, res, verify){
         
         let subject = "Reset Password";
         let to = user.email;
-        let from = process.env.FROM_EMAIL;
+        let from = "Rate Your Professor";
         let html= "";
         let link= "";
     

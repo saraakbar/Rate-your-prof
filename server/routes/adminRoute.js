@@ -15,10 +15,11 @@ router.patch('/admin/user/:userId',auth,isAdmin, AdminController.suspendUser);
 //router.delete('/admin/cleanup',auth,isAdmin, AdminController.deleteReports);
 router.get('/admin/users',auth,isAdmin, AdminController.getUsers);
 //router.get('/admin/reviews',auth,isAdmin, AdminController.getReviews);
-//router.get('/admin/review/:id',auth,isAdmin, AdminController.getReview);
+router.get('/admin/review/:id',auth,isAdmin, AdminController.getReview);
 //router.get('/admin/user/:username',auth,isAdmin, AdminController.getUser);
 router.get('/admin/universities',auth,isAdmin, AdminController.getUniversities);
 router.get('/admin/departments/:uni_id',auth,isAdmin, AdminController.getDepts);
+router.get('/admin/dashboard',auth,isAdmin, AdminController.getCount);
 
 
 

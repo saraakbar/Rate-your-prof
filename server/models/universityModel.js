@@ -5,7 +5,6 @@ const universitySchema = new mongoose.Schema({
   ID: { type: String, required: true, unique: true},
   location: { type: String, required: true },
   logo: {type: String, default: null},
-  departments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Department' }],
 });
 
 const University = mongoose.model('University', universitySchema);

@@ -4,7 +4,7 @@ const { auth, isAdmin } = require('../middleware/auth');
 const criteriaController = require('../controllers/criteriaController');
 
 // Create a new criteria (Admin only)
-router.post('/admin/criteria', auth, isAdmin, criteriaController.createCriteria);
+router.post('/admin/create_criteria', auth, isAdmin, criteriaController.createCriteria);
 
 // Get all criteria (Admin only)
 router.get('/admin/criteria', auth, isAdmin, criteriaController.getCriteria);

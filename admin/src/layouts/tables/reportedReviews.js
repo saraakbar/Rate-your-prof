@@ -47,19 +47,16 @@ function Tables() {
         Header: 'Actions',
         accessor: 'actionsColumn', // Use a unique identifier for the accessor    
         Cell: ({ row }) => (
-                <MDButton onClick={() => handleDelete(row.original._id)} color="primary" size="small">
+                <MDButton onClick={() => handleNav(row.original._id)} color="primary" size="small">
                     View Details
                 </MDButton>
         ),
     };
 
-    const handleDelete = async (userId) => {
-        const confirm = window.confirm('Are you sure you want to delete this user?');
-
-        if (confirm) {
-            console.log(userId)
-        }
+    const handleNav= async (reportId) => {
+        navigate(`/reports/${reportId}`);
     };
+
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem("token"));
         if (!token) {
@@ -75,6 +72,7 @@ function Tables() {
                 });
 
                 const col = [
+                    "_id",
                     "review._id",
                     "review.user._id",
                     "review.user.username",

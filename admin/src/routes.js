@@ -47,6 +47,7 @@ import Departments from "layouts/tables/departments";
 import Criterias from "layouts/tables/criterias";
 import DeptCriterias from "layouts/tables/deptCriteria";
 import ReportedReviews from "layouts/tables/reportedReviews"
+import ReportDetails from "layouts/reportedReview"
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -59,6 +60,13 @@ const routes = [
     icon: <Icon fontSize="small">login</Icon>,
     route: "/admin/login",
     component: <SignIn />,
+  },
+  {
+    type: "collapse",
+    name: "Report Details",
+    key: "report-details",
+    route: "/reports/:id",
+    component: <ReportDetails />,
   },
   {
     type: "collapse",
@@ -128,7 +136,6 @@ const routes = [
     icon: <Icon fontSize="small">notifications</Icon>,
     route: "/notifications",
     component: <Notifications />,
-    displayInSidenav: true, 
   },
   {
     type: "collapse",
@@ -137,7 +144,6 @@ const routes = [
     icon: <Icon fontSize="small">person</Icon>,
     route: "/profile",
     component: <Profile />,
-    displayInSidenav: true, 
   },
   {
     type: "collapse",

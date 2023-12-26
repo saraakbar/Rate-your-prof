@@ -399,7 +399,7 @@ const UserController = {
     }
   },
 
-  forgotPassword: async function (req, res) {
+  forgotPassword: async function (req, res,next) {
     const email = req.body.email;
     try {
       const user = await User.findOne({ email });

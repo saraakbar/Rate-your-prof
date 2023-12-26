@@ -31,26 +31,31 @@ import DataTable from "examples/Tables/DataTable";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { Modal,TextField, Button } from "@mui/material";
 
 function Tables() {
     const navigate = useNavigate();
     const [criteria, setCriteria] = useState([]);
     const [columns, setColumns] = useState([]);
     const [refresh, setRefresh] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const token = JSON.parse(localStorage.getItem("token"));
+    const [newCriteria, setNewCriteria] = useState({
+        name: "",
+        description: "",
+    });
 
     const handleRefresh = () => {
         setRefresh(!refresh);
-    }
+    };
 
     const actionsColumn = {
-        Header: 'Actions',
-        accessor: 'actionsColumn', // Use a unique identifier for the accessor    
+        Header: "Actions",
+        accessor: "actionsColumn",
         Cell: ({ row }) => (
             <MDButton onClick={() => handleDelete(row.original._id)} color="error" size="small">
                 <Icon> delete </Icon>
             </MDButton>
-            
         ),
     };
 
@@ -58,15 +63,39 @@ function Tables() {
         const confirm = window.confirm('Are you sure you want to delete this criteria?');
 
         if (confirm) {
-            console.log(criteriaId)
+            console.log(criteriaId);
         }
     };
 
-    const handleAddCriteria = async (criteriaId) => {
-        console.log(criteriaId)
-    }
+    const handleAddCriteria = async () => {
+        try {
+            await axios.post(`http://localhost:8000/admin/create_criteria`, newCriteria, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setRefresh(!refresh);
+        }
+        catch (error) {
+            console.error(error);
+        }
+
+        handleCloseModal();
+    };
+
+    const handleOpenModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setNewCriteria({
+            name: "",
+            description: "",
+        });
+    };
+
     useEffect(() => {
-        const token = JSON.parse(localStorage.getItem("token"));
         if (!token) {
             navigate("/admin/login", { replace: true });
         }
@@ -81,7 +110,6 @@ function Tables() {
 
                 setColumns(response.data.columns);
                 setCriteria(response.data.criteria);
-
             } catch (error) {
                 console.error("Error fetching users:", error);
             }
@@ -113,15 +141,10 @@ function Tables() {
                                 Criterias
                             </MDTypography>
                             <MDBox display="flex" alignItems="center" gap={2}>
-                                <MDButton
-                                    onClick={handleRefresh} // Add the function to handle the refresh action
-                                    color="inherit"
-                                >
+                                <MDButton onClick={handleRefresh} color="inherit">
                                     <Icon>refresh</Icon>
                                 </MDButton>
-                                <MDButton
-                                    onClick={handleAddCriteria}
-                                    color="inherit" >
+                                <MDButton onClick={handleOpenModal} color="inherit">
                                     <Icon>add</Icon>
                                 </MDButton>
                             </MDBox>
@@ -141,10 +164,53 @@ function Tables() {
                                 }}
                             />
                         </MDBox>
-
                     </Card>
                 </Grid>
             </MDBox>
+
+            <Modal
+                open={isModalOpen}
+                onClose={handleCloseModal}
+                aria-labelledby="add-university-modal"
+                aria-describedby="modal-to-add-new-university"
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                <Card style={{ maxWidth: 400, width: '100%' }}>
+                    <MDBox
+                        p={4}
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                    >
+                        <MDTypography variant="h5" color="textPrimary">
+                            Add Criteria
+                        </MDTypography>
+                        <TextField
+                            label="Name"
+                            fullWidth
+                            margin="normal"
+                            value={newCriteria.name}
+                            onChange={(e) => setNewCriteria({ ...newCriteria, name: e.target.value })}
+                        />
+                        <TextField
+                            label="Description"
+                            fullWidth
+                            multiline
+                            rows={4}
+                            margin="normal"
+                            value={newCriteria.description}
+                            onChange={(e) => setNewCriteria({ ...newCriteria, description: e.target.value })}
+                        />
+                        <Button variant="contained" onClick={handleAddCriteria} style={{ color: 'white' }} >
+                            Save Criteria
+                        </Button>
+                    </MDBox>
+                    </Card>
+            </Modal>
         </DashboardLayout>
     );
 }
