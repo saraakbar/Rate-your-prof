@@ -6,9 +6,16 @@ import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import '../styles/ReviewCard.css';
+import { toast } from 'react-toastify';
+
+const reviewError = (message) => {
+  toast.error(message, {
+    position: toast.POSITION.TOP_RIGHT,
+    theme: "dark",
+  })
+}
 
 const ReviewCard = ({ review }) => {
-
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
   const [likeCount, setLikeCount] = useState(review.numOfLikes);
@@ -44,7 +51,17 @@ const ReviewCard = ({ review }) => {
       setLikeCount(response.data.info[0]?.numOfLikes);
       setDislikeCount(response.data.info[0]?.numOfDislikes);
     } catch (error) {
-      console.error('Error liking review:', error);
+      console.error(error);
+      if (error.response.status === 403) {
+        reviewError("Invalid or expired token")
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+        localStorage.removeItem("firstName");
+        navigate("/login", { replace: true });
+      }
+      else {
+        reviewError(error.response.data.message);
+      }
     }
   };
 
@@ -74,11 +91,23 @@ const ReviewCard = ({ review }) => {
       setLikeCount(response.data.info[0]?.numOfLikes);
       setDislikeCount(response.data.info[0]?.numOfDislikes);
     } catch (error) {
-      console.error('Error disliking review:', error);
+      console.error(error);
+      if (error.response.status === 403) {
+        reviewError("Invalid or expired token")
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+        localStorage.removeItem("firstName");
+        navigate("/login", { replace: true });
+      }
+      else {
+        reviewError(error.response.data.message);
+      }
     }
   };
 
   const handleDelete = async (reviewId) => {
+    const del = window.confirm("Are you sure you want to delete this review?")
+    if (del) {
     try {
       const response = await axios.delete(
         `http://localhost:8000/delete_review/${reviewId}`,
@@ -88,10 +117,27 @@ const ReviewCard = ({ review }) => {
           },
         }
       );
-      console.log(response.data);
+
+      toast.success(response.data.message, {
+        position: toast.POSITION.TOP_RIGHT,
+        theme: "dark",
+      });
+      window.location.reload();
+
     } catch (error) {
-      console.error('Error deleting review:', error);
+      console.error(error);
+      if (error.response.status === 403) {
+        reviewError("Invalid or expired token")
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+        localStorage.removeItem("firstName");
+        navigate("/login", { replace: true });
+      }
+      else {
+        reviewError(error.response.data.message);
+      }
     }
+  }
     };
 
   return (

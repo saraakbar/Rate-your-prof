@@ -1,11 +1,11 @@
-// ReviewCard.js
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp, faThumbsDown, faFlag } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import '../styles/ReviewCard.css';
-import ReportModal from './ReportModal'; // assuming the correct filename for the modal
+import ReportModal from './ReportModal';
+import {toast} from 'react-toastify';
 
 const ReviewCard = ({ review }) => {
 
@@ -16,6 +16,13 @@ const ReviewCard = ({ review }) => {
   const [image, setImage] = useState(null);
   const navigate = useNavigate();
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+
+  const reviewError = (message) => {
+    toast.error(message, {
+      position: toast.POSITION.TOP_RIGHT,
+      theme: "dark",
+    })
+  }
 
   const handleReport = () => {
     setIsReportModalOpen(true);
@@ -31,6 +38,7 @@ const ReviewCard = ({ review }) => {
   }
 
   useEffect(() => {
+
     const fetchUserImage = async () => {
       try {
         if (review.user.img) {
@@ -56,7 +64,17 @@ const ReviewCard = ({ review }) => {
           setImage(null);
         }
       } catch (error) {
-        console.error('Error fetching user image:', error);
+        console.error(error);
+        if (error.response.status === 403) {
+          reviewError("Invalid or expired token")
+          localStorage.removeItem("token");
+          localStorage.removeItem("username");
+          localStorage.removeItem("firstName");
+          navigate("/login", { replace: true });
+        }
+        else {
+          reviewError(error.response.data.message);
+        }
       }
     };
 
@@ -88,7 +106,17 @@ const ReviewCard = ({ review }) => {
       setLikeCount(response.data.info[0]?.numOfLikes);
       setDislikeCount(response.data.info[0]?.numOfDislikes);
     } catch (error) {
-      console.error('Error liking review:', error);
+      console.error(error);
+      if (error.response.status === 403) {
+        reviewError("Invalid or expired token")
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+        localStorage.removeItem("firstName");
+        navigate("/login", { replace: true });
+      }
+      else {
+        reviewError(error.response.data.message);
+      }
     }
   };
 
@@ -119,7 +147,17 @@ const ReviewCard = ({ review }) => {
       setLikeCount(response.data.info[0]?.numOfLikes);
       setDislikeCount(response.data.info[0]?.numOfDislikes);
     } catch (error) {
-      console.error('Error disliking review:', error);
+      console.error(error);
+      if (error.response.status === 403) {
+        reviewError("Invalid or expired token")
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+        localStorage.removeItem("firstName");
+        navigate("/login", { replace: true });
+      }
+      else {
+        reviewError(error.response.data.message);
+      }
     }
   };
 
@@ -134,15 +172,12 @@ const ReviewCard = ({ review }) => {
   return (
     <div className="text-white bg-gray-700 mb-8 p-6 border rounded-lg shadow">
       <div className="flex items-center mb-3">
-        {/* User Image */}
         <img
           className="mr-3 rounded-full"
           style={customImageStyle}
           src={image || '/avatar.png'}
           alt="user avatar"
         />
-
-        {/* Username */}
         <p className="text-sm font-bold text-white">{review.user.username}</p>
       </div>
       <h3 className="hoverable-name text-2xl font-semibold mb-2 cursor-pointer">

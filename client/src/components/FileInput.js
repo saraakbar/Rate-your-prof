@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const FileUpload = ({ onClose }) => {
   const username = localStorage.getItem("username");
   const token = JSON.parse(localStorage.getItem("token"));
   const [file, setFile] = useState(null);
+  const navigate = useNavigate();
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -16,13 +18,13 @@ const FileUpload = ({ onClose }) => {
   };
 
   const loginSuccess = () => {
-    toast.success("Image uploaded successfully. Please refresh.", {
+    toast.success("Image uploaded successfully.", {
       position: toast.POSITION.TOP_RIGHT,
       theme: "dark",
     });
   };
 
-  const loginError = (message) => {
+  const fileError = (message) => {
     toast.error(message, {
       position: toast.POSITION.TOP_RIGHT,
       theme: "dark",
@@ -32,9 +34,11 @@ const FileUpload = ({ onClose }) => {
   const handleUpload = async () => {
     try {
       if (!file) {
-        loginError("No file selected");
+        fileError("No file selected");
       }
-
+      else if(!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)){
+        fileError("Invalid file type. Please try again.");
+      }
       else {
 
         const formData = new FormData();
@@ -50,11 +54,21 @@ const FileUpload = ({ onClose }) => {
         loginSuccess();
         setFile(null);
         onClose();
+        window.location.reload();
       }
 
     } catch (error) {
-      loginError("Invalid file type. Please try again.");
-      console.error('Error uploading file:', error);
+      console.error(error);
+      if (error.response.status === 403) {
+        fileError("Invalid or expired token")
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+        localStorage.removeItem("firstName");
+        navigate("/login", { replace: true });
+      }
+      else {
+        fileError(error.response.data.message);
+      }
     }
   };
 

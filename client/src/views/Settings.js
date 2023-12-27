@@ -5,11 +5,51 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import NavTab from "../components/NavTab";
+import basestyle from "../styles/Base.module.css";
 
 const Settings = () => {
   const navigate = useNavigate();
   const fName = localStorage.getItem('firstName');
+  const [formErrors, setFormErrors] = useState({});
+  const [isSubmit, setIsSubmit] = useState(false);
 
+  const validateForm = (userData) => {
+    const errors = {};
+    const emailRegex = /^[^\s+@]+@[^\s@]+\.[^\s@]{2,}$/i;
+
+    if (!userData.firstName.trim()) {
+      errors.firstName = 'First Name required';
+    }
+
+    if (!userData.lastName.trim()) {
+      errors.lastName = 'Last Name required';
+    }
+
+    const usernameRegex = /^(?=.{4})[a-z][a-z\d]*_?[a-z\d]+$/i;
+
+    if (!userData.username.trim()) {
+      errors.username = 'Username required';
+    } else if (!usernameRegex.test(userData.username)) {
+      errors.username = "Invalid username";
+    }
+
+    if (!userData.email.trim()) {
+      errors.email = 'Email required';
+    } else if (!emailRegex.test(userData.email)) {
+      errors.email = 'Invalid email address';
+    }
+
+    if (!userData.erp) {
+      errors.erp = "ERP is required";
+      console.log(userData.erp)
+    } else if (String(userData.erp).length !== 5) {      
+      errors.erp = "Invalid ERP";
+    } else if (!/^[0-9]+$/.test(userData.erp)) {
+      errors.erp = "Invalid ERP";
+    }
+
+    return errors;
+  };
   const [userData, setUserData] = useState({
     firstName: '',
     lastName: '',
@@ -18,15 +58,15 @@ const Settings = () => {
     erp: '',
   });
 
-  useEffect(() => {
-    const registerError = (message) => {
-      toast.error(message, {
-        position: toast.POSITION.TOP_RIGHT,
-        theme: "dark",
-      })
-    }
+  const settingsError = (message) => {
+    toast.error(message, {
+      position: toast.POSITION.TOP_RIGHT,
+      theme: "dark",
+    })
+  }
+  const token = JSON.parse(localStorage.getItem("token"));
 
-    const token = JSON.parse(localStorage.getItem("token"));
+  useEffect(() => {
     if (!token) {
       navigate("/login", { replace: true });
     }
@@ -42,12 +82,53 @@ const Settings = () => {
         setUserData(response.data);
       } catch (error) {
         console.error(error);
-        return registerError(error.response.data.message);
+        if (error.response.status === 403) {
+          settingsError("Invalid or expired token")
+          localStorage.removeItem("token");
+          localStorage.removeItem("username");
+          localStorage.removeItem("firstName");
+          navigate("/login", { replace: true });
+        }
+        else {
+          settingsError(error.response.data.message);
+        }
       }
     };
 
     fetchSettings();
-  }, [navigate]);
+  }, []);
+
+  useEffect(() => {
+    const update = async () => {
+    if (Object.keys(formErrors).length === 0 && isSubmit) {
+      try {
+        const response = await axios.patch('http://localhost:8000/settings', userData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        toast.success("Settings updated", {
+          position: toast.POSITION.TOP_RIGHT,
+          theme: "dark",
+        });
+      } catch (error) {
+        console.error(error);
+        if (error.response && error.response.status === 403) {
+          settingsError("Invalid or expired token")
+          localStorage.removeItem("token");
+          localStorage.removeItem("username");
+          localStorage.removeItem("firstName");
+          navigate("/login", { replace: true });
+        } else {
+          settingsError(error.response.data.message);
+        }
+      }
+    }
+  }
+
+    update();
+  }, [formErrors]);
 
   const handleInputChange = (e) => {
     setUserData({
@@ -56,16 +137,11 @@ const Settings = () => {
     });
   };
 
-  const handleSave = async () => {
-    try {
-      await axios.put('http://localhost:8000/updateSettings', userData, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-    } catch (error) {
-      console.error(error);
-    }
+  const handleSave = async (e) => {
+    e.preventDefault();
+    const errors = validateForm(userData);
+    setFormErrors(errors);
+    setIsSubmit(true);
   };
 
   const handleTabClick = (tab) => {
@@ -94,7 +170,7 @@ const Settings = () => {
                   <NavTab activeTab="settings" handleTabClick={handleTabClick} />
 
                   <div className="px-6 ">
-                  <span className="font-bold text-gray-700 text-lg">Profile </span>
+                    <span className="font-bold text-gray-700 text-lg">Profile </span>
 
                     <form>
                       <div className="mb-3">
@@ -107,7 +183,10 @@ const Settings = () => {
                           onChange={handleInputChange}
                           className="border border-gray-300 px-3 py-2 rounded w-full focus:outline-none focus:border-blue-500"
                         />
+                        <p className={basestyle.error}>{formErrors.firstName}</p>
+
                       </div>
+
                       <div className="mb-3">
                         <label htmlFor="lastName" className="block text-sm font-bold text-gray-700">Last Name:</label>
                         <input
@@ -118,7 +197,10 @@ const Settings = () => {
                           onChange={handleInputChange}
                           className="border border-gray-300 px-3 py-2 rounded w-full focus:outline-none focus:border-blue-500"
                         />
+                        <p className={basestyle.error}>{formErrors.lastName}</p>
+
                       </div>
+
                       <div className="mb-3">
                         <label htmlFor="username" className="block text-sm font-bold text-gray-700">Username:</label>
                         <input
@@ -129,7 +211,10 @@ const Settings = () => {
                           onChange={handleInputChange}
                           className="border border-gray-300 px-3 py-2 rounded w-full focus:outline-none focus:border-blue-500"
                         />
+                        <p className={basestyle.error}>{formErrors.username}</p>
+
                       </div>
+
                       <div className="mb-3">
                         <label htmlFor="email" className="block text-sm font-bold text-gray-700">Email:</label>
                         <input
@@ -140,6 +225,7 @@ const Settings = () => {
                           onChange={handleInputChange}
                           className="border border-gray-300 px-3 py-2 rounded w-full focus:outline-none focus:border-blue-500"
                         />
+                        <p className={basestyle.error}>{formErrors.email}</p>
                       </div>
                       <div className="mb-3">
                         <label htmlFor="erp" className="block text-sm font-bold text-gray-700">ERP:</label>
@@ -151,6 +237,7 @@ const Settings = () => {
                           onChange={handleInputChange}
                           className="border border-gray-300 px-3 py-2 rounded w-full focus:outline-none focus:border-blue-500"
                         />
+                        <p className={basestyle.error}>{formErrors.erp}</p>
                       </div>
                     </form>
                     <div className="text-center mt-6">

@@ -141,7 +141,7 @@ const UserController = {
       // Added functionality for looking at other people's profiles
       else if (username != currentUser) {
         return res
-          .status(403)
+          .status(418)
           .json({ message: 'You are not authorized to view this profile' });
       }
     } catch (error) {
@@ -154,14 +154,14 @@ const UserController = {
   delete: async (req, res) => {
     try {
       const userId = req.user.id;
+      const newUserId = '658b9d04c63ba967ba0b8197';
       //const user = await User.findById(userId).select('_id');
       //await Review.deleteMany({ user: userId });
-
       const reviews = await Review.find({ user: userId });
 
       if (reviews.length > 0) {
         for (const review of reviews) {
-          review.user = null;
+          review.user = newUserId;
           await review.save();
         }
       }
@@ -214,13 +214,38 @@ const UserController = {
     const currentUser = req.user.id;
     try {
       const { firstName, lastName, username, email, erp } = req.body;
+
+      const existingEmail = await User.findOne({ email, _id: { $ne: currentUser } });
+
+      if (existingEmail) {
+        return res.status(409).send({ message: "Email already exists. Please choose another email." });
+      }
+
+      const existingUsername = await User.findOne({ username, _id: { $ne: currentUser } });
+
+      if (existingUsername) {
+        return res.status(409).send({ message: "Username already taken. Please choose another username." });
+      }
+
+      const existingERP = await User.findOne({ erp, _id: { $ne: currentUser } });
+
+      if (existingERP) {
+        return res.status(409).send({ message: "ERP already exists. Please check again." });
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).send({ message: "Invalid email." });
+      }
+
       const result = await User.findByIdAndUpdate(currentUser, {
-        firstName: firstName,
-        lastName: lastName,
-        username: username,
-        erp: erp,
-        email: email,
+        firstName,
+        lastName,
+        username,
+        erp,
+        email,
       });
+
       res.status(201).send("Update Successful");
     } catch (error) {
       console.error(error);
@@ -228,24 +253,25 @@ const UserController = {
     }
   },
 
+
   changePassword: async (req, res) => {
     const currentUser = req.user.id;
     try {
       const { currentPassword, newPassword, confirmNewPassword } = req.body;
       if (!(currentPassword && newPassword && confirmNewPassword)) {
-        return res.status(400).send("All input is required");
+        return res.status(400).send({ message: "All input is required" });
       }
       if (
-        newPassword.length < 8 ||              // Minimum length of 8 characters
-        !/[a-z]/.test(newPassword) ||         // At least one lowercase letter
-        !/[A-Z]/.test(newPassword) ||         // At least one uppercase letter
-        !/[0-9]/.test(newPassword)            // At least one number
+        newPassword.length < 8 ||
+        !/[a-z]/.test(newPassword) ||
+        !/[A-Z]/.test(newPassword) ||
+        !/[0-9]/.test(newPassword)
       ) {
-        return res.status(400).send("Password should be minimum 8 characters long and should include one lowercase letter, one uppercase letter, and at least one number");
+        return res.status(400).send({ message: "Password should be minimum 8 characters long and should include one lowercase letter, one uppercase letter, and at least one number" });
       }
 
       if (currentPassword == newPassword) {
-        return res.status(400).send("New password cannot be the same as your current password");
+        return res.status(400).send({ message: "New password cannot be the same as your current password" });
       }
 
       const user = await User.findById(currentUser).select('password');
@@ -262,11 +288,11 @@ const UserController = {
             res.status(201).send("Password Changed Successfully");
           }
           else {
-            return res.status(400).send("Passwords do not match. Try Again.");
+            return res.status(400).send({ message: "Passwords do not match. Try Again." });
           }
         }
         else {
-          return res.status(400).send("Your existing password is incorrect");
+          return res.status(400).send({ message: "Your existing password is incorrect" });
         }
       }
     } catch (error) {
@@ -297,7 +323,7 @@ const UserController = {
       }
 
       if (review.user == userId) {
-        return res.status(403).json({ message: 'You cannot report your own review' });
+        return res.status(418).json({ message: 'You cannot report your own review' });
       }
 
       const report = new Report({
@@ -324,7 +350,7 @@ const UserController = {
         return res.status(404).json({ message: 'User not found' });
       }
       if (!req.file) {
-        return res.status(400).send('No file uploaded');
+        return res.status(400).send({ message: 'No file uploaded' });
       }
 
       const prevImg = await User.find({ username: username }).select('img -_id');
@@ -345,7 +371,7 @@ const UserController = {
 
     } catch (error) {
       console.log(error);
-      return res.status(500).send("Server Error");
+      return res.status(500).send({ message: "Server Error" });
     }
 
   },
@@ -366,7 +392,6 @@ const UserController = {
         sortCriteria = { date: -1 }; // Default to sorting by date in descending order
       }
 
-
       // Construct the query
       const reviewsCount = await Review.countDocuments({});
       const reviews = await Review.find({})
@@ -381,7 +406,7 @@ const UserController = {
         })
         .populate({
           path: 'user',
-          select: 'username img -_id', // Populate with just the username of the user
+          select: 'username img -_id',
         })
         .select('-__v -likes -dislikes')
         .sort(sortCriteria)
@@ -399,7 +424,7 @@ const UserController = {
     }
   },
 
-  forgotPassword: async function (req, res,next) {
+  forgotPassword: async function (req, res, next) {
     const email = req.body.email;
     try {
       const user = await User.findOne({ email });
@@ -433,11 +458,11 @@ const UserController = {
       if (password !== confirmPassword) {
         return res.status(400).json({ message: 'Passwords do not match.' });
       }
-      else if (password.length < 8 ||              // Minimum length of 8 characters
-        !/[a-z]/.test(password) ||         // At least one lowercase letter
-        !/[A-Z]/.test(password) ||         // At least one uppercase letter
+      else if (password.length < 8 ||
+        !/[a-z]/.test(password) ||
+        !/[A-Z]/.test(password) ||
         !/[0-9]/.test(password)) {
-        return res.status(400).send("Password should be minimum 8 characters long and should include one lowercase letter, one uppercase letter, and at least one number");
+        return res.status(400).send({ message: "Password should be minimum 8 characters long and should include one lowercase letter, one uppercase letter, and at least one number" });
       }
       else {
         // Update the user's password
@@ -461,7 +486,7 @@ const UserController = {
   verifyToken: async function (req, res) {
     const token = req.params.token;
 
-    try{
+    try {
       const tokenDoc = await Token.findOne({ token });
 
       if (!tokenDoc || !tokenDoc.status) {
@@ -476,7 +501,7 @@ const UserController = {
 
       res.status(200).json({ message: 'Token verified successfully.' });
 
-    }catch (error) {
+    } catch (error) {
       console.error(error);
       return res.status(500).json({ message: 'Server error' });
     }

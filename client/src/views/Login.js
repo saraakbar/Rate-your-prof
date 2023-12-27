@@ -94,7 +94,7 @@ const Login = ({ }) => {
           } else if (error.response.status === 400) {
             loginError("Invalid credentials.");
           } else if (error.response.status === 403) {
-            loginError(error.response.data.message);
+            loginError("Your account was suspended.");
           } else {
             loginError("Server Error.");
           }

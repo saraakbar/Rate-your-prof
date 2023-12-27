@@ -3,21 +3,31 @@ import '../styles/ReportModal.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons'; // Corrected icon import
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import {useNavigate} from 'react-router-dom';
 
 const ReportModal = ({ isOpen, onClose, reviewId }) => {
     const token = JSON.parse(localStorage.getItem('token'));
     const [selectedReason, setSelectedReason] = useState('');
+    const navigate = useNavigate();
+
+    const reviewError = (message) => {
+        toast.error(message, {
+            position: toast.POSITION.TOP_RIGHT,
+            theme: "dark",
+        })
+    }
 
     const handleCheckboxChange = (reason) => {
         if (selectedReason === reason) {
-            setSelectedReason(''); // Unselect if already selected
+            setSelectedReason('');
         } else {
-            setSelectedReason(reason); // Select the clicked checkbox
+            setSelectedReason(reason);
         }
     };
 
     const handleSubmit = async () => {
-        try{
+        try {
             await axios.post(
                 `http://localhost:8000/review/report/${reviewId}`,
                 { reason: selectedReason },
@@ -28,8 +38,22 @@ const ReportModal = ({ isOpen, onClose, reviewId }) => {
                 }
             );
             onClose();
-
-        }catch(error){
+            toast.success("Review Reported Successfully", {
+                position: toast.POSITION.TOP_RIGHT,
+                theme: "dark",
+            })
+        } catch (error) {
+            console.error(error);
+            if (error.response.status === 403) {
+                reviewError("Invalid or expired token")
+                localStorage.removeItem("token");
+                localStorage.removeItem("username");
+                localStorage.removeItem("firstName");
+                navigate("/login", { replace: true });
+            }
+            else {
+                reviewError(error.response.data.message);
+            }
         }
     };
 

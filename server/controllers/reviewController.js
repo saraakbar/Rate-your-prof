@@ -15,7 +15,7 @@ const reviewController = {
           }
     
           if (!(course && criteria && isGrad !== undefined && isGrad !== null)) {
-            return res.status(400).send('All input is required');
+            return res.status(400).send({message:'All input is required'});
           }
     
           const isCriteriaValid = criteria.every(
@@ -23,7 +23,7 @@ const reviewController = {
           );
     
           if (!isCriteriaValid) {
-            return res.status(400).send('Criteria ratings must be between 1 and 5');
+            return res.status(400).send({message:'Criteria ratings must be between 1 and 5'});
           }
     
           // Calculate the average rating for all criteria
