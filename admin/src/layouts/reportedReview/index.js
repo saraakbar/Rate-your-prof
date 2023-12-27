@@ -28,12 +28,119 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const Report = () => {
   const navigate = useNavigate();
   const [reviews, setReviews] = useState();
   const token = JSON.parse(localStorage.getItem("token"));
   const { id } = useParams();
+ 
+  const loginError = (message) => {
+    toast.error(message, {
+      position: toast.POSITION.TOP_RIGHT,
+      theme: "dark",
+    })
+  }
+
+  const loginSuccess = (message) => {
+    toast.success(message, {
+      position: toast.POSITION.TOP_RIGHT,
+      theme: "dark",
+    })
+  }
+
+  const handleSuspend = async () => {
+    const confirm = window.confirm("Are you sure you want to suspend this user?")
+
+    if (confirm) {
+      try {
+        const response = await axios.patch(
+          `http://localhost:8000/admin/report/${id}/suspendUser`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(response.data)
+        loginSuccess("User suspended successfully")
+      } catch (error) {
+        console.error(error);
+        loginError(error.response.data)
+      }
+    }
+  }
+
+  const handleUser = async () => {
+    const confirm = window.confirm("Are you sure you want to delete this user?")
+    if (confirm) {
+      try {
+        const response = await axios.delete(
+          `http://localhost:8000/admin/report/${id}/user`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(response.data)
+        loginSuccess("User deleted successfully")
+      } catch (error) {
+        console.error(error);
+        loginError(error.response.data)
+      }
+    }
+
+  }
+
+  const handleReview = async () => {
+    const confirm = window.confirm("Are you sure you want to delete this review?")
+    if (confirm) {
+      try {
+        const response = await axios.delete(
+          `http://localhost:8000/admin/report/${id}/review`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(response.data)
+        loginSuccess("Review deleted successfully")
+      } catch (error) {
+        console.error(error);
+        loginError(error.response.data)
+      }
+    }
+  }
+
+  const handleResolve = async () => {
+    const confirm = window.confirm("Are you sure you want to resolve this report?")
+    if (confirm) {
+      try {
+        const response = await axios.patch(
+          `http://localhost:8000/admin/report/${id}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(response.data)
+        loginSuccess("Report resolved successfully")
+        navigate("/reports", { replace: true });
+      } catch (error) {
+        console.error(error);
+        loginError(error.response.data)
+      }
+    }
+  }
+
 
   useEffect(() => {
     if (!token) {
@@ -47,7 +154,6 @@ const Report = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log(response.data)
         setReviews(response.data);
       } catch (error) {
         console.error(error);
@@ -58,6 +164,7 @@ const Report = () => {
 
   return (
     <DashboardLayout>
+      <ToastContainer />
       <DashboardNavbar />
       <MDBox pt={6} pb={3}>
         <Grid item xs={12}>
@@ -118,10 +225,10 @@ const Report = () => {
             </MDBox>
           </Card>
           <MDBox pt={3} display="flex" gap={2} >
-          <MDButton color="warning" size="medium">suspend user</MDButton>
-          <MDButton color="error" size="medium">delete user</MDButton>
-          <MDButton color="error" size="medium">delete review</MDButton>
-          <MDButton color="info" size="medium">Resolved</MDButton>
+          <MDButton color="warning" size="medium" onClick={() =>handleSuspend()}>suspend user</MDButton>
+          <MDButton color="error" size="medium" onClick={() =>handleUser()}>delete user</MDButton>
+          <MDButton color="error" size="medium" onClick={() =>handleReview()}>delete review</MDButton>
+          <MDButton color="info" size="medium" onClick={() =>handleResolve()}>Resolved</MDButton>
           </MDBox>
         </Grid>
       </MDBox>

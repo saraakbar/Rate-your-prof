@@ -149,7 +149,7 @@ const Login = ({ }) => {
                         <p className={basestyle.error}>{formErrors.email}</p>
                       </div>
 
-                      <div className="relative w-full mb-3">
+                      <div className="relative w-full">
                         <label
                           className="block uppercase text-gray-700 text-xs font-bold mb-2"
                           htmlFor="password"
@@ -178,18 +178,7 @@ const Login = ({ }) => {
                         <p className={basestyle.error}>{formErrors.password}</p>
                       </div>
                       <div>
-                        <label className="inline-flex items-center cursor-pointer">
-                          <input
-                            id="customCheckLogin"
-                            type="checkbox"
-                            className="form-checkbox border-0 rounded text-gray-800 w-5 h-5"
-                            style={{ transition: "all .15s ease" }}
-                          />
-                          <span className="text-sm font-semibold text-gray-700">
-                            Remember me
-                          </span>
-                        </label>
-                        <div className="float-right">
+                        <div className="float-right mb-4">
                           <Link
                             to="/forgot-password"
                             className="text-gray-300"

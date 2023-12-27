@@ -38,8 +38,10 @@ function Tables() {
     const [criteria, setCriteria] = useState([]);
     const [columns, setColumns] = useState([]);
     const [refresh, setRefresh] = useState(false);
+    const [isEditOpen, setIsEditOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const token = JSON.parse(localStorage.getItem("token"));
+    const [criteriaId, setCriteriaId] = useState('');
     const [newCriteria, setNewCriteria] = useState({
         name: "",
         description: "",
@@ -53,17 +55,69 @@ function Tables() {
         Header: "Actions",
         accessor: "actionsColumn",
         Cell: ({ row }) => (
+            <MDBox display="flex" gap={2}>
+                 <MDButton onClick={() => handleEdit(row.original._id)} color="warning" size="small">
+                <Icon> edit </Icon>
+            </MDButton>
             <MDButton onClick={() => handleDelete(row.original._id)} color="error" size="small">
                 <Icon> delete </Icon>
             </MDButton>
+            </MDBox>
         ),
     };
+
+    const handleEdit = async (criteriaId) => {
+        handleOpenEditModal();
+        try {
+            setCriteriaId(criteriaId);
+            const response = await axios.get(`http://localhost:8000/admin/getcriteria/${criteriaId}`,{
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            console.log(response)
+            setNewCriteria({
+                name: response.data.name,
+                description: response.data.description,
+            });
+        } catch(error){
+            console.error(error);
+        }
+    }
+
+    const handleEditCriteria = async () => {
+        try {
+            await axios.put(`http://localhost:8000/admin/criteria/${criteriaId}`, newCriteria, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            
+            setRefresh(!refresh);
+        }
+        catch (error) {
+            console.error(error);
+        }
+
+        handleCloseEditModal();
+    }
+
 
     const handleDelete = async (criteriaId) => {
         const confirm = window.confirm('Are you sure you want to delete this criteria?');
 
         if (confirm) {
-            console.log(criteriaId);
+            try {
+                await axios.delete(`http://localhost:8000/admin/criteria/${criteriaId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setRefresh(!refresh);
+            } catch (error) {
+                console.error(error);
+            }
         }
     };
 
@@ -95,6 +149,14 @@ function Tables() {
         });
     };
 
+    const handleCloseEditModal = () => {
+        setIsEditOpen(false);
+    };
+
+    const handleOpenEditModal = () => {
+        setIsEditOpen(true);
+    };
+
     useEffect(() => {
         if (!token) {
             navigate("/admin/login", { replace: true });
@@ -107,6 +169,8 @@ function Tables() {
                         Authorization: `Bearer ${token}`,
                     },
                 });
+
+                console.log(response)
 
                 setColumns(response.data.columns);
                 setCriteria(response.data.criteria);
@@ -206,6 +270,51 @@ function Tables() {
                             onChange={(e) => setNewCriteria({ ...newCriteria, description: e.target.value })}
                         />
                         <Button variant="contained" onClick={handleAddCriteria} style={{ color: 'white' }} >
+                            Save Criteria
+                        </Button>
+                    </MDBox>
+                    </Card>
+            </Modal>
+
+
+            <Modal
+                open={isEditOpen}
+                onClose={handleCloseEditModal}
+                aria-labelledby="add-university-modal"
+                aria-describedby="modal-to-add-new-university"
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                <Card style={{ maxWidth: 400, width: '100%' }}>
+                    <MDBox
+                        p={4}
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                    >
+                        <MDTypography variant="h5" color="textPrimary">
+                            Edit Criteria
+                        </MDTypography>
+                        <TextField
+                            label="Name"
+                            fullWidth
+                            margin="normal"
+                            value={newCriteria.name}
+                            onChange={(e) => setNewCriteria({ ...newCriteria, name: e.target.value })}
+                        />
+                        <TextField
+                            label="Description"
+                            fullWidth
+                            multiline
+                            rows={4}
+                            margin="normal"
+                            value={newCriteria.description}
+                            onChange={(e) => setNewCriteria({ ...newCriteria, description: e.target.value })}
+                        />
+                        <Button variant="contained" onClick={handleEditCriteria} style={{ color: 'white' }} >
                             Save Criteria
                         </Button>
                     </MDBox>

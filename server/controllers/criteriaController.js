@@ -42,11 +42,22 @@ const criteriaController = {
   // Get all criteria
   getCriteria: async (req, res) => {
     try {
-      const criteria = await Criteria.find().select('-__v -description');
+      const criteria = await Criteria.find().select('-__v');
       const criteriaKeys = criteria.length > 0 ? Object.keys(criteria[0].toObject()) : [];
       const excludedKeys = [];
       const columns = criteriaKeys.filter(key => !excludedKeys.includes(key));
       res.status(200).json({ columns, criteria });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  },
+
+  getCriteriaById: async (req, res) => {
+    const { criteriaId } = req.params;
+    try {
+      const criteria = await Criteria.findById(criteriaId).select('-__v');
+      res.status(200).json(criteria);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Internal Server Error' });
@@ -114,7 +125,7 @@ const criteriaController = {
         { name, description },
         { new: true }
       );
-      res.status(200).json(criteria);
+      res.status(200).json("Successfully updated criteria");
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Internal Server Error' });
@@ -166,6 +177,7 @@ const criteriaController = {
 
       // Update reviews to remove the deleted criteria
       await Review.updateMany({}, { $pull: { criteria: { criterion: criteriaId } } });
+      await Department.updateMany({criteria: criteriaId}, { $pull: { criteria: criteriaId } })
 
       res.status(200).json({ message: 'Criteria deleted successfully' });
     } catch (error) {

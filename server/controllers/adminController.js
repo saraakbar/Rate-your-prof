@@ -99,6 +99,37 @@ const adminController = {
         }
     },
 
+    getUniversity: async (req, res) => {
+        const { uni_id } = req.params;
+        try {
+            const university = await University.findById(uni_id).select('-__v -logo');
+            res.status(200).json(university);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal Server Error' });
+        }
+
+    },
+
+    editUniversity: async (req, res) => {
+        const { uni_id } = req.params;
+        const { name, ID, location } = req.body;
+        try {
+            const existingID = await University.findOne({ ID: ID });
+            if (existingID && existingID._id != uni_id) {
+                return res.status(400).send("ID already exists");
+            }
+
+            await University.findByIdAndUpdate(uni_id, { name, ID, location });
+            console.log("successful")
+            res.status(200).send("University updated");
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal Server Error' });
+        }
+    },
+
+
     getDepts: async (req, res) => {
         try {
             const { uni_id } = req.params;
@@ -187,6 +218,166 @@ const adminController = {
         }
     },
 
+    //delete user by id
+    deleteUser: async (req, res) => {
+        const { user_id } = req.params;
+        const newUserId = '658b9d04c63ba967ba0b8197';
+        try {
+            const reviews = await Review.find({ user: user_id });
+
+            if (reviews.length > 0) {
+                for (const review of reviews) {
+                    review.user = newUserId;
+                    await review.save();
+                }
+            }
+
+            const reviewsWithActions = await Review.find({
+                $or: [{ likes: user_id }, { dislikes: user_id }],
+            });
+
+            if (reviewsWithActions.length > 0) {
+                reviewsWithActions.forEach(async (review) => {
+                    if (review.likes.includes(user_id)) {
+                        review.likes.pull(user_id);
+                        review.numOfLikes -= 1;
+                    }
+                    if (review.dislikes.includes(user_id)) {
+                        review.dislikes.pull(user_id);
+                        review.numOfDislikes -= 1;
+                    }
+                    await review.save();
+                });
+            }
+
+            await User.findByIdAndRemove({ _id: user_id })
+            return res.status(200).json({ message: 'User deleted successfully' });
+
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Server error' });
+        }
+    },
+
+    //delete user by report id
+    deleteUserByReport: async (req, res) => {
+        const { id } = req.params;
+        const newUserId = '658b9d04c63ba967ba0b8197';
+
+        try {
+            const report = await Report.findById(id)
+                .populate({
+                    path: 'review',
+                    select: 'user',
+                })
+                .populate({
+                    path: 'review.user',
+                    select: '_id',
+                });
+
+            const user_id = report.review.user._id;
+
+            const reviews = await Review.find({ user: user_id });
+
+            if (reviews.length > 0) {
+                for (const review of reviews) {
+                    review.user = newUserId;
+                    await review.save();
+                }
+            }
+
+            const reviewsWithActions = await Review.find({
+                $or: [{ likes: user_id }, { dislikes: user_id }],
+            });
+
+            if (reviewsWithActions.length > 0) {
+                reviewsWithActions.forEach(async (review) => {
+                    if (review.likes.includes(user_id)) {
+                        review.likes.pull(user_id);
+                        review.numOfLikes -= 1;
+                    }
+                    if (review.dislikes.includes(user_id)) {
+                        review.dislikes.pull(user_id);
+                        review.numOfDislikes -= 1;
+                    }
+                    await review.save();
+                });
+            }
+
+            await User.findByIdAndRemove({ _id: user_id })
+            return res.status(200).json({ message: 'User deleted successfully' });
+
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send("Server Error");
+        }
+    },
+
+    //delete reveiw by report
+    deleteReviewByReport: async (req, res) => {
+        const { id } = req.params;
+        try {
+            const report = await Report.findById(id).populate({ path: 'review', select: '_id' });
+            const reviewId = report.review._id;
+
+            await Review.findByIdAndDelete(reviewId);
+            report.isDeleted = true;
+            await report.save();
+            res.status(200).send("Review deleted");
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send("Server Error");
+        }
+    },
+
+    suspendUserbyReport: async (req, res) => {
+        const { id } = req.params;
+        try {
+            const report = await Report.findById(id)
+                .populate({
+                    path: 'review',
+                    select: 'user',
+                })
+                .populate({
+                    path: 'review.user',
+                    select: '_id',
+                });
+
+            const userId = report.review.user._id;
+
+            const user = await User.findOne({ _id: userId });
+            if (!user) {
+                return res.status(404).send("User not found");
+            }
+            if (user.suspended) {
+                return res.status(400).send("User is already suspended");
+            }
+            else {
+                user.suspended = true;
+                await user.save();
+                res.status(200).send("User suspended");
+            }
+
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send("Server Error");
+        }
+    },
+
+    resolveReport: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const report = await Report.findById(id);
+            if (!report) return res.status(400).send("Report does not exist");
+            report.isResolved = true;
+            await report.save();
+            res.status(200).send("Report resolved");
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send("Server Error");
+        }
+    },
+
     getCount: async (req, res) => {
         try {
             const users = await User.find({ role: 'user' }).countDocuments();
@@ -231,69 +422,7 @@ const adminController = {
             return res.status(500).send("Server Error");
         }
     }
-
-    //delete user by id
-    deleteUser: async (req, res) => {
-        try{
-            const {id} = req.params;
-            await User.findAndDelete(id: id);
-            res.status(200).send("User deleted");
-        } catch (error){
-            console.log(error);
-            return res.status(500).send("Server Error");
-        }
-    },
-
-    //delete user by report id
-    deleteUser: async (req, res) => {
-        try{
-            const {id} = req.params;
-            const report= await Report.findById(id).populate({path:'user',select:'_id'});
-            userId = report.user._id;
-            console.log(userId);
-            //await User.findAndDelete(id: userId);
-                       
-        } catch (error){
-            console.log(error);
-            return res.status(500).send("Server Error");
-        }
-
-        //suspend user by report id
-        susUser: async (req, res) => {
-            try{
-                const {id} = req.params;
-                const report= await Report.findById(id).populate({path:'user',select:'_id'});
-                console.log(report.user._id);
-                 const user = await User.findOne({ _id: userId });
-            if (!user) {
-                return res.status(404).send("User not found");
-            }
-            if (user.suspended) {
-                return res.status(400).send("User is already suspended");
-            }
-            else {
-                user.suspended = true;
-                await user.save();
-                res.status(200).send("User suspended");
-            }
-
-            } catch (error){
-                console.log(error);
-                return res.status(500).send("Server Error");
-            }
-        }
-
-        getUser: async (req, res) => {
-            try{
-                const {username} = req.params;
-                const user = await User.find(username: username).select('-__v -password');
-                res.status(200).send(user);
-            }catch (error){
-                console.log(error);
-                return res.status(500).send("Server Error");
-            }
-        },
-    
+ 
         getReviews: async (req, res) => {
             try{
                 {teacherName} = req.query;

@@ -35,6 +35,9 @@ import Button from "@mui/material/Button";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function Tables() {
   const navigate = useNavigate();
@@ -42,6 +45,8 @@ function Tables() {
   const [columns, setColumns] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [uni_id, setUniId] = useState("");
   const token = JSON.parse(localStorage.getItem("token"));
   const [newUniversity, setNewUniversity] = useState({
     name: "",
@@ -49,11 +54,18 @@ function Tables() {
     location: "",
   });
 
+  const loginError = (message) => {
+    toast.error(message, {
+      position: toast.POSITION.TOP_RIGHT,
+      theme: "dark",
+    })
+  }
+
   const actionsColumn = {
     Header: "Actions",
     accessor: "actionsColumn",
     Cell: ({ row }) => (
-      <MDBox pt={3} display="flex">
+      <MDBox display="flex" gap={2}>
         <MDButton
           onClick={() => handleDepartments(row.original._id)}
           color="primary"
@@ -61,9 +73,53 @@ function Tables() {
         >
           View Departments
         </MDButton>
+        <MDButton onClick={() => handleEdit(row.original._id)} color="warning" size="small">
+          <Icon>edit</Icon>
+        </MDButton>
       </MDBox>
     ),
   };
+
+  const handleEdit = async (uni_id) => {
+    handleOpenEditModal();
+    try {
+      setUniId(uni_id);
+      const response = await axios.get(`http://localhost:8000/admin/university/${uni_id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setNewUniversity({
+        name: response.data.name,
+        ID: response.data.ID,
+        location: response.data.location,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
+  const handleEditUni = async () => {
+    try {
+      await axios.put(`http://localhost:8000/admin/edit-university/${uni_id}`, newUniversity, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+
+
+      setRefresh(!refresh);
+    }
+    catch (error) {
+      console.error(error);
+      loginError(error.response.data)
+    }
+
+    handleCloseEditModal();
+  }
 
   const handleDepartments = (uni_id) => {
     navigate(`/universities/${uni_id}/dept`);
@@ -86,14 +142,24 @@ function Tables() {
     });
   };
 
+
+  const handleCloseEditModal = () => {
+    setIsEditOpen(false);
+  };
+
+  const handleOpenEditModal = () => {
+    setIsEditOpen(true);
+  };
+
+
   const handleSaveUni = async () => {
     try {
       // Make an API request to add a new university
       await axios.post("http://localhost:8000/admin/create_university", newUniversity, {
         headers: {
-            Authorization: `Bearer ${token}`,
-            },
-        });
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       // Close the modal and refresh the data
       setModalOpen(false);
@@ -128,6 +194,7 @@ function Tables() {
 
   return (
     <DashboardLayout>
+      <ToastContainer />
       <DashboardNavbar />
       <MDBox pt={6} pb={3}>
         <Grid item xs={12}>
@@ -189,10 +256,10 @@ function Tables() {
         aria-labelledby="add-university-modal"
         aria-describedby="modal-to-add-new-university"
         style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
       >
         <Card style={{ maxWidth: 400, width: '100%' }}>
           <MDBox
@@ -238,6 +305,70 @@ function Tables() {
               variant="contained"
               color="primary"
               onClick={handleSaveUni}
+              style={{ color: 'white' }}
+            >
+              Save University
+            </Button>
+          </MDBox>
+        </Card>
+      </Modal>
+
+
+      <Modal
+        open={isEditOpen}
+        onClose={handleCloseEditModal}
+        aria-labelledby="add-university-modal"
+        aria-describedby="modal-to-add-new-university"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Card style={{ maxWidth: 400, width: '100%' }}>
+          <MDBox
+            p={4}
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+          >
+            <MDTypography variant="h5" color="textPrimary">
+              Edit University
+            </MDTypography>
+            <TextField
+              label="Name"
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              value={newUniversity.name}
+              onChange={(e) =>
+                setNewUniversity({ ...newUniversity, name: e.target.value })
+              }
+            />
+            <TextField
+              label="ID"
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              value={newUniversity.ID}
+              onChange={(e) =>
+                setNewUniversity({ ...newUniversity, ID: e.target.value })
+              }
+            />
+            <TextField
+              label="Location"
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              value={newUniversity.location}
+              onChange={(e) =>
+                setNewUniversity({ ...newUniversity, location: e.target.value })
+              }
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleEditUni}
               style={{ color: 'white' }}
             >
               Save University

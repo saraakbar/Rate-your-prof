@@ -49,7 +49,7 @@ function Tables() {
     Header: 'Actions',
     accessor: 'actionsColumn', // Use a unique identifier for the accessor    
     Cell: ({ row }) => (
-      <MDBox pt={3} display="flex" gap={2}>
+      <MDBox display="flex" gap={2}>
         <MDButton onClick={() => handleDelete(row.original._id)} color="error" size="small">
           <Icon> delete </Icon>
         </MDButton>
@@ -60,11 +60,26 @@ function Tables() {
     ),
   };
 
-  const handleDelete = async (userId) => {
+  const handleDelete = async (user_id) => {
     const confirm = window.confirm('Are you sure you want to delete this user?');
 
     if (confirm) {
-      console.log(userId)
+      try {
+        const response = await axios.delete(
+          `http://localhost:8000/admin/user/${user_id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setRefresh(!refresh);
+
+      } catch (error) {
+        console.log(error);
+      }
+      
     }
   };
 

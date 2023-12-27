@@ -16,6 +16,8 @@ router.get('/create_review/:teacherid', auth, criteriaController.getCriteriaByDe
 
 router.get('/admin/criteria/dept/:department', auth, criteriaController.getCriteriaByDept);
 
+router.get('/admin/getcriteria/:criteriaId', auth, isAdmin, criteriaController.getCriteriaById);
+
 // Edit criteria details (Admin only)
 router.put('/admin/criteria/:criteriaId', auth, isAdmin, criteriaController.editCriteria);
 
@@ -27,5 +29,6 @@ router.delete('/admin/criteria/unassign/:department/:criteriaId', auth, isAdmin,
 
 // Delete criteria (Admin only)
 router.delete('/admin/criteria/:criteriaId', auth, isAdmin, criteriaController.deleteCriteria);
+
 
 module.exports = router;

@@ -65,12 +65,9 @@ function Tables() {
         Header: 'Actions',
         accessor: 'actionsColumn',
         Cell: ({ row }) => (
-            <MDBox pt={3} display="flex" gap={2}>
-                <MDButton onClick={() => handleCriterias(row.original._id)} color="primary" size="small">
+            <MDBox display="flex" gap={2}>
+            <MDButton onClick={() => handleCriterias(row.original._id)} color="primary" size="small">
                     View Criteria
-                </MDButton>
-                <MDButton onClick={() => handleCreateTeacher(row.original._id)} color="warning" size="small">
-                    Add Teacher
                 </MDButton>
                 <MDButton color="error" size="small" onClick={() => handleDelet(row.original_id)}>
                     <Icon>delete</Icon>
