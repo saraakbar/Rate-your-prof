@@ -66,7 +66,6 @@ const Report = () => {
             },
           }
         );
-        console.log(response.data)
         loginSuccess("User suspended successfully")
       } catch (error) {
         console.error(error);
@@ -87,7 +86,6 @@ const Report = () => {
             },
           }
         );
-        console.log(response.data)
         loginSuccess("User deleted successfully")
       } catch (error) {
         console.error(error);
@@ -109,7 +107,6 @@ const Report = () => {
             },
           }
         );
-        console.log(response.data)
         loginSuccess("Review deleted successfully")
       } catch (error) {
         console.error(error);
@@ -131,7 +128,6 @@ const Report = () => {
             },
           }
         );
-        console.log(response.data)
         loginSuccess("Report resolved successfully")
         navigate("/reports", { replace: true });
       } catch (error) {

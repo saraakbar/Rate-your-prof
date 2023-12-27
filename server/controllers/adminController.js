@@ -121,7 +121,6 @@ const adminController = {
             }
 
             await University.findByIdAndUpdate(uni_id, { name, ID, location });
-            console.log("successful")
             res.status(200).send("University updated");
         } catch (error) {
             console.error(error);
@@ -390,6 +389,21 @@ const adminController = {
             console.log(error);
             return res.status(500).send("Server Error");
         }
+    },
+
+    deleteReports: async (req, res) => {
+        try {
+            let fromDate = new Date(Date.now() - 60 * 60 * 24 * 30 * 1000);
+            await Report.deleteMany({
+                isResolved: true,
+                date: { $gte: fromDate },
+            });
+
+            res.status(200).send("Reports deleted");
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send("Server Error");
+        }
     }
 
     /*
@@ -450,15 +464,7 @@ const adminController = {
             }
         },
     
-        deleteReports: async (req, res) => {
-            try{
-                await Report.deleteMany({resolved: true,date: {$gte: 30}});
-                res.status(200).send("Reports deleted");
-            } catch (error){
-                console.log(error);
-                return res.status(500).send("Server Error");
-            }
-        }
+       
     
         */
 

@@ -20,7 +20,7 @@ router.get('/admin/departments/:uni_id',auth,isAdmin, AdminController.getDepts);
 router.put('/admin/edit-university/:uni_id',auth,isAdmin, AdminController.editUniversity);
 router.get('/admin/dashboard',auth,isAdmin, AdminController.getCount);
 router.patch('/admin/report/:id',auth,isAdmin, AdminController.resolveReport);
-//router.delete('/admin/cleanup',auth,isAdmin, AdminController.deleteReports);
+router.delete('/admin/cleanup',auth,isAdmin, AdminController.deleteReports);
 
 //router.post('admin/createModerator',auth,isAdmin, AdminController.createModerator);
 //router.get('/admin/reviews',auth,isAdmin, AdminController.getReviews);

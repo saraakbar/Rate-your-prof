@@ -38,6 +38,8 @@ function Tables() {
     const [reports, setReports] = useState([]);
     const [columns, setColumns] = useState([]);
     const [refresh, setRefresh] = useState(false);
+    const token = JSON.parse(localStorage.getItem("token"));
+
 
     const handleRefresh = () => {
         setRefresh(!refresh);
@@ -57,8 +59,28 @@ function Tables() {
         navigate(`/reports/${reportId}`);
     };
 
+    const handleClean = async () => {
+        const confirm = window.confirm("Are you sure you want to delete reports?")
+
+        if (confirm) {
+            try {
+                const response = await axios.delete(
+                    `http://localhost:8000/admin/cleanup`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                setRefresh(!refresh);
+            } catch (error) {
+                console.error("Error deleting reports:", error);
+            }
+        }
+    }
+
     useEffect(() => {
-        const token = JSON.parse(localStorage.getItem("token"));
         if (!token) {
             navigate("/admin/login", { replace: true });
         }
@@ -126,10 +148,12 @@ function Tables() {
                             <MDTypography variant="h6" color="white">
                                 Reported reviews
                             </MDTypography>
-                            <MDBox display="flex" alignItems="center">
-                                {/* Add the refresh button */}
+                            <MDBox display="flex" alignItems="center" gap={2}>
+                                <MDButton onClick={()=>handleClean()}>
+                                    <Icon>delete_sweep</Icon>
+                                </MDButton>
                                 <MDButton
-                                    onClick={handleRefresh} // Add the function to handle the refresh action
+                                    onClick={handleRefresh} 
                                     color="inherit"
                                 >
                                     <Icon>refresh</Icon>
