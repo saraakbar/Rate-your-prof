@@ -9,6 +9,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Tooltip } from 'react-tooltip';
+import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
+
+
 
 const CreateReview = () => {
   const navigate = useNavigate();
@@ -170,9 +174,15 @@ const CreateReview = () => {
                 <div className="ml-8 mr-4 grid grid-cols-2">
                   {criteria.map((criterion, index) => (
                     <div key={criterion._id} className="mb-6" style={{ gridColumn: index % 2 === 0 ? '1' : '2' }}>
-                      <label className="block uppercase text-gray-700 text-base font-bold mb-4">
-                        {criterion.name}
-                      </label>
+                      <div className='flex'>
+                        <label className="block uppercase text-gray-700 text-base font-bold mb-4">
+                          {criterion.name}
+                        </label>
+                        <a data-tooltip-id="my-tooltip" data-tooltip-content={criterion.description} data-tooltip-place="top">
+                          <FontAwesomeIcon icon={faCircleInfo} className="ml-2" />
+                        </a>
+                        <Tooltip id="my-tooltip" />
+                      </div>
                       <div className="flex items-center space-x-2 mb-4">
                         <label htmlFor={`rating_${criterion._id}`} className="text-sm mr-8 text-gray-700 font-bold">
                           Rating:
