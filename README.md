@@ -1,7 +1,7 @@
 # **RYP (Rate Your Professor) Web Application**
 
 ## Overview
-RYP is a web application developed using the MERN (MongoDB, Express.js, React, Node.js) stack that allows users to submit reviews and ratings for professors. The application features a comprehensive Admin Panel, user authentication, real-time updates, and a responsive user interface.
+RYP is a web application developed using the MERN (MongoDB, Express.js, React, Node.js) stack that allows users to submit reviews and ratings for professors. The application features a comprehensive Admin Panel, user authentication, real-time updates.
 
 ## Features
 ### User Features
