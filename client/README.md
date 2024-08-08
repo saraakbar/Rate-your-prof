@@ -1,70 +1,16 @@
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Login/Register
+![Screenshot 2024-08-08 at 04-12-59 Rate Your Professor](https://github.com/user-attachments/assets/7a7964ec-f928-4fe6-bbf1-2b890a9002f0)
+Home Page: Everyone's reviews
+![Screenshot 2024-08-08 at 04-15-13 Rate Your Professor](https://github.com/user-attachments/assets/222ae2a0-5f8c-4962-8fb1-212677cb45ce)
+Profile Page
+![Screenshot 2024-08-08 at 04-14-37 Rate Your Professor](https://github.com/user-attachments/assets/3b3630db-b4ef-41c9-930d-97a8a6b15b99)
+Settings
+![Screenshot 2024-08-08 at 04-14-51 Rate Your Professor](https://github.com/user-attachments/assets/52458b0f-fbca-40d7-b04e-aba88441861e)
+Search Teachers
+![Screenshot 2024-08-08 at 04-15-25 Rate Your Professor](https://github.com/user-attachments/assets/3c69cd9b-8cfb-4fde-a08b-bdc87df7c1e4)
+Create Review
+![Screenshot 2024-08-08 at 04-16-19 Rate Your Professor](https://github.com/user-attachments/assets/a935ee0a-110c-4d98-a269-897ac5b565f2)
+Teacher's Profile
+![Screenshot 2024-08-08 at 04-15-57 Rate Your Professor](https://github.com/user-attachments/assets/9bc35975-60f1-49de-abf1-1f2dc118ad8c)
+Flag Reviews
+![Screenshot 2024-08-08 at 04-16-19 Rate Your Professor](https://github.com/user-attachments/assets/3c4fb1ce-0239-44e1-8a91-0248ddaffcda)
