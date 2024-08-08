@@ -11,7 +11,7 @@ RYP is a web application developed using the MERN (MongoDB, Express.js, React, N
 - **Interact with Reviews**: Users can like, dislike, and report reviews.
 - **User Authentication**: Secure login and registration system.
 
-# Admin Features
+### Admin Features
 - **Admin Panel**: A comprehensive dashboard for administrators.
 - **Manage Users**: Delete or suspend users
 - **Manage Rating** Criteria: Adjust and update the criteria used for ratings.
